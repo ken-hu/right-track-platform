@@ -28,7 +28,6 @@ import static pers.ken.rt.common.exception.ServiceCode.*;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<PlatformError> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         log.warn("Catch HttpMessageNotReadableException,  caused by: ", e);
@@ -37,7 +36,6 @@ public class GlobalExceptionHandler {
                 INVALID_REQ.getHttpStatus());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<PlatformError> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
         log.warn("Catch ConstraintViolationException, caused by: ", ex);
@@ -72,7 +70,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<PlatformError> serviceException(ServiceException ex, HttpServletRequest request) {
         log.error("Catch Service Exception caused by: ", ex);
@@ -83,7 +80,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<PlatformError> unknownException(Exception ex, HttpServletRequest request) {
         log.error("Catch Unknown Exception, caused by: ", ex);
