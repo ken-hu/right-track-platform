@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(name = "uc_client")
 @Data
-public class Client {
+public class OauthClient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

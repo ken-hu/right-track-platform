@@ -2,8 +2,7 @@ package pers.ken.rt.uc.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.ken.rt.uc.entity.Role;
-import pers.ken.rt.uc.entity.User;
+import pers.ken.rt.uc.entity.OauthUser;
 
 /**
  * <name> UserRepository </name>
@@ -13,6 +12,6 @@ import pers.ken.rt.uc.entity.User;
  * @author _Ken.Hu
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
+public interface OauthUserRepository extends JpaRepository<OauthUser, Long> {
+    OauthUser findByUsername(String username);
 }

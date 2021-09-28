@@ -10,26 +10,29 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import pers.ken.rt.common.exception.ServiceCode;
 import pers.ken.rt.common.model.PlatformError;
-import pers.ken.rt.common.model.PlatformResult;
-import pers.ken.rt.uc.entity.User;
+import pers.ken.rt.uc.entity.OauthUser;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
@@ -82,9 +85,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public TokenEnhancer tokenEnhancer() {
         return (accessToken, authentication) -> {
             Map<String, Object> additionalInfo = Maps.newHashMap();
-            User user = (User) authentication.getUserAuthentication().getPrincipal();
-            additionalInfo.put("userId", user.getId());
-            additionalInfo.put("username", user.getName());
+            OauthUser oauthUser = (OauthUser) authentication.getUserAuthentication().getPrincipal();
+            additionalInfo.put("userId", oauthUser.getId());
+            additionalInfo.put("username", oauthUser.getUsername());
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };
@@ -102,9 +105,42 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    @Bean
+    public WebResponseExceptionTranslator<OAuth2Exception> webResponseExceptionTranslator() {
+        return e -> {
+            log.error("Catch OAuth2Exception", e);
+            if (e instanceof OAuth2Exception) {
+                return new ResponseEntity<>((OAuth2Exception) e, HttpStatus.UNAUTHORIZED);
+            }
+            return new ResponseEntity<>(new OAuth2Exception(e.getMessage(), e), HttpStatus.UNAUTHORIZED);
+        };
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (req, resp, ex) -> {
+            log.error("Occur AuthenticationException,Detail is", ex);
+            resp.setStatus(HttpStatus.UNAUTHORIZED.value());
+            resp.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
+            resp.getWriter().write(
+                    JSON.toJSONString(new PlatformError(ServiceCode.TOKEN_INVALID, "请检查token相关信息"))
+            );
+            resp.getWriter().flush();
+        };
+    }
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        super.configure(security);
+        security
+                .passwordEncoder(passwordEncoder())
+                //获取token的请求，不进行拦截
+                .tokenKeyAccess("permitAll()")
+                //检查token的请求，要先通过验证
+                .checkTokenAccess("isAuthenticated()")
+                .allowFormAuthenticationForClients()
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler());
     }
 
     @Override
@@ -120,6 +156,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
                 .tokenEnhancer(enhancerChain)
+                .exceptionTranslator(webResponseExceptionTranslator())
                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
                 //refresh token有两种使用方式：重复使用(true)、非重复使用(false)，默认为true
                 //重复使用：access token过期刷新时， refresh token过期时间未改变，仍以初次生成的时间为准

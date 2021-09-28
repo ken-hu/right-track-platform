@@ -5,6 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pers.ken.rt.oauth.entity.OauthUserDetail;
+import pers.ken.rt.uc.entity.OauthUser;
+import pers.ken.rt.uc.service.OauthUserService;
+
+import java.util.Objects;
 
 /**
  * <name> UserClientsServiceImpl </name>
@@ -15,10 +20,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class UserClientsServiceImpl implements UserDetailsService {
+public class OauthUserDetailsServiceImpl implements UserDetailsService {
+
+    private OauthUserService oauthUserService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        OauthUser oauthUser = oauthUserService.getOauthUser(username);
+        if (Objects.isNull(oauthUser)) {
+            throw new UsernameNotFoundException("Can not found username: " + username);
+        }
+        return new OauthUserDetail(oauthUser);
     }
 }

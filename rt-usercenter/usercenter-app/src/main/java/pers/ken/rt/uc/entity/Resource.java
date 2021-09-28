@@ -1,5 +1,7 @@
 package pers.ken.rt.uc.entity;
 
+import javax.persistence.*;
+
 /**
  * <name> Resource </name>
  * <desc> </desc>
@@ -7,6 +9,10 @@ package pers.ken.rt.uc.entity;
  *
  * @author _Ken.Hu
  */
-
+@Entity
+@Table(name = "uc_resource")
 public class Resource {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 }

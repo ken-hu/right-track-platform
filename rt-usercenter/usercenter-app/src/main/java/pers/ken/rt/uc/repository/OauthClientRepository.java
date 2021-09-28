@@ -2,7 +2,7 @@ package pers.ken.rt.uc.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.ken.rt.uc.entity.Client;
+import pers.ken.rt.uc.entity.OauthClient;
 
 /**
  * <name> ClientRepository </name>
@@ -12,5 +12,7 @@ import pers.ken.rt.uc.entity.Client;
  * @author _Ken.Hu
  */
 @Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {
+public interface OauthClientRepository extends JpaRepository<OauthClient, Long> {
+
+    OauthClient findByClientId(String clientId);
 }
