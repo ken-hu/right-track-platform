@@ -1,22 +1,20 @@
-package pers.ken.rt.gw;
+package pers.ken.rt.od;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
- * <name> GatewayApp </name>
- * <desc> </desc>
- * Creation Time: 2021/9/20 20:32.
+ * <code> OrderApp </code>
+ * <desc> OrderApp </desc>
+ * <b>Creation Time:</b> 2021/10/16 22:49.
  *
  * @author _Ken.Hu
  */
 @SpringBootApplication
-@EnableOpenApi
 @EnableDiscoveryClient
-public class GatewayApp {
+public class OrderApp {
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApp.class, args);
+        SpringApplication.run(OrderApp.class, args);
     }
 }

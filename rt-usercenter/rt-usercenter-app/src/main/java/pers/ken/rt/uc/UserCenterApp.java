@@ -1,4 +1,4 @@
-package pers.ken.rt.gw;
+package pers.ken.rt.uc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,17 +6,17 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
- * <name> GatewayApp </name>
+ * <name> UserCenterApp </name>
  * <desc> </desc>
- * Creation Time: 2021/9/20 20:32.
+ * Creation Time: 2021/9/19 12:29.
  *
  * @author _Ken.Hu
  */
-@SpringBootApplication
 @EnableOpenApi
+@SpringBootApplication
 @EnableDiscoveryClient
-public class GatewayApp {
+public class UserCenterApp {
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApp.class, args);
+        SpringApplication.run(UserCenterApp.class, args);
     }
 }

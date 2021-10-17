@@ -1,0 +1,21 @@
+server:
+  port: 38082
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: order
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
+logging:
+  file:
+    path: logs/
+  level:
+    org.springframework.security.web: debug

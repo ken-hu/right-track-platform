@@ -8,6 +8,7 @@
         <module>rt-common</module>
         <module>rt-gateway</module>
         <module>rt-usercenter</module>
+        <module>rt-order</module>
     </modules>
 
     <parent>

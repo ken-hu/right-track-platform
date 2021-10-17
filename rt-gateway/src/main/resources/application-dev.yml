@@ -1,0 +1,54 @@
+server:
+  port: 38080
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: usercenter
+          uri: lb://usercenter
+          predicates:
+            - Path=/uc/**
+          filters:
+            - StripPrefix=1
+        - id: order
+          uri: lb://order
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=1
+oauth2:
+  white-list-urls:
+    - /uc/rsa/getPublicKey
+    - /uc/oauth/**
+    - /swagger-ui/**
+    - /swagger-resources/**
+    - /webjars/**
+    - /v3/api-docs/**
+    - /v2/api-docs/**
+logging:
+  file:
+    path: logs/
+#security:
+#  oauth2:
+#    client:
+#      client-id: ${spring.application.name}
+#      client-secret: 123456
+#      user-authorization-uri: http://localhost:38081/oauth/authorize
+#      access-token-uri: http://localhost:38081/oauth/token
+#    resource:
+#      id: ${spring.application.name}
+#      user-info-uri: user-info
+#    authorization:
+#      check-token-access: http://localhost:38081/oauth/check_token

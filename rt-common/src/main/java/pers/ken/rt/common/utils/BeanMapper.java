@@ -3,6 +3,7 @@ package pers.ken.rt.common.utils;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -17,15 +18,8 @@ import java.util.function.Supplier;
 public class BeanMapper extends BeanUtils {
 
     public static <T> T copyProperties(Object source, Class<T> clazz) {
-        T target = null;
-        try {
+        T target = getTargetClass(source, clazz);
 
-            target = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new BeanInstantiationException(clazz,
-                    "BeanMapper convert fail !! from " + source.getClass().getName() + " to " + clazz.getName(),
-                    e);
-        }
         copyProperties(source, target);
         return target;
     }
@@ -39,18 +33,22 @@ public class BeanMapper extends BeanUtils {
     public static <S, T> List<T> copyListProperties(List<S> sources, Class<T> clazz) {
         List<T> list = new ArrayList<>(sources.size());
         for (S source : sources) {
-            T target = null;
-            try {
-                target = clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new BeanInstantiationException(clazz,
-                        "BeanMapper convert fail !! from " + source.getClass().getName() + " to " + clazz.getName(),
-                        e);
-            }
+            T target = getTargetClass(sources, clazz);
             copyProperties(source, target);
             list.add(target);
         }
         return list;
+    }
+
+    private static <T> T getTargetClass(Object source, Class<T> clazz) {
+        T target;
+        try {
+            target = clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new BeanInstantiationException(clazz,
+                    String.format("BeanMapper convert fail !! from %s to %s", source.getClass().getName(), clazz.getName()), e);
+        }
+        return target;
     }
 
 }
