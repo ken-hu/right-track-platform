@@ -1,5 +1,6 @@
 package pers.ken.rt.uc.oauth;
 
+import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -24,9 +26,11 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import pers.ken.rt.uc.oauth.model.OauthUserDetail;
 
 import java.security.KeyPair;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * <name> AuthorizationServerConfig </name>
@@ -63,11 +67,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public TokenEnhancer tokenEnhancer() {
         return (accessToken, authentication) -> {
-//            Map<String, Object> additionalInfo = Maps.newHashMap();
-//            OauthUserDetail oauthUser = (OauthUserDetail) authentication.getUserAuthentication().getPrincipal();
-//            additionalInfo.put("userId", oauthUser.getId());
-//            additionalInfo.put("username", oauthUser.getUsername());
-//            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+            Map<String, Object> additionalInfo = Maps.newHashMap();
+            OauthUserDetail oauthUser = (OauthUserDetail) authentication.getUserAuthentication().getPrincipal();
+            additionalInfo.put("userId", oauthUser.getId());
+            additionalInfo.put("username", oauthUser.getUsername());
+            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };
     }

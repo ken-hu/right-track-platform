@@ -2,7 +2,6 @@ package pers.ken.rt.common.exception;
 
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 /**
  * <name> ErrorException </name>
@@ -17,6 +16,11 @@ public abstract class ServiceException extends RuntimeException {
     ServiceException(ServiceCode serviceCode) {
         this.serviceCode = serviceCode;
         this.message = serviceCode.getMessage();
+    }
+
+    ServiceException(ServiceCode serviceCode, String message) {
+        this.serviceCode = serviceCode;
+        this.message = message;
     }
 
     protected final ServiceCode serviceCode;

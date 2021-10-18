@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pers.ken.rt.common.utils.BeanMapper;
-import pers.ken.rt.uc.oauth.entity.OauthUserDetail;
-import pers.ken.rt.uc.usercenter.entity.OauthUser;
+import pers.ken.rt.uc.oauth.model.OauthUserDetail;
+import pers.ken.rt.uc.entity.OauthUser;
 
 /**
  * <name> OauthContextHolder </name>
