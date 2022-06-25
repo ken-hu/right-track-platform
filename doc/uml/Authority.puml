@@ -1,0 +1,23 @@
+@startuml
+!theme spacelab
+'https://plantuml.com/activity-diagram-beta
+
+object Principle
+object Policy
+object Statement
+object Action
+object Resource
+object User
+object Role
+object UserGroup
+
+Principle "1" --  "1" User
+User "n" -- "n" UserGroup
+User "n" -- "n" Role
+UserGroup "n" -- "n" Role
+Principle "n" -- "n" Policy
+Policy "1" -- "n" Statement
+
+Statement "1" -- "n" Action
+Statement "1" -- "n" Resource
+@enduml

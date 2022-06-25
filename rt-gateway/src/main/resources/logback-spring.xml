@@ -7,7 +7,7 @@
 
     <appender name="APP-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[%X{x-request-id}] ${CONSOLE_LOG_PATTERN}</pattern>
+            <pattern>%X{x-request-id} | ${CONSOLE_LOG_PATTERN}</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -17,36 +17,27 @@
         <discardingThreshold>0</discardingThreshold>
         <appender-ref ref="APP-CONSOLE"/>
     </appender>
-    <springProfile name="dev">
-        <root level="info">
-            <appender-ref ref="APP-CONSOLE-ASYNC"/>
-        </root>
-    </springProfile>
-
-
-    <springProfile name="prd">
-        <appender name="APP-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <File>${file-path}/${app-name}.log</File>
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <FileNamePattern>${file-path}/${app-name}.%d{yyyy-MM-dd}.log</FileNamePattern>
-                <maxHistory>90</maxHistory>
-                <totalSizeCap>50MB</totalSizeCap>
-            </rollingPolicy>
-            <encoder>
-                <charset>UTF-8</charset>
-                <pattern>
-                    [%X{x-request-id}] ${FILE_LOG_PATTERN}
-                </pattern>
-            </encoder>
-        </appender>
-        <appender name="APP-FILE-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-            <discardingThreshold>0</discardingThreshold>
-            <appender-ref ref="APP-FILE"/>
-        </appender>
-        <root>
-            <level value="INFO"/>
-            <appender-ref ref="APP-CONSOLE-ASYNC"/>
-            <appender-ref ref="APP-FILE-ASYNC"/>
-        </root>
-    </springProfile>
+    <appender name="APP-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${file-path}/${app-name}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${file-path}/${app-name}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %X{x-request-id} | ${FILE_LOG_PATTERN}
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="APP-FILE-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="APP-FILE"/>
+    </appender>
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="APP-CONSOLE-ASYNC"/>
+        <appender-ref ref="APP-FILE-ASYNC"/>
+    </root>
 </configuration>

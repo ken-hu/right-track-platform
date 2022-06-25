@@ -7,12 +7,28 @@ package pers.ken.rt.common.exception;
  *
  * @author _Ken.Hu
  */
-public class MicroServiceException extends ServiceException{
-    public MicroServiceException(ServiceCode serviceCode) {
-        super(serviceCode);
+public class MicroServiceException extends ServiceException {
+
+    public MicroServiceException() {
     }
 
-    public MicroServiceException(ServiceCode serviceCode, String message) {
-        super(serviceCode, message);
+    public MicroServiceException(ErrorCodeInterface errorCode) {
+        super(errorCode);
+    }
+
+    public MicroServiceException(ErrorCodeInterface errorCode, String msg) {
+        super(errorCode, msg);
+    }
+
+    public MicroServiceException(ErrorCodeInterface errorCode, String msg, String detail) {
+        super(errorCode, msg, detail);
+    }
+
+    public MicroServiceException(ErrorCodeInterface errorCode, Throwable cause, String msg, String detail) {
+        super(errorCode, cause, msg, detail);
+    }
+
+    public MicroServiceException(int code, String msg, String detail, Throwable cause) {
+        super(code, msg, detail, cause);
     }
 }

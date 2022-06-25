@@ -17,40 +17,42 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestLog {
+    private String respContentType;
+    private String method;
     private String requestId;
-    private String requestUrl;
-    private String uriQueryParams;
+    private String url;
+    private String queryParams;
     private String requestBody;
     private String responseBody;
     private String httpMethod;
     private int httpStatus;
     private String mediaType;
     private String serverIp;
-    private String headers;
+    private String requestHeaders;
     private String clientIp;
     private String sessionId;
     private long startTimeMillis;
-    private long handleTimeMillis;
+    private long executeTimeMillis;
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("RequestLog{")
-                .append("\n [requestId]=").append(requestId)
-                .append("\n [requestUrl]=").append(requestUrl)
-                .append("\n [uriQueryParams]=").append(uriQueryParams)
-                .append("\n [requestBody]=").append(requestBody)
-                .append("\n [responseBody]=").append(responseBody)
-                .append("\n [httpMethod]=").append(httpMethod)
-                .append("\n [httpStatus]=").append(httpStatus)
-                .append("\n [mediaType]=").append(mediaType)
-                .append("\n [serverIp]=").append(serverIp)
-                .append("\n [headers]=").append(headers)
-                .append("\n [clientIp]=").append(clientIp)
-                .append("\n [sessionId]=").append(sessionId)
-                .append("\n [startTimeMillis]=").append(startTimeMillis)
-                .append("\n [handleTimeMillis]=").append(handleTimeMillis)
-                .append("\n }")
+                .append("RequestLog:")
+                .append("[requestId]=").append(requestId)
+                .append(",[requestUrl]=").append(url)
+                .append(",[uriQueryParams]=").append(queryParams)
+                .append(",[requestBody]=").append(requestBody)
+                .append(",[responseBody]=").append(responseBody)
+                .append(",[httpMethod]=").append(httpMethod)
+                .append(",[httpStatus]=").append(httpStatus)
+                .append(",[mediaType]=").append(mediaType)
+                .append(",[serverIp]=").append(serverIp)
+                .append(",[headers]=").append(requestHeaders)
+                .append(",[clientIp]=").append(clientIp)
+                .append(",[sessionId]=").append(sessionId)
+                .append(",[startTimeMillis]=").append(startTimeMillis)
+                .append(",[handleTimeMillis]=").append(executeTimeMillis)
+                .append("}")
                 .toString();
     }
 }

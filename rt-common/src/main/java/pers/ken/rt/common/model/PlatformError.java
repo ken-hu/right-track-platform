@@ -1,10 +1,6 @@
 package pers.ken.rt.common.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.With;
-import pers.ken.rt.common.exception.ServiceCode;
+import lombok.*;
 
 /**
  * <name> PlatformError </name>
@@ -14,32 +10,30 @@ import pers.ken.rt.common.exception.ServiceCode;
  * @author _Ken.Hu
  */
 @Data
-@With
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlatformError {
-    private int code;
+    private Boolean isSuccess = false;
+    private Integer code;
     private String message;
     private String detail;
-    private String help;
+    private String requestId;
     private String uri;
 
-    public PlatformError(ServiceCode serviceCode) {
-        this.code = serviceCode.getCode();
-        this.message = serviceCode.getMessage();
-    }
-
-    public PlatformError(ServiceCode serviceCode, String uri, String detail) {
-        this.code = serviceCode.getCode();
-        this.message = serviceCode.getMessage();
+    public PlatformError(Integer code, String message, String detail, String requestId, String uri) {
+        this.code = code;
+        this.message = message;
         this.detail = detail;
+        this.requestId = requestId;
         this.uri = uri;
     }
 
-
-    public PlatformError(ServiceCode serviceCode, String detail) {
-        this.code = serviceCode.getCode();
-        this.message = serviceCode.getMessage();
-        this.detail = detail;
+    public PlatformError(Integer code, String message, String requestId, String uri) {
+        this.code = code;
+        this.message = message;
+        this.detail = message;
+        this.requestId = requestId;
+        this.uri = uri;
     }
 }

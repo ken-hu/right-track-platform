@@ -2,7 +2,6 @@ package pers.ken.rt.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 /**
  * <name> ErrorCode </name>
@@ -13,26 +12,36 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @AllArgsConstructor
-public enum ServiceCode {
+public enum ServiceCode implements ErrorCodeInterface {
 
 
     /**
-     * Service Code for response
+     * Define for base service code
      */
+    SUCCESS("Success", 0),
+    FAILED("Failed", 1),
+    INVALID_REQ("Invalid request", 1001),
+    PERMISSION_NOT_ENOUGH("Permission not enough", 1002),
+    AUTHENTICATION_FAILED("Authentication failed", 1003),
+    TOKEN_INVALID("Token invalid", 1003),
+    MICRO_SERVICE_FALL_BACK("Micro service fall back", 1004);
 
-    SUCCESS("Success", 0, HttpStatus.OK),
-    FAILED("Failed", 1, HttpStatus.INTERNAL_SERVER_ERROR),
-
-
-    INVALID_REQ("Invalid request", 40000, HttpStatus.BAD_REQUEST),
-
-    PERMISSION_NOT_ENOUGH("Permission not enough", 20001, HttpStatus.FORBIDDEN),
-    AUTHENTICATION_FAILED("Authentication failed", 20001, HttpStatus.UNAUTHORIZED),
-    TOKEN_INVALID("Token invalid", 20004, HttpStatus.UNAUTHORIZED),
-
-    MICRO_SERVICE_FALL_BACK("Micro service fall back", 30001, HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String message;
     private final int code;
-    private final HttpStatus httpStatus;
+
+    @Override
+    public int getCode() {
+        return this.code;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    @Override
+    public String getDetail() {
+        return this.message;
+    }
 }

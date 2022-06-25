@@ -13,17 +13,47 @@ import lombok.Getter;
 @Getter
 public abstract class ServiceException extends RuntimeException {
 
-    ServiceException(ServiceCode serviceCode) {
-        this.serviceCode = serviceCode;
-        this.message = serviceCode.getMessage();
+    public ServiceException() {
+        super();
     }
 
-    ServiceException(ServiceCode serviceCode, String message) {
-        this.serviceCode = serviceCode;
-        this.message = message;
+    public ServiceException(ErrorCodeInterface errorCode) {
+        super(errorCode.getMessage());
+        this.code = errorCode.getCode();
+        this.detail = errorCode.getMessage();
+        this.msg = errorCode.getMessage();
     }
 
-    protected final ServiceCode serviceCode;
-    protected final String message;
+    public ServiceException(ErrorCodeInterface errorCode, String msg) {
+        super(msg);
+        this.code = errorCode.getCode();
+        this.msg = msg;
+        this.detail = msg;
+    }
 
+    public ServiceException(ErrorCodeInterface errorCode, String msg, String detail) {
+        super(msg);
+        this.code = errorCode.getCode();
+        this.msg = msg;
+        this.detail = detail;
+    }
+
+
+    public ServiceException(ErrorCodeInterface errorCode, Throwable cause, String msg, String detail) {
+        super(msg, cause);
+        this.code = errorCode.getCode();
+        this.msg = msg;
+        this.detail = detail;
+    }
+
+    public ServiceException(int code, String msg, String detail, Throwable cause) {
+        super(msg, cause);
+        this.code = code;
+        this.msg = msg;
+        this.detail = detail;
+    }
+
+    public String msg;
+    public String detail;
+    public int code;
 }
