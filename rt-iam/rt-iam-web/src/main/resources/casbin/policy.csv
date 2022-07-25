@@ -1,0 +1,4 @@
+"p","ken", "mars:popType/*", "PostMapDimAmapConfSave"
+"p","ken", "mars:adcode/*", "GetListAllCity"
+"p","ken", "mars:adcode/3", "GetListAllCity"
+"p","liz", "mars:adcode/*", "GetListAllCity"

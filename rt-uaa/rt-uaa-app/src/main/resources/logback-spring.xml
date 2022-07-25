@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include accessResource="org/springframework/boot/logging/logback/defaults.xml"/>
     <springProperty scope="context" name="app-name" source="spring.application.name" defaultValue="app"/>
     <springProperty scope="context" name="log-path" source="logging.file.path" defaultValue="logs"/>
     <property name="file-path" value="${log-path}/${app-name}"/>

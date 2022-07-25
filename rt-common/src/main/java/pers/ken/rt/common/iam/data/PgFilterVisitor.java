@@ -84,7 +84,7 @@ public class PgFilterVisitor extends PGASTVisitorAdapter {
     private boolean isTargetTableSource(SQLExprTableSource tableSource, List<DataScope> dataScopes) {
         for (DataScope target : dataScopes) {
             String standardizationTableName = tableSource.getName().getSimpleName().replace("\"", "");
-            standardizationTableName =standardizationTableName.replace("'", "");
+            standardizationTableName = standardizationTableName.replace("'", "");
             if (standardizationTableName.equalsIgnoreCase(target.getTable())) {
                 dataScope = target;
                 return true;

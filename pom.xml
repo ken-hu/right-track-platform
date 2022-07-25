@@ -8,6 +8,9 @@
         <module>rt-common</module>
         <module>rt-gateway</module>
         <module>rt-uaa</module>
+        <module>rt-iam-spring-boot-starter</module>
+        <module>rt-test</module>
+        <module>rt-iam</module>
     </modules>
 
     <parent>
@@ -26,7 +29,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <spring-cloud.version>2020.0.3</spring-cloud.version>
+        <spring-cloud.version>2020.0.6</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
     </properties>
 

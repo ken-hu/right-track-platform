@@ -69,8 +69,7 @@ public class OpenApiDocConfig {
 
                 ApiResponse response = new ApiResponse()
                         .description("Unhandled server error")
-                        .content(sharedContent)
-                        ;
+                        .content(sharedContent);
                 apiResponses.addApiResponse("500", response);
                 apiResponses.addApiResponse("200", response);
             }));

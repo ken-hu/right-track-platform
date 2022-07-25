@@ -1,18 +1,21 @@
 package pers.ken.rt.uaa.common;
 
-import com.google.common.collect.Lists;
+import org.casbin.jcasbin.main.Enforcer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import pers.ken.rt.common.exception.ServiceCode;
 import pers.ken.rt.common.iam.IAMAuth;
 import pers.ken.rt.common.iam.IAMAuthContext;
-import pers.ken.rt.common.iam.Policy;
+import pers.ken.rt.common.iam.UserDetail;
 import pers.ken.rt.uaa.iam.CasbinUtils;
+import pers.ken.rt.uaa.iam.exception.IAMAuthException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <code> AuthorityInterceptor </code>
@@ -29,14 +32,25 @@ public class IAMAuthInterceptor implements HandlerInterceptor {
         //Get userInfo
         String userId = "";
         if (handler instanceof HandlerMethod) {
-            ArrayList<Policy> policies = Lists.newArrayList();
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             IAMAuth iamAuth = handlerMethod.getMethodAnnotation(IAMAuth.class);
             if (null == iamAuth) {
                 return HandlerInterceptor.super.preHandle(request, response, handler);
             }
 
-            CasbinUtils.validate(userId,)
+            // API access control
+            if (!CasbinUtils.validate(userId, iamAuth.resource(), iamAuth.action())) {
+                throw new IAMAuthException(ServiceCode.AUTHENTICATION_FAILED);
+            }
+            Enforcer enforcer = CasbinUtils.enforcerCreate();
+
+            List<List<String>> userPolicies = enforcer.getFilteredPolicy(0, userId, "", iamAuth.action());
+            List<UserDetail.PolicyDefine> policies = userPolicies.stream().map(UserDetail.PolicyDefine::new).collect(Collectors.toList());
+            IAMAuthContext.set(UserDetail.builder()
+                    .userId(userId)
+                    .username(userId)
+                    .policies(policies)
+                    .build());
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }

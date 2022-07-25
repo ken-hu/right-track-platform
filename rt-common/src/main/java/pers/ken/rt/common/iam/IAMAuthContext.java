@@ -8,14 +8,14 @@ package pers.ken.rt.common.iam;
  * @author _Ken.Hu
  */
 public class IAMAuthContext {
-    private static final ThreadLocal<UserAuthority> AUTHORITY = new ThreadLocal<>();
+    private static final ThreadLocal<UserDetail> AUTHORITY = new ThreadLocal<>();
 
-    public static UserAuthority get() {
+    public static UserDetail get() {
         return AUTHORITY.get();
     }
 
-    public static void set(UserAuthority userAuthority) {
-        AUTHORITY.set(userAuthority);
+    public static void set(UserDetail userDetail) {
+        AUTHORITY.set(userDetail);
     }
 
     public static void remove() {

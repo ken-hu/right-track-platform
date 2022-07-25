@@ -1,9 +1,9 @@
 package pers.ken.rt.uaa;
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.AntPathMatcher;
 
 /**
  * <name> CommonTest </name>
@@ -22,14 +22,12 @@ class CommonTest {
 
     @Test
     void encodeConfig() {
-        BasicTextEncryptor encryptor = new BasicTextEncryptor();
-        encryptor.setPassword("kenhu");
-        String dbUrl = "jdbc:postgresql://1.1.1.1:5432/postgres";
-        String user = "123";
-        String password = "123";
-
-        System.out.println(encryptor.encrypt(dbUrl));
-        System.out.println(encryptor.encrypt(user));
-        System.out.println(encryptor.encrypt(password));
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        boolean match = antPathMatcher.match("mars:adcode/*", "mars:adcode/1");
+        if (match) {
+            System.out.println("Nice");
+        }else {
+            System.out.println("So bad");
+        }
     }
 }

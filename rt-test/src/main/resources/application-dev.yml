@@ -1,0 +1,30 @@
+server:
+  port: 38081
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: test
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database: postgresql
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+api-access:
+  auth:
+    serviceName: nice
+    enabled: true
+    pathPatterns: /**
+    excludePathPatterns: ""
+    policiesUri: "http://localhost:38080/iam/user-policies"

@@ -65,13 +65,13 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
         URI requestUri = serverHttpRequest.getURI();
         String method = serverHttpRequest.getMethodValue().toUpperCase();
         MediaType mediaType = serverHttpRequest.getHeaders().getContentType();
-        Mono<String> modifyBody = serverRequest.bodyToMono(String.class).flatMap(o -> {
+        Mono<byte[]> modifyBody = serverRequest.bodyToMono(byte[].class).flatMap(o -> {
             if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
                 return Mono.justOrEmpty(o);
             }
             return Mono.empty();
         });
-        BodyInserter<Mono<String>, ReactiveHttpOutputMessage> bodyInserter = BodyInserters.fromPublisher(modifyBody, String.class);
+        BodyInserter<Mono<byte[]>, ReactiveHttpOutputMessage> bodyInserter = BodyInserters.fromPublisher(modifyBody, byte[].class);
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(exchange.getRequest().getHeaders());
         headers.remove(HttpHeaders.CONTENT_LENGTH);
@@ -92,6 +92,7 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
                                         } else {
                                             httpHeaders.set(HttpHeaders.TRANSFER_ENCODING, "chunked");
                                         }
+                                        requestLog.setRequestHeaders(httpHeaders.toString());
                                         return httpHeaders;
                                     }
 
@@ -138,7 +139,6 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
                                                 requestLog.setRequestId(requestId);
                                                 requestLog.setUrl(requestUri.toString());
                                                 requestLog.setQueryParams(serverHttpRequest.getURI().getQuery());
-                                                requestLog.setRequestHeaders(headers.toString());
                                                 if (null != mediaType) {
                                                     requestLog.setRespContentType(mediaType.toString());
                                                 }
