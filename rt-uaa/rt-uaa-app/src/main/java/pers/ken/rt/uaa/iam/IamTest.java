@@ -34,18 +34,15 @@ public class IamTest {
             //校验通过
             List<List<String>> policy = enforcer.getPolicy();
             System.out.println(policy);
-
-            List<List<String>> ken = enforcer.getFilteredNamedPolicy("p", 0, "ken");
-            System.out.println(ken);
-
-            List<List<String>> ken1 = enforcer.getFilteredPolicy( 2, "GetListAllCity");
+//            List<List<String>> ken = enforcer.getFilteredNamedPolicy("p", 0, "ken");
+//            System.out.println(ken);
+            List<List<String>> ken1 = enforcer.getFilteredPolicy( 0, "ken","","GetListAllCity");
             System.out.println(ken1);
-
-
 
         } else {
             throw new RuntimeException("访问受限");
         }
+
 
         // 只校验URI
 

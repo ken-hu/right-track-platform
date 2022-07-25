@@ -21,7 +21,7 @@ public class PolicyUtils {
     private PolicyUtils() {
     }
 
-    public static boolean isParamsCheckPermit(UserAuthority userAuthority, Map<String, Object> paramsMap) {
+    public static boolean isParamsCheckPermit(UserDetail userDetail, Map<String, Object> paramsMap) {
         return Boolean.FALSE;
     }
 

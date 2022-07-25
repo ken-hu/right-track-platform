@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.springframework.stereotype.Component;
 import pers.ken.rt.common.iam.IAMAuthContext;
-import pers.ken.rt.common.iam.UserAuthority;
+import pers.ken.rt.common.iam.UserDetail;
 import pers.ken.rt.common.iam.data.DataScope;
 import pers.ken.rt.common.iam.data.PgFilterVisitor;
 
@@ -21,15 +21,15 @@ import java.util.List;
  * @author _Ken.Hu
  */
 @Component
-public class PostgresqlAuthorityPlugin implements StatementInspector {
+public class PostgresqlPermissionPlugin implements StatementInspector {
 
     @Override
     public String inspect(String sql) {
-        UserAuthority userAuthority = IAMAuthContext.get();
-
-        PgFilterVisitor PgFilterVisitor = new PgFilterVisitor(Lists.newArrayList(new DataScope()));
+        UserDetail userDetail = IAMAuthContext.get();
+        List<UserDetail.PolicyDefine> policies = userDetail.getPolicies();
+        PgFilterVisitor visitor = new PgFilterVisitor(Lists.newArrayList(new DataScope()));
         List<SQLStatement> statements = SQLUtils.parseStatements(sql, DbType.postgresql);
-        statements.forEach(statement -> statement.accept(PgFilterVisitor));
+        statements.forEach(statement -> statement.accept(visitor));
         return statements.get(0).toString();
     }
 }

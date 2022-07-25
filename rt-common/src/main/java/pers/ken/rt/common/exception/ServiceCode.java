@@ -24,7 +24,9 @@ public enum ServiceCode implements ErrorCodeInterface {
     PERMISSION_NOT_ENOUGH("Permission not enough", 1002),
     AUTHENTICATION_FAILED("Authentication failed", 1003),
     TOKEN_INVALID("Token invalid", 1003),
-    MICRO_SERVICE_FALL_BACK("Micro service fall back", 1004);
+    MICRO_SERVICE_FALL_BACK("Micro service fall back", 1004),
+
+    ACCESS_DENY("Access Deny", 1005);
 
 
     private final String message;

@@ -8,6 +8,9 @@
         <module>rt-common</module>
         <module>rt-gateway</module>
         <module>rt-uaa</module>
+        <module>rt-iam-spring-boot-starter</module>
+        <module>rt-test</module>
+        <module>rt-iam</module>
     </modules>
 
     <parent>
