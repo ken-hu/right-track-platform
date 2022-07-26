@@ -2,7 +2,7 @@ server:
   port: 38082
 springdoc:
   packages-to-scan:
-    - pers.ken.rt.uaa.controller
+    - pers.ken.rt.iam.controller
   api-docs:
     groups:
       enabled: true
@@ -44,6 +44,10 @@ spring:
         server-addr: 127.0.0.1:8848
 casbin:
   model: classpath:casbin/model.conf
+  policy: classpath:casbin/policy.csv
   storeType: jdbc
   initializeSchema: create
   tableName: casbin_rule
+  enableCasbin: true
+  autoSave: true
+  policyTopic: YOUR_CUSTOMER_TOPIC

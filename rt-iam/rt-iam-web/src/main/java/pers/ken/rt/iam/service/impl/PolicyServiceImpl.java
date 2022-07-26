@@ -31,11 +31,13 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     public UserPoliciesResp listUserPolicies(String accessToken, UserPoliciesReq userPoliciesReq) {
         // uc->access_token->userInfo
-        String userId = accessToken + "1";
+        String userId = "alice";
+        enforcer.addPolicy("bob", "data2", "write");
+        enforcer.addPolicy("alice", "data1", "read");
         boolean enforce = enforcer.enforce(userId, userPoliciesReq.getResource(), userPoliciesReq.getAction());
         if (enforce) {
             List<List<String>> policies =
-                    enforcer.getFilteredPolicy(0, accessToken, userPoliciesReq.getResource(), userPoliciesReq.getAction());
+                    enforcer.getFilteredPolicy(0, userId, userPoliciesReq.getResource(), userPoliciesReq.getAction());
             List<UserPoliciesResp.Policy> userPolicies = policies.stream().map(p -> {
                 String subject = p.get(0);
                 String resource = p.get(1);

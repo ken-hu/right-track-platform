@@ -19,6 +19,11 @@ public class CasbinDataSourceConfiguration {
     @Bean
     @CasbinDataSource
     public DataSource casbinDataSource() {
-        return DataSourceBuilder.create().url("jdbc:h2:mem:casbin").build();
+        return DataSourceBuilder.create()
+                .url("jdbc:postgresql://localhost:5432/postgres?useUnicode=true&characterEncoding=utf-8")
+                .username("postgres")
+                .password("IWHb4wDvb8xjCfBy")
+                .driverClassName("org.postgresql.Driver")
+                .build();
     }
 }
