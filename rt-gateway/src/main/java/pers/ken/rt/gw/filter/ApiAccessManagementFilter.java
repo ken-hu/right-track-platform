@@ -6,10 +6,9 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
-import pers.ken.rt.iam.api.PolicyApi;
-import pers.ken.rt.iam.dto.req.UserPoliciesReq;
-import pers.ken.rt.iam.dto.resp.UserPoliciesResp;
 import reactor.core.publisher.Mono;
 
 /**
@@ -23,7 +22,8 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class ApiAccessManagementFilter implements GlobalFilter, Ordered {
 
-    private PolicyApi policyApi;
+
+    private WebClient webClient;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -33,11 +33,23 @@ public class ApiAccessManagementFilter implements GlobalFilter, Ordered {
         String uri = request.getURI().toString();
         String methodValue = request.getMethodValue();
         // api访问控制
-        UserPoliciesResp userPoliciesResp = policyApi.listPolicies(request.getHeaders().getFirst("Authorization"),
-                UserPoliciesReq.builder()
-                        .resource(uri)
-                        .action(methodValue)
-                        .build());
+        Mono<Object> toMono = webClient.post()
+                .uri("lb://iam-service/users/1/policies")
+                .body(BodyInserters.fromValue("{\n" +
+                        "    \"resource\":\"data1\",\n" +
+                        "    \"action\":\"read\"\n" +
+                        "}"))
+                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(Object.class));
+
+        // 不调用subscribe或者block是不会调用服务的
+        Object block = toMono.block();
+
+        System.out.println(block);
+//        UserPoliciesResp userPoliciesResp = policyApi.listPolicies(request.getHeaders().getFirst("Authorization"),
+//                UserPoliciesReq.builder()
+//                        .resource(uri)
+//                        .action(methodValue)
+//                        .build());
         // set policy to header (JWT)
 
         return chain.filter(exchange);

@@ -25,6 +25,12 @@ spring:
             - Path=/uaa/**
           filters:
             - RewritePath=/uaa/(?<path>.*), /$\{path}
+        - id: iam-service
+          uri: lb://iam
+          predicates:
+            - Path=/iam/**
+          filters:
+            - RewritePath=/iam/(?<path>.*), /$\{path}
         - id: test-service
           uri: lb://test
           predicates:

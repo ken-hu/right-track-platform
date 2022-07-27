@@ -1,7 +1,10 @@
 package pers.ken.rt.uaa.iam;
 
 import com.google.common.io.Resources;
+import org.casbin.jcasbin.exception.CasbinAdapterException;
 import org.casbin.jcasbin.main.Enforcer;
+import org.casbin.jcasbin.model.Model;
+import org.casbin.jcasbin.persist.FilteredAdapter;
 
 import java.util.List;
 
@@ -21,7 +24,15 @@ public class IamTest {
 
         String modelPath = Resources.getResource("casbin/model.conf").getPath();
         String policyPath = Resources.getResource("casbin/policy.csv").getPath();
-        Enforcer enforcer = new Enforcer(modelPath, policyPath);
+//        Enforcer enforcer = new Enforcer(modelPath,policyPath);
+//        Enforcer enforcer = new Enforcer(modelPath,new TestAdapter());
+        Enforcer enforcer = new Enforcer(modelPath);
+        enforcer.addPolicy("ken", "mars:popType/*", "PostMapDimAmapConfSave");
+        enforcer.addPolicy("ken", "mars:adcode/*", "GetListAllCity");
+        enforcer.addPolicy("liz", "mars:adcode/*", "GetListAllCity");
+        enforcer.addPolicy("ken", "mars:adcode/3", "GetListAllCity");
+
+
         // user
         String sub = "ken";
         // resource
@@ -36,7 +47,7 @@ public class IamTest {
             System.out.println(policy);
 //            List<List<String>> ken = enforcer.getFilteredNamedPolicy("p", 0, "ken");
 //            System.out.println(ken);
-            List<List<String>> ken1 = enforcer.getFilteredPolicy( 0, "ken","","GetListAllCity");
+            List<List<String>> ken1 = enforcer.getFilteredPolicy(0, "ken", "", "GetListAllCity");
             System.out.println(ken1);
 
         } else {
@@ -46,5 +57,43 @@ public class IamTest {
 
         // 只校验URI
 
+    }
+
+    public static class TestAdapter implements FilteredAdapter {
+
+        @Override
+        public void loadFilteredPolicy(Model model, Object o) throws CasbinAdapterException {
+
+        }
+
+        @Override
+        public boolean isFiltered() {
+            return false;
+        }
+
+        @Override
+        public void loadPolicy(Model model) {
+
+        }
+
+        @Override
+        public void savePolicy(Model model) {
+
+        }
+
+        @Override
+        public void addPolicy(String s, String s1, List<String> list) {
+            System.out.println("............ add policy ");
+        }
+
+        @Override
+        public void removePolicy(String s, String s1, List<String> list) {
+
+        }
+
+        @Override
+        public void removeFilteredPolicy(String s, String s1, int i, String... strings) {
+
+        }
     }
 }

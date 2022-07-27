@@ -39,7 +39,7 @@
         <appender-ref ref="APP-CONSOLE-ASYNC" />
     </logger>
     <root>
-        <level value="info"/>
+        <level value="DEBUG"/>
         <appender-ref ref="APP-CONSOLE-ASYNC"/>
         <appender-ref ref="APP-FILE-ASYNC"/>
     </root>

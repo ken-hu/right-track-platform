@@ -19,11 +19,6 @@
     <dependencies>
         <dependency>
             <groupId>pers.ken.rt</groupId>
-            <artifactId>rt-iam-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>pers.ken.rt</groupId>
             <artifactId>rt-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <exclusions>
@@ -80,11 +75,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webflux-ui</artifactId>
             <version>1.6.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.casbin</groupId>
-            <artifactId>casbin-spring-boot-starter</artifactId>
-            <version>0.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
