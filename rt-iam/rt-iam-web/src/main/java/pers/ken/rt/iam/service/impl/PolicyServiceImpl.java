@@ -29,11 +29,8 @@ public class PolicyServiceImpl implements PolicyService {
     }
 
     @Override
-    public UserPoliciesResp listUserPolicies(String accessToken, UserPoliciesReq userPoliciesReq) {
+    public UserPoliciesResp check(String userId, UserPoliciesReq userPoliciesReq) {
         // uc->access_token->userInfo
-        String userId = "alice";
-        enforcer.addPolicy("bob", "data2", "write","uc_code");
-        enforcer.addPolicy("alice", "data1", "read","uc_code");
         boolean enforce = enforcer.enforce(userId, userPoliciesReq.getResource(), userPoliciesReq.getAction());
         if (enforce) {
             List<List<String>> policies =
@@ -48,7 +45,7 @@ public class PolicyServiceImpl implements PolicyService {
                         .action(action)
                         .build();
             }).collect(Collectors.toList());
-            return new UserPoliciesResp(accessToken, userPolicies);
+            return new UserPoliciesResp(userId, userPolicies);
         }
         throw new AccessDenyException(AccessErrorCode.ACCESS_DENY);
     }

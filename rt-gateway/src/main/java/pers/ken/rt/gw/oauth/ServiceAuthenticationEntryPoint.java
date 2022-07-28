@@ -31,7 +31,7 @@ public class ServiceAuthenticationEntryPoint implements ServerAuthenticationEntr
     public Mono<Void> commence(ServerWebExchange exchange, AuthenticationException authenticationException) {
         log.error("Occur AuthenticationException", authenticationException);
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.OK);
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         response.getHeaders().set("Access-Control-Allow-Origin", "*");
         response.getHeaders().set("Cache-Control", "no-cache");

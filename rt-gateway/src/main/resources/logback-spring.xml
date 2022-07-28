@@ -35,11 +35,11 @@
         <discardingThreshold>0</discardingThreshold>
         <appender-ref ref="APP-FILE"/>
     </appender>
-    <logger name="org.springframework.security" level="debug" additivity="false">
-        <appender-ref ref="APP-CONSOLE-ASYNC" />
-    </logger>
+<!--    <logger name="org.springframework.security" level="DEBUG" additivity="false">-->
+<!--        <appender-ref ref="APP-CONSOLE-ASYNC" />-->
+<!--    </logger>-->
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="APP-CONSOLE-ASYNC"/>
         <appender-ref ref="APP-FILE-ASYNC"/>
     </root>

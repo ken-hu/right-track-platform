@@ -9,14 +9,12 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SwaggerUiConfigParameters;
 import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.reactive.function.client.WebClient;
 import pers.ken.rt.common.model.PlatformResult;
 
 import java.util.ArrayList;
@@ -34,12 +32,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  */
 @Configuration
 public class OpenApiDocConfig {
-
-    @Bean
-    @LoadBalanced
-    public WebClient webClient() {
-        return WebClient.builder().build();
-    }
 
     @Bean
     @Lazy(value = false)

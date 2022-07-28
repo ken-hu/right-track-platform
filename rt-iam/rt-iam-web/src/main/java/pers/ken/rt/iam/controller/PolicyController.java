@@ -19,10 +19,9 @@ import pers.ken.rt.iam.service.PolicyService;
 public class PolicyController {
     private PolicyService policyService;
 
-    @PostMapping(value = "/users/{userId}/policies", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserPoliciesResp listPolicies(
-                                         @PathVariable("userId") String userId,
-                                         @RequestBody UserPoliciesReq userPoliciesReq) {
-        return policyService.listUserPolicies("", userPoliciesReq);
+    @PostMapping(value = "/users/{userId}/policies/check", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserPoliciesResp check(@PathVariable("userId") String userId,
+                                  @RequestBody UserPoliciesReq userPoliciesReq) {
+        return policyService.check(userId, userPoliciesReq);
     }
 }

@@ -11,7 +11,17 @@ import pers.ken.rt.iam.dto.resp.UserPoliciesResp;
  * @author Ken.Hu
  */
 public interface PolicyService {
+    /**
+     * Create policy.
+     */
     void createPolicy();
 
-    UserPoliciesResp listUserPolicies(String accessToken, UserPoliciesReq userPoliciesReq);
+    /**
+     * List user policies user policies resp.
+     *
+     * @param userId          the user id
+     * @param userPoliciesReq the user policies req
+     * @return the user policies resp
+     */
+    UserPoliciesResp check(String userId, UserPoliciesReq userPoliciesReq);
 }

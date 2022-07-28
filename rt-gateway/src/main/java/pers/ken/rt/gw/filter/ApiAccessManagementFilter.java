@@ -1,11 +1,11 @@
 package pers.ken.rt.gw.filter;
 
-import lombok.AllArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -18,8 +18,8 @@ import reactor.core.publisher.Mono;
  *
  * @author _Ken.Hu
  */
-@Component
-@AllArgsConstructor
+//@Component
+//@AllArgsConstructor
 public class ApiAccessManagementFilter implements GlobalFilter, Ordered {
 
 
@@ -33,18 +33,28 @@ public class ApiAccessManagementFilter implements GlobalFilter, Ordered {
         String uri = request.getURI().toString();
         String methodValue = request.getMethodValue();
         // api访问控制
-        Mono<Object> toMono = webClient.post()
-                .uri("lb://iam-service/users/1/policies")
-                .body(BodyInserters.fromValue("{\n" +
+//        Mono<String> exchange1 =
+                webClient.post()
+                .uri("http://localhost:38082/users/1/policies")
+//                .uri("lb://iam-service/users/1/policies")
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromObject("{\n" +
                         "    \"resource\":\"data1\",\n" +
                         "    \"action\":\"read\"\n" +
                         "}"))
-                .exchangeToMono(clientResponse -> clientResponse.bodyToMono(Object.class));
-
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe(System.out::println)
+                ;
+//.flatMap(res -> {
+//            System.out.println("---------------");
+//
+//            System.out.println(res);
+//            return Mono.just(res);
+//        });
         // 不调用subscribe或者block是不会调用服务的
-        Object block = toMono.block();
 
-        System.out.println(block);
 //        UserPoliciesResp userPoliciesResp = policyApi.listPolicies(request.getHeaders().getFirst("Authorization"),
 //                UserPoliciesReq.builder()
 //                        .resource(uri)
