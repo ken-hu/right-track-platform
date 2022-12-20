@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 /**
  * <name> CommonTest </name>
@@ -23,7 +24,11 @@ class CommonTest {
     @Test
     void encodeConfig() {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        boolean match = antPathMatcher.match("mars:adcode/*", "mars:adcode/1");
+        PathPatternParser parser = PathPatternParser.defaultInstance;
+//        PathPattern parse = parser.parse("channel:mars:.*");
+//        boolean match = parse.matches(PathContainer.parsePath("channel:mars:adcode/1/icCode/2"));
+//        boolean match = antPathMatcher.match("mars:adcode/*/icCode/1*", "mars:adcode/1/icCode/2");
+        boolean match = antPathMatcher.match("channel:mars:*", "channel:mars:getDesc");
         if (match) {
             System.out.println("Nice");
         }else {

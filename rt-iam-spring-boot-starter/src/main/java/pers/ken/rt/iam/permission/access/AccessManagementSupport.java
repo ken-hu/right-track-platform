@@ -5,6 +5,7 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.util.StringUtils;
 import pers.ken.rt.iam.AccessManagementProperties;
 import pers.ken.rt.iam.internal.Policy;
 import pers.ken.rt.iam.internal.PolicyGetHandler;
@@ -28,22 +29,50 @@ public class AccessManagementSupport {
     private ResourceConvertRegistry registry;
     private AccessManagementProperties accessManagementProperties;
 
+    /**
+     * Gets convert.
+     *
+     * @param resourceType the resource type
+     * @return the convert
+     */
     public ResourceConvert<?> getConvert(String resourceType) {
         return registry.getConvert(resourceType);
     }
 
+    /**
+     * User policies list.
+     *
+     * @return the list
+     */
     public List<Policy> userPolicies() {
         return policyGetHandler.userPolicies();
     }
 
-    public String genResource(AccessResource[] accessResources, Method method, Object[] args) {
+    public String getActionName(String action) {
+        return String.format("%s:%s",
+                accessManagementProperties.getResourceCode(),
+                action);
+    }
+
+    /**
+     * Gets resource name.
+     *
+     * @param accessResources the access resources
+     * @param method          the method
+     * @param args            the args
+     * @return the resource name
+     */
+    public String getResourceName(AccessResource[] accessResources, Method method, Object[] args) {
         String rn = Arrays.stream(accessResources)
+                .filter(a -> StringUtils.hasText(a.resourceValue()))
                 .map(r -> r.resource() + "/" + parseExpression(r.resourceValue(), method, args))
                 .collect(Collectors.joining("/"));
 
-        return accessManagementProperties.getServiceName() + ":" + rn;
+        return String.format("%s:%s:%s",
+                accessManagementProperties.getServiceName(),
+                accessManagementProperties.getResourceCode(),
+                rn);
     }
-
 
     private String parseExpression(String expressionString, Method method, Object[] args) {
         //获取被拦截方法参数名列表

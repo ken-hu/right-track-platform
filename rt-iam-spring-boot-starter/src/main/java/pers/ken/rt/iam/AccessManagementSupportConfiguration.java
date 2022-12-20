@@ -19,5 +19,4 @@ public interface AccessManagementSupportConfiguration {
     default void addResourceConvert(ResourceConvertRegistry registry) {
 
     }
-
 }

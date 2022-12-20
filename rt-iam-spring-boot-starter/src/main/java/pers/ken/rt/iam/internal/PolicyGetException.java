@@ -15,15 +15,4 @@ public class PolicyGetException extends RuntimeException{
         super(message);
     }
 
-    public PolicyGetException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PolicyGetException(Throwable cause) {
-        super(cause);
-    }
-
-    public PolicyGetException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

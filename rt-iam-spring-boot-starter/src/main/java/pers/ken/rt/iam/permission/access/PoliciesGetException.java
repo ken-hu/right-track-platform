@@ -8,22 +8,9 @@ package pers.ken.rt.iam.permission.access;
  * @author Ken.Hu
  */
 public class PoliciesGetException extends RuntimeException{
-    public PoliciesGetException() {
-    }
 
     public PoliciesGetException(String message) {
         super(message);
     }
 
-    public PoliciesGetException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PoliciesGetException(Throwable cause) {
-        super(cause);
-    }
-
-    public PoliciesGetException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

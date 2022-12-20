@@ -8,11 +8,17 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import pers.ken.rt.iam.internal.AuthContext;
 import pers.ken.rt.iam.internal.Policy;
+import pers.ken.rt.iam.internal.ResourceAccessDetail;
+import pers.ken.rt.iam.permission.data.IDataProvider;
 import pers.ken.rt.iam.utils.PolicyResolver;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <code> AccessManagementAspect </code>
@@ -44,21 +50,38 @@ public class AccessManagementAspect {
      */
     @Around("point()")
     public Object invoke(ProceedingJoinPoint joinPoint) throws Throwable {
-        List<Policy> policies = accessManagementSupport.userPolicies();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        AccessManagement annotation = method.getAnnotation(AccessManagement.class);
-        AccessResource[] accessResources = annotation.resources();
+        try {
+            List<Policy> policies = accessManagementSupport.userPolicies();
+            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+            Method method = signature.getMethod();
+            AccessManagement annotation = method.getAnnotation(AccessManagement.class);
+            AccessResource[] accessResources = annotation.resources();
+            String resource = accessManagementSupport.getResourceName(accessResources, method, joinPoint.getArgs());
+            String actionName = accessManagementSupport.getActionName(annotation.action());
+            List<IDataProvider> converts = Arrays.stream(accessResources)
+                    .map(AccessResource::resource)
+                    .map(x -> accessManagementSupport.getConvert(x))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            AuthContext.set(
+                    ResourceAccessDetail.builder()
+                            .policies(policies)
+                            .dataProviders(converts)
+                            .build()
+            );
 
-        String resource = accessManagementSupport.genResource(accessResources, method, joinPoint.getArgs());
+            boolean isPermit =
+                    PolicyResolver.isPermit(policies,
+                            resource,
+                            actionName);
 
-        boolean isPermit =
-                PolicyResolver.isPermit(policies, resource, annotation.action());
-
-        if (!isPermit) {
-            throw new AccessDenyException("Access Deny");
+            if (!isPermit) {
+                throw new AccessDenyException("Access Deny");
+            }
+            return joinPoint.proceed();
+        } finally {
+            AuthContext.remove();
         }
-        return joinPoint.proceed();
     }
 
 }

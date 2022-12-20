@@ -14,7 +14,6 @@ import lombok.Data;
 @Data
 public class Rn {
     private String service;
-    private String resourceType;
     private String resource;
     private RnResource rnResource;
 
@@ -29,12 +28,12 @@ public class Rn {
             throw new IllegalArgumentException("Malformed RN - no service specified");
         }
         String service = rn.substring(channelColonIndex + 1, serviceColonIndex);
-
-        int resourceTypeColonIndex = rn.indexOf(':', serviceColonIndex + 1);
-        String resourceType = rn.substring(serviceColonIndex + 1, resourceTypeColonIndex);
-        if (resourceType.isEmpty()) {
-            throw new IllegalArgumentException("Malformed RN - no resourceType specified");
-        }
+//
+//        int resourceTypeColonIndex = rn.indexOf(':', serviceColonIndex + 1);
+//        String resourceType = rn.substring(serviceColonIndex + 1, resourceTypeColonIndex);
+//        if (resourceType.isEmpty()) {
+//            throw new IllegalArgumentException("Malformed RN - no resourceType specified");
+//        }
 
         String resource = rn.substring(serviceColonIndex+1);
         if (resource.isEmpty()) {
@@ -43,7 +42,6 @@ public class Rn {
 
         return Rn.builder()
                 .service(service)
-                .resourceType(resourceType)
                 .resource(resource)
                 .rnResource(RnResource.fromString(resource))
                 .build();

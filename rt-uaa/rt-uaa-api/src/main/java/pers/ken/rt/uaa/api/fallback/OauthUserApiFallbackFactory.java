@@ -18,7 +18,7 @@ public class OauthUserApiFallbackFactory implements FallbackFactory<OauthUserApi
     @Override
     public OauthUserApi create(Throwable cause) {
         return username -> {
-            throw new MicroServiceException(ServiceCode.MICRO_SERVICE_FALL_BACK);
+            throw new MicroServiceException(ServiceCode.INTERNAL_ERROR);
         };
     }
 }

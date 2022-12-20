@@ -50,4 +50,5 @@ public class AccessManagementConfiguration {
     public AccessManagementAspect accessManagementAspect(AccessManagementSupport accessManagementSupport) {
         return new AccessManagementAspect(accessManagementSupport);
     }
+
 }

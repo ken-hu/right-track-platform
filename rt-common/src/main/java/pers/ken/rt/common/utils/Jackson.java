@@ -57,6 +57,17 @@ public enum Jackson {
         }
     }
 
+    public static <T> T fromJsonString(String json, TypeReference<T> valueTypeRef) {
+        if (json == null) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(json, valueTypeRef);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unable to parse Json String.", e);
+        }
+    }
+
     public static <T> T fromJsonString(URL url, TypeReference<T> valueTypeRef) {
         try {
             return objectMapper.readValue(url, valueTypeRef);

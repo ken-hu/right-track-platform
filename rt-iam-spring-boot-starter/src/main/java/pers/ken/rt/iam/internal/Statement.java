@@ -1,10 +1,7 @@
 package pers.ken.rt.iam.internal;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +19,7 @@ import java.util.List;
 @Builder
 public class Statement {
 
+    @Getter
     public enum Effect {
         /**
          * 同意，显式拒绝
@@ -37,6 +35,6 @@ public class Statement {
 
     private String id;
     private Effect effect;
-    private List<String> actions = new ArrayList<>();
-    private List<String> resources;
+    private List<String> action = new ArrayList<>();
+    private List<String> resource;
 }

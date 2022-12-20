@@ -1,5 +1,7 @@
 package pers.ken.rt.iam.internal;
 
+import pers.ken.rt.iam.permission.data.IDataProvider;
+
 /**
  * <code> ResourceConvert </code>
  * <desc> ResourceConvert </desc>
@@ -8,7 +10,7 @@ package pers.ken.rt.iam.internal;
  * @param <T> the type parameter
  * @author Ken.Hu
  */
-public interface ResourceConvert<T extends AbstractResource> {
+public interface ResourceConvert<T extends AbstractResource> extends IDataProvider {
     /**
      * Convert t.
      *

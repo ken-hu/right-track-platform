@@ -1,6 +1,8 @@
 package pers.ken.rt.iam.internal;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
  * @author _Ken.Hu
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Policy {
     private static final String DEFAULT_POLICY_VERSION = "1.0";
 
@@ -20,5 +24,5 @@ public class Policy {
     private String version;
     private String name;
     private String description;
-    private List<Statement> statements = new ArrayList<>();
+    private List<Statement> statement = new ArrayList<>();
 }

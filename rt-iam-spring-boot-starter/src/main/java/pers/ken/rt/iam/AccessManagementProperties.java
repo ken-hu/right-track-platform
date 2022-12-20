@@ -13,8 +13,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "api-access.auth")
 @Data
 public class AccessManagementProperties {
-    private boolean enabled;
     private String serviceName;
+    private String resourceCode;
+    private boolean enabled;
     private String pathPatterns;
     private String excludePathPatterns;
     private String policiesUri;

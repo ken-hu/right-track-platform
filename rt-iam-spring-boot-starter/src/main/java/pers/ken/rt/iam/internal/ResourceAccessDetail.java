@@ -1,21 +1,23 @@
 package pers.ken.rt.iam.internal;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pers.ken.rt.iam.permission.data.IDataProvider;
 
 import java.util.List;
 
 /**
- * <code> PoliciesListResp </code>
- * <desc> PoliciesListResp </desc>
- * <b>Creation Time:</b> 2022/8/2 15:27.
+ * Creation Time: 2022/11/14 15:27.
  *
- * @author Ken.Hu
+ * @author _Ken.Hu
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PoliciesListResp {
+@Builder
+public class ResourceAccessDetail {
     private List<Policy> policies;
+    private List<IDataProvider> dataProviders;
 }

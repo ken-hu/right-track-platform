@@ -1,6 +1,10 @@
 package pers.ken.rt.iam.utils;
 
-import org.springframework.util.AntPathMatcher;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.http.server.PathContainer;
+import org.springframework.web.util.pattern.PathPattern;
+import org.springframework.web.util.pattern.PathPatternParser;
 import pers.ken.rt.iam.internal.*;
 
 import java.util.Collection;
@@ -14,20 +18,19 @@ import java.util.stream.Collectors;
  *
  * @author Ken.Hu
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PolicyResolver {
-    private static final AntPathMatcher RESOURCE_MATCHER = new AntPathMatcher();
-
     public static boolean isPermit(List<Policy> policies, String currentResource, String currentAction) {
         //1 r.userId == p.userId &&
         //2 r.act == p.act &&
         //3 keyMatch2(r.obj,p.obj)
         for (Policy policy : policies) {
-            List<Statement> statements = policy.getStatements();
+            List<Statement> statements = policy.getStatement();
             for (Statement statement : statements) {
-                List<String> actions = statement.getActions();
+                List<String> actions = statement.getAction();
                 for (String action : actions) {
-                    if (statement.getEffect().equals(Statement.Effect.Allow) && action.equalsIgnoreCase(currentAction)) {
-                        List<String> resources = statement.getResources();
+                    if (statement.getEffect().equals(Statement.Effect.Allow) && actionMatch(action, currentAction)) {
+                        List<String> resources = statement.getResource();
                         for (String resource : resources) {
                             if (resourceMatch(resource, currentResource)) {
                                 return Boolean.TRUE;
@@ -39,25 +42,30 @@ public class PolicyResolver {
         }
         return Boolean.FALSE;
     }
+    public static boolean actionMatch(String ownAction,String currentAction){
+        if (ownAction.equalsIgnoreCase(currentAction)) {
+            return true;
+        }
+        PathPattern parse = PathPatternParser.defaultInstance.parse(ownAction);
+        return parse.matches(PathContainer.parsePath(currentAction));
+    }
 
     public static boolean resourceMatch(String ownResource, String accessResource) {
-        return RESOURCE_MATCHER.match(ownResource, accessResource);
+        PathPattern parse = PathPatternParser.defaultInstance.parse(ownResource);
+        return parse.matches(PathContainer.parsePath(accessResource));
     }
 
     public static <T extends AbstractResource> T resolveResource(String resource, ResourceConvert<T> convert) {
         Rn rn = Rn.fromString(resource);
-        if (!rn.getResourceType().equals(convert.resourceId())) {
-            throw new ResourceResolveException("Convert failed because resourceType: " + rn.getResourceType() + "!=" + convert.resourceId());
-        }
         return convert.convert(rn);
     }
 
     public static <T extends AbstractResource> List<T> resolveResource(List<Policy> policies, ResourceConvert<T> convert) {
         return policies.stream()
-                .map(policy -> policy.getStatements()
+                .map(policy -> policy.getStatement()
                         .stream()
                         .filter(statement -> statement.getEffect().equals(Statement.Effect.Allow))
-                        .flatMap(statement -> statement.getResources().stream())
+                        .flatMap(statement -> statement.getResource().stream())
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .map(resource -> resolveResource(resource, convert))

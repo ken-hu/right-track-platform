@@ -18,6 +18,6 @@ public @interface AccessResource {
 
     String resource();
 
-    String resourceValue();
+    String resourceValue() default "";
 
 }

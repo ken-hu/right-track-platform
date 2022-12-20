@@ -13,16 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Ken.Hu
  */
 public class ResourceConvertRegistry {
-    private final ConcurrentHashMap<String, ResourceConvert<?>> convertHashMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ResourceConvert<?>> convertMap = new ConcurrentHashMap<>();
 
     public void addConvert(ResourceConvert<?> convert) {
         if (!StringUtils.hasText(convert.resourceId())) {
             throw new IllegalArgumentException("Con not identify ResourceType");
         }
-        this.convertHashMap.put(convert.resourceId(), convert);
+        this.convertMap.put(convert.resourceId(), convert);
     }
 
     protected ResourceConvert<?> getConvert(String resourceType) {
-        return convertHashMap.get(resourceType);
+        return convertMap.get(resourceType);
     }
 }

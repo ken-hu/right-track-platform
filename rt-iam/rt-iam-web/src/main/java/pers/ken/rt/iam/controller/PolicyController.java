@@ -101,6 +101,7 @@ public class PolicyController {
     @Operation(summary = "创建策略", operationId = "createPolicies")
     @PostMapping(value = "/policies", produces = MediaType.APPLICATION_JSON_VALUE)
     public void createPolicy(@RequestBody CreatePolicyReq createPolicyReq) {
+
     }
 
     @Operation(summary = "查询策略", operationId = "listPolicies")

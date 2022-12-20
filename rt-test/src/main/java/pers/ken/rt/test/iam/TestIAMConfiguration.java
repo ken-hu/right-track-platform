@@ -1,8 +1,11 @@
 package pers.ken.rt.test.iam;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import pers.ken.rt.iam.AccessManagementSupportConfiguration;
+import pers.ken.rt.iam.internal.PolicyGetHandler;
 import pers.ken.rt.iam.permission.access.ResourceConvertRegistry;
+import pers.ken.rt.test.repository.PolicyRepository;
 
 /**
  * <code> ResourceConvert </code>
@@ -16,6 +19,12 @@ public class TestIAMConfiguration implements AccessManagementSupportConfiguratio
     @Override
     public void addResourceConvert(ResourceConvertRegistry registry) {
         registry.addConvert(new TestConvert());
+        registry.addConvert(new CategoryConvert());
         AccessManagementSupportConfiguration.super.addResourceConvert(registry);
+    }
+
+    @Bean
+    public PolicyGetHandler policyGetHandler(PolicyRepository policyRepository){
+        return new TestPolicyHandler(policyRepository);
     }
 }

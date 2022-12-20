@@ -1,5 +1,6 @@
 package pers.ken.rt.test.iam;
 
+import lombok.Getter;
 import pers.ken.rt.iam.internal.AbstractResource;
 
 /**
@@ -9,13 +10,14 @@ import pers.ken.rt.iam.internal.AbstractResource;
  *
  * @author Ken.Hu
  */
+@Getter
 public class CategoryResource extends AbstractResource {
-    private final String city;
-    private final String category;
+    private final String cityCode;
+    private final String icCode;
 
-    public CategoryResource(String city, String category) {
-        super(String.format("map:city/%s/category/%s", city, category));
-        this.city = city;
-        this.category = category;
+    public CategoryResource(String cityCode, String icCode) {
+        super(String.format("map:city_code/%s/ic_code/%s", cityCode, icCode));
+        this.cityCode = cityCode;
+        this.icCode = icCode;
     }
 }

@@ -1,6 +1,9 @@
 package pers.ken.rt.common.iam;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,10 @@ import java.util.List;
  * @author _Ken.Hu
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Statement {
+    @Getter
     public enum Effect {
         /**
          * 同意，显式拒绝

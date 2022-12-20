@@ -1,12 +1,10 @@
 package pers.ken.rt.gw.handler;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -30,8 +28,8 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @Order(-1)
-@Configuration
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+//@Configuration
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, @NonNull Throwable ex) {
@@ -43,7 +41,7 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
         // 设置返回JSON
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         if (ex instanceof ResponseStatusException) {
-            response.setStatusCode(((ResponseStatusException) ex).getStatus());
+            response.setStatusCode(HttpStatus.BAD_REQUEST);
         }
 
         return response.writeWith(Mono.fromSupplier(() -> {

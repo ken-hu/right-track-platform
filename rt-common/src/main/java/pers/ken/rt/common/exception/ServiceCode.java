@@ -20,13 +20,38 @@ public enum ServiceCode implements ErrorCodeInterface {
      */
     SUCCESS("Success", 0),
     FAILED("Failed", 1),
-    INVALID_REQ("Invalid request", 1001),
-    PERMISSION_NOT_ENOUGH("Permission not enough", 1002),
-    AUTHENTICATION_FAILED("Authentication failed", 1003),
-    TOKEN_INVALID("Token invalid", 1003),
-    MICRO_SERVICE_FALL_BACK("Micro service fall back", 1004),
 
-    ACCESS_DENY("Access Deny", 1005);
+
+    /**
+     * Authorization & permission
+     */
+    AUTHENTICATION_FAILED("Authentication failed", 20000),
+    PERMISSION_NOT_ENOUGH("Permission not enough", 20001),
+    TOKEN_INVALID("Token invalid", 20002),
+
+
+    /**
+     * Parameters check
+     */
+    INVALID_PARAMETERS("Invalid Parameters", 40000),
+    MISSING_PARAMETERS("Missing Parameters", 40001),
+    MISSING_DATA("Data not existed", 40002),
+    API_NOT_FOUND("Api not found", 40003),
+
+
+    /**
+     * Business
+     */
+    BUSINESS_FAILED("Business Failed", 50000),
+
+    /**
+     * Rest api error
+     */
+    INTERNAL_ERROR("Internal service failed", 60000),
+    EXTERNAL_ERROR("External service failed", 60001),
+
+    ;
+
 
 
     private final String message;

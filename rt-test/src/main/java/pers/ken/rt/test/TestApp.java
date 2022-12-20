@@ -11,7 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *
  * @author Ken.Hu
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"pers.ken.rt.test","pers.ken.rt.common"})
 @EnableDiscoveryClient
 public class TestApp {
     public static void main(String[] args) {

@@ -2,7 +2,9 @@ package pers.ken.rt.common.iam;
 
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pers.ken.rt.common.iam.internal.JsonPolicyReader;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.List;
  * @author _Ken.Hu
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Policy {
     private static final String DEFAULT_POLICY_VERSION = "1.0";
 

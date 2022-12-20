@@ -3,6 +3,7 @@ package pers.ken.rt.iam.internal;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -30,6 +31,7 @@ public class DefaultPolicyGetHandler implements PolicyGetHandler {
     @Override
     public List<Policy> userPolicies() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        Assert.notNull(requestAttributes, "request can not be null");
         HttpServletRequest request = requestAttributes.getRequest();
         String token = Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
                 .orElseThrow(() -> new PolicyGetException("Can not get policy without token")).trim();

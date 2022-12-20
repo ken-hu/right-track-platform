@@ -1,14 +1,15 @@
 package pers.ken.rt.iam.permission.data;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <code> DataFilterVisitor </code>
@@ -18,38 +19,39 @@ import java.util.stream.Collectors;
  * @author _Ken.Hu
  */
 public class PgFilterVisitor extends PGASTVisitorAdapter {
+    private final List<IDataProvider> dataProviders;
 
-    private final List<DataScope> dataScopes;
-    private DataScope dataScope;
-
-    public PgFilterVisitor(List<DataScope> dataScopes) {
-        this.dataScopes = dataScopes;
+    public PgFilterVisitor(List<IDataProvider> dataProviders) {
+        this.dataProviders = dataProviders;
     }
-
 
     /**
      * 获取表名信息
      *
-     * @param x x
+     * @param sqlExprTableSource x
      * @return boolean
      */
     @Override
-    public boolean visit(SQLExprTableSource x) {
-        if (isTargetTableSource(x, dataScopes)) {
-            SQLObject parent = x.getParent();
-            String alias = x.getAlias();
-            while (!(parent instanceof PGSelectQueryBlock) && parent != null) {
-                parent = parent.getParent();
-            }
+    public boolean visit(SQLExprTableSource sqlExprTableSource) {
+        for (IDataProvider provider : this.dataProviders) {
+            String standardizationTableName = sqlExprTableSource.getName().getSimpleName().replace("\"", "");
+            standardizationTableName = standardizationTableName.replace("'", "");
+            // MATCH TARGET TABLE
+            if (standardizationTableName.equalsIgnoreCase(provider.tableName())) {
+                SQLObject parent = sqlExprTableSource.getParent();
+                String alias = sqlExprTableSource.getAlias();
+                while (!(parent instanceof PGSelectQueryBlock) && parent != null) {
+                    parent = parent.getParent();
+                }
 
-            /* 插入行控制条件 */
-            if (parent != null) {
-                PGSelectQueryBlock query = ((PGSelectQueryBlock) parent);
-                query.addCondition(formCondition(alias));
+                /* 插入行控制条件 */
+                if (parent != null) {
+                    PGSelectQueryBlock query = ((PGSelectQueryBlock) parent);
+                    query.addCondition(formCondition(alias, provider));
+                }
             }
         }
-
-        return super.visit(x);
+        return super.visit(sqlExprTableSource);
     }
 
 
@@ -74,30 +76,13 @@ public class PgFilterVisitor extends PGASTVisitorAdapter {
         super.endVisit(x);
     }
 
+    private SQLExpr formCondition(String tableAlias, IDataProvider provider) {
 
-    /**
-     * 是否需要控制的目标表
-     *
-     * @param tableSource 表源
-     * @param dataScopes  数据范围
-     * @return boolean
-     */
-    private boolean isTargetTableSource(SQLExprTableSource tableSource, List<DataScope> dataScopes) {
-        for (DataScope target : dataScopes) {
-            String standardizationTableName = tableSource.getName().getSimpleName().replace("\"", "");
-            standardizationTableName = standardizationTableName.replace("'", "");
-            if (standardizationTableName.equalsIgnoreCase(target.getTable())) {
-                dataScope = target;
-                return true;
-            }
+        String field = provider.field();
+
+        if (StringUtils.hasText(tableAlias)) {
+            field = tableAlias.concat(".").concat(field);
         }
-        return false;
-    }
-
-    private String formCondition(String alias) {
-        return dataScope.getCondition().stream().map(condition -> alias == null ?
-                String.format("%s %s", condition.getField(), condition.getValues()) :
-                String.format("%s %s", alias + "." + condition.getField(), condition.getValues())).collect(Collectors.joining(" and "));
-        return null;
+        return provider.sqlCondition(field);
     }
 }
