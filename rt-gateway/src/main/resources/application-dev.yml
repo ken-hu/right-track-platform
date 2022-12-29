@@ -1,11 +1,18 @@
 server:
   port: 38080
 spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
   config:
     activate:
       on-profile: dev
   application:
-    name: gateway-service
+    name: rt-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:38081/oauth2/jwks
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
@@ -44,6 +51,7 @@ spring:
           filters:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 
+
 oauth:
   white-list-urls:
     - /uc/rsa/getPublicKey
@@ -55,7 +63,7 @@ oauth:
     - /v2/api-docs/**
 logging:
   file:
-    path: logs/
+    path: ./logs
 #oauth2:
 #  client:
 #    client-id: ${spring.application.name}

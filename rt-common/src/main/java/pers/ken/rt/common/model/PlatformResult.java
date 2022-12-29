@@ -20,6 +20,7 @@ import pers.ken.rt.common.exception.ServiceCode;
 @Builder
 public class PlatformResult<T> {
     private int code;
+    private boolean succeed = Boolean.TRUE;
     private String message;
     private String requestId;
     private T data;

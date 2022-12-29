@@ -1,0 +1,52 @@
+server:
+  port: 38081
+springdoc:
+  packages-to-scan:
+    - pers.ken.rt.uaa.controller
+  api-docs:
+    groups:
+      enabled: true
+    enabled: true
+  swagger-ui:
+    enabled: true
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: rt-auth
+  datasource:
+    driver-class-name: 'org.postgresql.Driver'
+    url: jdbc:postgresql://localhost:5432/postgres?useUnicode=true&characterEncoding=utf-8
+    username: postgres
+    password: IWHb4wDvb8xjCfBy
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 20
+      auto-commit: true
+      idle-timeout: 30000
+      connection-timeout: 300000
+      connection-test-query: select 1
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database: postgresql
+    properties:
+      hibernate:
+        types:
+          print:
+            banner: false
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        file-extension: yaml
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
+logging:
+  file:
+    path: ./logs

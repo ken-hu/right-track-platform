@@ -120,6 +120,10 @@ public enum Jackson {
         }
     }
 
+    public static JsonNode jsonNodeParse(Object obj) {
+        return fromJsonString(Jackson.toJsonString(obj), JsonNode.class);
+    }
+
     public static JsonNode jsonNodeOf(String json) {
         return fromJsonString(json, JsonNode.class);
     }

@@ -1,6 +1,9 @@
 package pers.ken.rt.common.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <name> PlatformError </name>
@@ -14,26 +17,26 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlatformError {
-    private Boolean isSuccess = false;
+    private boolean succeed = Boolean.FALSE;
     private Integer code;
     private String message;
     private String detail;
     private String requestId;
-    private String uri;
+    private String path;
 
-    public PlatformError(Integer code, String message, String detail, String requestId, String uri) {
+    public PlatformError(Integer code, String message, String detail, String requestId, String path) {
         this.code = code;
         this.message = message;
         this.detail = detail;
         this.requestId = requestId;
-        this.uri = uri;
+        this.path = path;
     }
 
-    public PlatformError(Integer code, String message, String requestId, String uri) {
+    public PlatformError(Integer code, String message, String requestId, String path) {
         this.code = code;
         this.message = message;
         this.detail = message;
         this.requestId = requestId;
-        this.uri = uri;
+        this.path = path;
     }
 }
