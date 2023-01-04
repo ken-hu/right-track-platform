@@ -8,9 +8,8 @@
         <module>rt-common</module>
         <module>rt-gateway</module>
         <module>rt-auth</module>
-        <module>rt-test</module>
-        <module>rt-iam</module>
         <module>rt-common-starter</module>
+        <module>rt-mall</module>
     </modules>
 
     <parent>
@@ -56,7 +55,6 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
