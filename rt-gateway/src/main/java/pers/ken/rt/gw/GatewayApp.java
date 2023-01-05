@@ -7,7 +7,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -31,10 +30,9 @@ public class GatewayApp {
     }
 
     @GetMapping(value = "/test")
-    public Mono<JwtAuthenticationToken> test(Authentication authentication) {
+    public Mono<Authentication> test(Authentication authentication) {
         return ReactiveSecurityContextHolder.getContext()
                 .filter(Objects::nonNull)
-                .map(SecurityContext::getAuthentication)
-                .cast(JwtAuthenticationToken.class);
+                .map(SecurityContext::getAuthentication);
     }
 }

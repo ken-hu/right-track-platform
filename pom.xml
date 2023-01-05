@@ -10,6 +10,7 @@
         <module>rt-auth</module>
         <module>rt-common-starter</module>
         <module>rt-mall</module>
+        <module>rt-account</module>
     </modules>
 
     <parent>

@@ -24,7 +24,7 @@ Content-Type: application/json
 ### Oauth2.0 资源服务器测试API
 GET http://localhost:38080/test
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer 03aff536-b9cd-4139-97b3-3e2b3ed3bf1c
 
 ### Oauth2.0 authoize
 GET http://127.0.0.1:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:38081/authorized

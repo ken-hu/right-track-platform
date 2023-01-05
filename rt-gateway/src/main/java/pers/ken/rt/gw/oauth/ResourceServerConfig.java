@@ -42,7 +42,9 @@ public class ResourceServerConfig {
                 .oauth2ResourceServer()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
-                .jwt();
+                .opaqueToken()
+                .introspectionUri("")
+                .introspectionClientCredentials("", "");
         return http.build();
     }
 }
