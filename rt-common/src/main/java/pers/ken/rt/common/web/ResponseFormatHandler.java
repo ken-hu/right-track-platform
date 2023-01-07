@@ -28,22 +28,22 @@ public class ResponseFormatHandler implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        ResponseFormat methodResponseFormat = methodParameter.getMethodAnnotation(ResponseFormat.class);
+        FormatIgnore methodFormatIgnore = methodParameter.getMethodAnnotation(FormatIgnore.class);
 
-        ResponseFormat classResponseFormat = methodParameter.getDeclaringClass().getAnnotation(ResponseFormat.class);
-        if (Objects.nonNull(methodResponseFormat) || Objects.nonNull(classResponseFormat)) {
-            return this.getResultByAnnotation(body);
+        FormatIgnore classFormatIgnore = methodParameter.getDeclaringClass().getAnnotation(FormatIgnore.class);
+        if (Objects.nonNull(methodFormatIgnore) || Objects.nonNull(classFormatIgnore)) {
+            return body;
         }
-        return body;
+        return this.getResultByAnnotation(body);
     }
 
-    private Object getResultByAnnotation(Object o) {
-        if (o instanceof PlatformResult) {
-            return o;
+    private Object getResultByAnnotation(Object body) {
+        if (body instanceof PlatformResult) {
+            return body;
         }
-        if (o instanceof String) {
-            return Jackson.toJsonString(PlatformResult.ok(o));
+        if (body instanceof String) {
+            return Jackson.toJsonString(PlatformResult.ok(body));
         }
-        return PlatformResult.ok(o);
+        return PlatformResult.ok(body);
     }
 }

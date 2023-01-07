@@ -19,7 +19,7 @@ public enum ServiceCode implements ErrorCodeInterface {
      * Define for base service code
      */
     SUCCESS("Success", 0),
-    FAILED("Failed", 1),
+    FAILED("System error", 1),
 
 
     /**

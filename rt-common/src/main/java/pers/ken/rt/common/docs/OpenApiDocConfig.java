@@ -1,4 +1,4 @@
-package pers.ken.rt.auth.common;
+package pers.ken.rt.common.docs;
 
 import io.swagger.v3.oas.models.media.*;
 import org.springdoc.core.customizers.OpenApiCustomiser;

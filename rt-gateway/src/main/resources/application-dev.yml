@@ -26,18 +26,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: uaa-service
-          uri: lb://uaa
+        - id: mall-service
+          uri: lb://rt-mall
           predicates:
-            - Path=/uaa/**
+            - Path=/mall/**
           filters:
-            - RewritePath=/uaa/(?<path>.*), /$\{path}
-        - id: iam-service
-          uri: lb://iam
-          predicates:
-            - Path=/iam/**
-          filters:
-            - RewritePath=/iam/(?<path>.*), /$\{path}
+            - RewritePath=/mall/(?<path>.*), /$\{path}
         - id: test-service
           uri: lb://test
           predicates:

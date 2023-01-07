@@ -2,6 +2,7 @@ package pers.ken.rt.auth.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.ken.rt.auth.service.RoleService;
@@ -19,7 +20,7 @@ import pers.ken.rt.auth.service.RoleService;
 public class RoleController {
     private RoleService roleService;
 
-    @PutMapping("/role")
+    @PostMapping("/role")
     public void roleCreate() {
         roleService.create();
     }

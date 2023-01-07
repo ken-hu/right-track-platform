@@ -36,23 +36,21 @@ public class RequestLog {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append("RequestLog:")
-                .append("[requestId]=").append(requestId)
-                .append(",[requestUrl]=").append(url)
-                .append(",[uriQueryParams]=").append(queryParams)
-                .append(",[requestBody]=").append(requestBody)
-                .append(",[responseBody]=").append(responseBody)
-                .append(",[httpMethod]=").append(httpMethod)
-                .append(",[httpStatus]=").append(httpStatus)
-                .append(",[mediaType]=").append(mediaType)
-                .append(",[serverIp]=").append(serverIp)
-                .append(",[headers]=").append(requestHeaders)
-                .append(",[clientIp]=").append(clientIp)
-                .append(",[sessionId]=").append(sessionId)
-                .append(",[startTimeMillis]=").append(startTimeMillis)
-                .append(",[handleTimeMillis]=").append(executeTimeMillis)
-                .append("}")
-                .toString();
+        return "RequestLog:" +
+                "[requestId]=" + requestId +
+                ",[requestUrl]=" + url +
+                ",[uriQueryParams]=" + queryParams +
+                ",[requestBody]=" + requestBody +
+                ",[responseBody]=" + responseBody +
+                ",[httpMethod]=" + httpMethod +
+                ",[httpStatus]=" + httpStatus +
+                ",[mediaType]=" + mediaType +
+                ",[serverIp]=" + serverIp +
+                ",[headers]=" + requestHeaders +
+                ",[clientIp]=" + clientIp +
+                ",[sessionId]=" + sessionId +
+                ",[startTimeMillis]=" + startTimeMillis +
+                ",[handleTimeMillis]=" + executeTimeMillis +
+                "}";
     }
 }

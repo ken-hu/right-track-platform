@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,15 +27,16 @@ import java.util.Map;
  */
 public enum Jackson {
     ;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
-        objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER.registerModule(new JavaTimeModule());
     }
 
-    private static final ObjectWriter writer = objectMapper.writer();
-    private static final ObjectWriter prettyWriter = objectMapper.writerWithDefaultPrettyPrinter();
+    private static final ObjectWriter writer = OBJECT_MAPPER.writer();
+    private static final ObjectWriter prettyWriter = OBJECT_MAPPER.writerWithDefaultPrettyPrinter();
 
     private static final TypeReference<HashMap<String, String>>
             STRING_MAP_TYPEREFERENCE = new TypeReference<HashMap<String, String>>() {
@@ -62,7 +64,7 @@ public enum Jackson {
             return null;
         }
         try {
-            return objectMapper.readValue(json, valueTypeRef);
+            return OBJECT_MAPPER.readValue(json, valueTypeRef);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to parse Json String.", e);
         }
@@ -70,7 +72,7 @@ public enum Jackson {
 
     public static <T> T fromJsonString(URL url, TypeReference<T> valueTypeRef) {
         try {
-            return objectMapper.readValue(url, valueTypeRef);
+            return OBJECT_MAPPER.readValue(url, valueTypeRef);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to parse Json String.", e);
         }
@@ -85,7 +87,7 @@ public enum Jackson {
             return null;
         }
         try {
-            return objectMapper.readValue(json, clazz);
+            return OBJECT_MAPPER.readValue(json, clazz);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to parse Json String.", e);
         }
@@ -99,7 +101,7 @@ public enum Jackson {
             return null;
         }
         try {
-            return objectMapper.readValue(json, STRING_MAP_TYPEREFERENCE);
+            return OBJECT_MAPPER.readValue(json, STRING_MAP_TYPEREFERENCE);
         } catch (IOException e) {
             throw new IllegalArgumentException("Unable to parse Json String.", e);
         }
@@ -114,7 +116,7 @@ public enum Jackson {
             return null;
         }
         try {
-            return objectMapper.readValue(json, clazz);
+            return OBJECT_MAPPER.readValue(json, clazz);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to parse Json String.", e);
         }
@@ -134,7 +136,7 @@ public enum Jackson {
 
     public static <T> T loadFrom(File file, Class<T> clazz) throws IOException {
         try {
-            return objectMapper.readValue(file, clazz);
+            return OBJECT_MAPPER.readValue(file, clazz);
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {
@@ -143,7 +145,7 @@ public enum Jackson {
     }
 
     public static ObjectMapper getObjectMapper() {
-        return objectMapper;
+        return OBJECT_MAPPER;
     }
 
     public static ObjectWriter getWriter() {

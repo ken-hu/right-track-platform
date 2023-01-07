@@ -21,10 +21,17 @@ Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
 GET http://localhost:38081/oauth2/jwks
 Content-Type: application/json
 
+### Oauth2.0 authoize
+GET http://127.0.0.1:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:38081/authorized
+
+
 ### Oauth2.0 资源服务器测试API
 GET http://localhost:38080/test
 Content-Type: application/json
-Authorization: Bearer 03aff536-b9cd-4139-97b3-3e2b3ed3bf1c
+Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03
 
-### Oauth2.0 authoize
-GET http://127.0.0.1:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:38081/authorized
+
+### Oauth2.0 资源服务器测试API2
+GET http://localhost:38080/mall/test
+Content-Type: application/json
+Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03

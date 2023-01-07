@@ -9,7 +9,7 @@ import pers.ken.rt.auth.entity.OauthUser;
  *
  * @author _Ken.Hu
  */
-public interface UcUserService {
+public interface OauthUserService {
     /**
      * Gets oauth user.
      *

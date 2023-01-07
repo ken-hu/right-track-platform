@@ -12,7 +12,7 @@ import pers.ken.rt.auth.entity.OauthUser;
  * @author _Ken.Hu
  */
 @Repository
-public interface UcUserRepository extends JpaRepository<OauthUser, Long> {
+public interface OauthUserRepository extends JpaRepository<OauthUser, Long> {
     /**
      * Find by username oauth user.
      *

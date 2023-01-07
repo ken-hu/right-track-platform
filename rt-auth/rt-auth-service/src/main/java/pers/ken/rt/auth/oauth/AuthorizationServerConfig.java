@@ -19,11 +19,9 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.authorization.*;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -31,10 +29,12 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import pers.ken.rt.auth.oauth.jose.Jwks;
+import pers.ken.rt.auth.oauth.support.PolicyAccessDecisionManager;
 import pers.ken.rt.common.cons.HttpHeaderCons;
 import pers.ken.rt.common.model.PlatformError;
 import pers.ken.rt.common.utils.Jackson;
@@ -53,7 +53,8 @@ import static pers.ken.rt.common.exception.ServiceCode.TOKEN_INVALID;
  * @author _Ken.Hu
  */
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+//@Configuration(proxyBeanMethods = false)
+@Configuration
 public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -62,6 +63,9 @@ public class AuthorizationServerConfig {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults())
+                .and()
+                .authorizeRequests()
+                .accessDecisionManager(new PolicyAccessDecisionManager())
                 .and()
                 .exceptionHandling(exceptions ->
                         exceptions
@@ -126,6 +130,36 @@ public class AuthorizationServerConfig {
         return AuthorizationServerSettings.builder().build();
     }
 
+
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        return new NimbusJwtEncoder(jwkSource());
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer() {
+        return context -> {
+            JwsHeader.Builder headers = context.getJwsHeader();
+            JwtClaimsSet.Builder claims = context.getClaims();
+            if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
+                // Customize headers/claims for access_token
+                headers.header(SecurityCons.TOKEN_TYPE, context.getTokenType().getValue());
+                claims.claim(SecurityCons.USER_INFO, "test");
+            } else if (context.getTokenType().getValue().equals(OidcParameterNames.ID_TOKEN)) {
+                // Customize headers/claims for id_token
+            }
+        };
+    }
+
+    @Bean
+    public OAuth2TokenGenerator<?> tokenGenerator() {
+        JwtGenerator jwtGenerator = new JwtGenerator(jwtEncoder());
+        jwtGenerator.setJwtCustomizer(oAuth2TokenCustomizer());
+        OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
+        OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
+        return new DelegatingOAuth2TokenGenerator(
+                jwtGenerator, accessTokenGenerator, refreshTokenGenerator);
+    }
 
 
     @Bean

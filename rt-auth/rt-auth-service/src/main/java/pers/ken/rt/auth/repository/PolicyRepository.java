@@ -2,7 +2,7 @@ package pers.ken.rt.auth.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pers.ken.rt.auth.entity.PolicyDocument;
+import pers.ken.rt.auth.entity.Policy;
 
 /**
  * <code> PolicyRepository </code>
@@ -12,6 +12,6 @@ import pers.ken.rt.auth.entity.PolicyDocument;
  * @author _Ken.Hu
  */
 @Repository
-public interface PolicyDocumentRepository extends JpaRepository<PolicyDocument, Long> {
+public interface PolicyRepository extends JpaRepository<Policy, Long> {
 
 }
