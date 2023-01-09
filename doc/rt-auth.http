@@ -9,7 +9,7 @@ Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
 
 ### Oauth2.0 authorization_code
 POST http://localhost:38081/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:38081/authorized&
-    code=3_aUC7fBO_XfW1y-bOfs1pDf6QFEE96ToKNlYApFuTLtptDXZtvam7ss9KRFXuQyINi6qyCrQcZeyMMui7zWu3K2GFVKA6LXISOdExgiIlX3HZcSS_F2CVSwVcOwEv-B
+    code=u2D4qoP1F3XIbvM2ziGeAlmqY1XDp4EWrtUufTXXIk0WdII72vVMpeVp3ow7DxXC5yYK5OLGL0qd4a-ATT_lF1vLf4AZjr6HGRZdlMn9FRhj5C98BAUNWdS-HuFKtp3q
 Content-Type: application/x-www-form-urlencoded
 Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
 
@@ -35,3 +35,9 @@ Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03
 GET http://localhost:38080/mall/test
 Content-Type: application/json
 Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03
+
+### Auth 获取用户策略
+GET http://127.0.0.1:38081/users/1/policies
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{auth_token}}

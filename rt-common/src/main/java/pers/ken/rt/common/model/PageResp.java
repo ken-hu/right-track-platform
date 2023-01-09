@@ -12,7 +12,7 @@ import java.util.List;
  * @author _Ken.Hu
  */
 @Data
-public class PageVO<T> {
+public class PageResp<T> {
     private Long totalSize;
     private Long totalPage;
     private List<T> records;

@@ -1,6 +1,7 @@
 package pers.ken.rt.gw.oauth;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -8,7 +9,6 @@ import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Ken.Hu
  */
+@Slf4j
 @Component
 @AllArgsConstructor
 public class PolicyAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
@@ -28,27 +29,27 @@ public class PolicyAuthorizationManager implements ReactiveAuthorizationManager<
     public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext object) {
         return authentication
                 .filter(Authentication::isAuthenticated)
-                .map(x -> {
-                    boolean auth = isAuth();
-                    return new AuthorizationDecision(auth);
-                })
+                .flatMap(authen -> getAuthorizationDecision())
                 .defaultIfEmpty(new AuthorizationDecision(true));
     }
 
-    private boolean isAuth(){
-        webClient.post()
-                .uri("http://localhost:38082/users/1/policies")
-//                .uri("lb://iam-service/users/1/policies")
-                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(BodyInserters.fromObject("{\n" +
-                        "    \"resource\":\"data1\",\n" +
-                        "    \"action\":\"read\"\n" +
-                        "}"))
+    private Mono<AuthorizationDecision> getAuthorizationDecision() {
+        return Mono.just(new AuthorizationDecision(isAuth()));
+    }
+
+    private boolean isAuth() {
+        getResponse();
+        return true;
+    }
+
+    private void getResponse() {
+        webClient.get()
+                .uri("http://localhost:38081/users/{id}/policies", "1")
+                .header(HttpHeaders.AUTHORIZATION,
+                        "Bearer eyJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiYWxnIjoiUlMyNTYiLCJraWQiOiIxNWJlODY2MS00NDBmLTRiZjEtOGI2Yi0wZTQzZjIwYmYxYmEifQ.eyJzdWIiOiJtZXNzYWdpbmctY2xpZW50IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsIm5iZiI6MTY3MzI1OTIwMywidXNlcl9pbmZvIjoidGVzdCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzgwODEiLCJleHAiOjE2NzMyNTk1MDMsImlhdCI6MTY3MzI1OTIwM30.bc-whZoqSvkcBPlIQOtah3YLU98Nc5cFn4yY3hcGLhKzCMT-qhENW0kPC1UPKtbLDL1vCrLhPb0POSlNdqcPH-1aGSjlusyZr4Y0tWV8bW4wsVhFKR-GGfSQLMwmrrSb2GfyMHDn-djgOwpBjdZXvbXJPIQCMeHuO_hc18ApjFiB9kP5RTH0Nzt-8Tdo6ukerCtXrBZklJfAoThI0oxH0Vr9HoVLGfzCnNjr8ftlnNFfVhk9-cFPXyhGFZ6NUDxxC8vL1KoLrX20klkqthZA65flKo-1JTiW0IDwHzrhoB6rrMpUFUpgFDuMqeG5WJG30KXr3VOchLS_uiu89lIsLw")
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
-                .subscribe(System.out::println)
-        ;
-        return true;
+                .subscribe(System.out::println);
     }
 }

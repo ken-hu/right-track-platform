@@ -14,13 +14,13 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 
 /**
- * Name: TokenHeaderFilter
- * Create Time: 2023/1/7 17:04.
- * Desc: 处理非标准的Token位置存放的情况
+ * @Name: TokenHeaderFilter
+ * @CreateTime: 2023/1/7 17:04.
+ * @Desc: 处理非标准的Token位置存放的情况
  * 自定义Token的位置获取 并放到标准的AUTHORIZATION(Header)
  * 不需要可以去除 org.springframework.security.config.web.server.ServerHttpSecurity#addFilterBefore(org.springframework.web.server.WebFilter, org.springframework.security.config.web.server.SecurityWebFiltersOrder)
  *
- * @author Ken
+ * @Author Ken
  */
 @Slf4j
 @Component
@@ -31,7 +31,9 @@ public class TokenHeaderFilter implements WebFilter {
         String headerBearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         ServerHttpRequest request = exchange.getRequest();
         if (Objects.nonNull(tokenInfo) && Objects.isNull(headerBearerToken)) {
-            request = exchange.getRequest().mutate().header(HttpHeaders.AUTHORIZATION, SecurityCons.BEARER + tokenInfo.getValue()).build();
+            request = exchange.getRequest().mutate()
+                    .header(HttpHeaders.AUTHORIZATION, SecurityCons.BEARER + tokenInfo.getValue())
+                    .build();
         }
         return chain.filter(exchange.mutate().request(request).build());
     }

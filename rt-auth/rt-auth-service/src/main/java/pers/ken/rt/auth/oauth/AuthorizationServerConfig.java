@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -32,9 +31,8 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import pers.ken.rt.auth.oauth.jose.Jwks;
-import pers.ken.rt.auth.oauth.support.PolicyAccessDecisionManager;
 import pers.ken.rt.common.cons.HttpHeaderCons;
 import pers.ken.rt.common.model.PlatformError;
 import pers.ken.rt.common.utils.Jackson;
@@ -58,20 +56,23 @@ import static pers.ken.rt.common.exception.ServiceCode.TOKEN_INVALID;
 public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                      AccessDeniedHandler accessDeniedHandler,
+                                                                      AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         // Enable OpenID Connect 1.0
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults())
                 .and()
                 .authorizeRequests()
-                .accessDecisionManager(new PolicyAccessDecisionManager())
+//                .accessDecisionManager(new PolicyAccessDecisionManager())
                 .and()
                 .exceptionHandling(exceptions ->
                         exceptions
-                                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                )
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                                .accessDeniedHandler(accessDeniedHandler)
+//                                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                );
         return http.build();
     }
 

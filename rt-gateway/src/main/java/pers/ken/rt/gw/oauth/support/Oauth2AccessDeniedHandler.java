@@ -38,8 +38,8 @@ public class Oauth2AccessDeniedHandler implements ServerAccessDeniedHandler {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.getHeaders().set("Access-Control-Allow-Origin", "*");
-        response.getHeaders().set("Cache-Control", "no-cache");
+        response.getHeaders().set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+        response.getHeaders().set(HttpHeaders.CACHE_CONTROL, "no-cache");
         String responseStr = Jackson.toJsonString(
                 PlatformError.builder()
                         .code(PERMISSION_NOT_ENOUGH.getCode())

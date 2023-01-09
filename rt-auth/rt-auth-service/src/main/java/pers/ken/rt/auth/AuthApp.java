@@ -11,7 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *
  * @author _Ken.Hu
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"pers.ken.rt.common.web","pers.ken.rt.auth"})
 @EnableDiscoveryClient
 public class AuthApp {
     public static void main(String[] args) {

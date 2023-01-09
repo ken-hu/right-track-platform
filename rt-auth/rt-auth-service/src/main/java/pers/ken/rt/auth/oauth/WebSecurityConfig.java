@@ -41,7 +41,10 @@ public class WebSecurityConfig {
                 // 表单登录
                 .formLogin(Customizer.withDefaults())
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler());
+                .accessDeniedHandler(accessDeniedHandler())
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
         return http.build();
     }
 

@@ -2,9 +2,17 @@ package pers.ken.rt.auth.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import pers.ken.rt.auth.dto.req.PolicyCreateReq;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import pers.ken.rt.auth.convert.PolicyConvert;
+import pers.ken.rt.auth.dto.resp.PolicyResp;
+import pers.ken.rt.auth.entity.Policy;
 import pers.ken.rt.auth.service.PolicyService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Name: PolicyController
@@ -19,12 +27,11 @@ public class PolicyController {
     private PolicyService policyService;
 
     @GetMapping("/users/{id}/policies")
-    public void userPolicies(@PathVariable("id") String id) {
-
-    }
-
-    @PostMapping("/policy")
-    public void createPolicy(@RequestBody PolicyCreateReq policyCreateReq) {
-
+    public List<PolicyResp> userPolicies(@PathVariable("id") String id) {
+        List<Policy> policies = policyService.userPolicies(id);
+        if (CollectionUtils.isEmpty(policies)) {
+            return new ArrayList<>();
+        }
+        return PolicyConvert.INSTANCE.convert(policies);
     }
 }

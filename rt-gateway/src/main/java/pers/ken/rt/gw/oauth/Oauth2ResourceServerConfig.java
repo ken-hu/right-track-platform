@@ -39,14 +39,16 @@ public class Oauth2ResourceServerConfig {
                                                          ServerAuthenticationEntryPoint authenticationEntryPoint,
                                                          ServerAccessDeniedHandler accessDeniedHandler,
                                                          TokenHeaderFilter tokenHeaderFilter,
-                                                         AuthenticationInfoFilter authenticationFilter) {
+                                                         AuthenticationInfoFilter authenticationFilter,
+                                                         PolicyAuthorizationManager policyAuthorizationManager) {
         http.addFilterBefore(tokenHeaderFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .addFilterAfter(authenticationFilter, SecurityWebFiltersOrder.AUTHORIZATION)
                 .csrf().disable()
                 // authorize
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .anyExchange().authenticated()
+                .anyExchange()
+                .access(policyAuthorizationManager)
                 .and()
                 // exception handler
                 .exceptionHandling()
