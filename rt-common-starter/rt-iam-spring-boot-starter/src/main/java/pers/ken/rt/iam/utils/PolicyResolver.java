@@ -23,7 +23,7 @@ public class PolicyResolver {
     public static boolean isPermit(List<Policy> policies, String currentResource, String currentAction) {
         //1 r.userId == p.userId &&
         //2 r.act == p.act &&
-        //3 keyMatch2(r.obj,p.obj)
+        //3 keyMatch2(r.obj,p.obj) && resourceMatch(r.res,p.res)
         for (Policy policy : policies) {
             List<Statement> statements = policy.getStatement();
             for (Statement statement : statements) {

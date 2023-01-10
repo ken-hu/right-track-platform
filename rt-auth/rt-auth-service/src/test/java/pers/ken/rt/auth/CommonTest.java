@@ -14,6 +14,8 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author _Ken.Hu
  */
 class CommonTest {
+
+
     @Test
     void passwordTest() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

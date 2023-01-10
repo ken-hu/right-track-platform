@@ -7,6 +7,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import pers.ken.rt.common.model.PlatformError;
 import pers.ken.rt.common.model.PlatformResult;
 import pers.ken.rt.common.utils.Jackson;
 
@@ -21,16 +22,24 @@ import java.util.Objects;
  */
 @RestControllerAdvice
 public class ResponseFormatHandler implements ResponseBodyAdvice<Object> {
+
+    /**
+     * Ignore springDoc api response format
+     *
+     * @param returnType    the return type
+     * @param converterType the selected converter type
+     * @return
+     */
     @Override
-    public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-        return Boolean.TRUE;
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return !returnType.getDeclaringClass().getName().contains("springdoc");
     }
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        FormatIgnore methodFormatIgnore = methodParameter.getMethodAnnotation(FormatIgnore.class);
+        ResponseFormatIgnore methodFormatIgnore = methodParameter.getMethodAnnotation(ResponseFormatIgnore.class);
+        ResponseFormatIgnore classFormatIgnore = methodParameter.getDeclaringClass().getAnnotation(ResponseFormatIgnore.class);
 
-        FormatIgnore classFormatIgnore = methodParameter.getDeclaringClass().getAnnotation(FormatIgnore.class);
         if (Objects.nonNull(methodFormatIgnore) || Objects.nonNull(classFormatIgnore)) {
             return body;
         }
@@ -38,7 +47,7 @@ public class ResponseFormatHandler implements ResponseBodyAdvice<Object> {
     }
 
     private Object getResultByAnnotation(Object body) {
-        if (body instanceof PlatformResult) {
+        if (body instanceof PlatformResult || body instanceof PlatformError) {
             return body;
         }
         if (body instanceof String) {

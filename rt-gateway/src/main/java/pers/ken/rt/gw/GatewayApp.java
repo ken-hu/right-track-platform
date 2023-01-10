@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +30,8 @@ public class GatewayApp {
         SpringApplication.run(GatewayApp.class, args);
     }
 
-    @GetMapping(value = "/test")
-    public Mono<Authentication> test(Authentication authentication) {
+    @GetMapping(value = "/users/{id}/test")
+    public Mono<Authentication> test(Authentication authentication, @PathVariable String userId) {
         return ReactiveSecurityContextHolder.getContext()
                 .filter(Objects::nonNull)
                 .map(SecurityContext::getAuthentication);

@@ -1,6 +1,7 @@
 package pers.ken.rt.auth.dto.resp;
 
 import lombok.Data;
+import pers.ken.rt.auth.oauth.PolicyDocument;
 
 /**
  * @ClassName: PolicyResp
@@ -12,5 +13,5 @@ import lombok.Data;
 public class PolicyResp {
     private String id;
     private String versionId;
-    private String policyDocument;
+    private PolicyDocument policyDocument;
 }

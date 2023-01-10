@@ -27,7 +27,8 @@ public interface PolicyConvert {
      * @param policy the policy
      * @return the policy resp
      */
-    @Mapping(target = "policyDocument", expression = "java(pers.ken.rt.common.utils.Jackson.toJsonString(policy.getPolicyDocument()))")
+    @Mapping(target = "policyDocument",
+            expression = "java(pers.ken.rt.common.utils.Jackson.jsonNodeParseToObject(policy.getPolicyDocument(),pers.ken.rt.auth.oauth.PolicyDocument.class))")
     PolicyResp convert(Policy policy);
 
     /**

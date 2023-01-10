@@ -74,6 +74,13 @@ public class AccessManagementSupport {
                 rn);
     }
 
+    public String getResourceValue(AccessResource accessResources, Method method, Object[] args) {
+        if (!StringUtils.hasText(accessResources.resourceValue())) {
+            return "";
+        }
+        return parseExpression(accessResources.resourceValue(), method, args);
+    }
+
     private String parseExpression(String expressionString, Method method, Object[] args) {
         //获取被拦截方法参数名列表
         LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();

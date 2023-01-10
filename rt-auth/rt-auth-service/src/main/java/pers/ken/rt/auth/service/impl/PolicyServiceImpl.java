@@ -1,5 +1,6 @@
 package pers.ken.rt.auth.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pers.ken.rt.auth.entity.Policy;
 import pers.ken.rt.auth.repository.PolicyRepository;
@@ -15,11 +16,12 @@ import java.util.List;
  * @author Ken.Hu
  */
 @Service
+@RequiredArgsConstructor
 public class PolicyServiceImpl implements PolicyService {
-    private PolicyRepository policyRepository;
+    private final PolicyRepository policyRepository;
 
     @Override
     public List<Policy> userPolicies(String userId) {
-        return null;
+        return policyRepository.findAll();
     }
 }

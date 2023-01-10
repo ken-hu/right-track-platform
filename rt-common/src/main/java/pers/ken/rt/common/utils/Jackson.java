@@ -122,6 +122,10 @@ public enum Jackson {
         }
     }
 
+    public static <T> T jsonNodeParseToObject(JsonNode jsonNode, Class<T> clazz) {
+        return OBJECT_MAPPER.convertValue(jsonNode, clazz);
+    }
+
     public static JsonNode jsonNodeParse(Object obj) {
         return fromJsonString(Jackson.toJsonString(obj), JsonNode.class);
     }

@@ -2,19 +2,23 @@ server:
   port: 38081
 springdoc:
   packages-to-scan:
-    - pers.ken.rt.uaa.controller
+    - pers.ken.rt.auth.controller
   api-docs:
-    groups:
-      enabled: true
     enabled: true
   swagger-ui:
     enabled: true
+    display-operation-id: true
 spring:
   config:
     activate:
       on-profile: dev
   application:
     name: rt-auth
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   datasource:
     driver-class-name: 'org.postgresql.Driver'
     url: jdbc:postgresql://localhost:5432/postgres?useUnicode=true&characterEncoding=utf-8

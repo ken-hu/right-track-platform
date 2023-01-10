@@ -9,9 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,15 +30,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import pers.ken.rt.auth.oauth.jose.Jwks;
-import pers.ken.rt.common.cons.HttpHeaderCons;
-import pers.ken.rt.common.model.PlatformError;
-import pers.ken.rt.common.utils.Jackson;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
-
-import static pers.ken.rt.common.exception.ServiceCode.TOKEN_INVALID;
 
 /**
  * <name> AuthorizationServerConfig </name>
@@ -51,8 +42,8 @@ import static pers.ken.rt.common.exception.ServiceCode.TOKEN_INVALID;
  * @author _Ken.Hu
  */
 @Slf4j
-//@Configuration(proxyBeanMethods = false)
 @Configuration
+//@Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -86,6 +77,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
                 .redirectUri("http://127.0.0.1:8080/authorized")
                 .scope(OidcScopes.OPENID)
@@ -162,26 +154,4 @@ public class AuthorizationServerConfig {
                 jwtGenerator, accessTokenGenerator, refreshTokenGenerator);
     }
 
-
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> {
-            log.error("Occur AuthenticationException", authException);
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-            response.getWriter().write(
-                    Jackson.toJsonString(
-                            PlatformError.builder()
-                                    .code(TOKEN_INVALID.getCode())
-                                    .message(TOKEN_INVALID.getMessage())
-                                    .detail(authException.getMessage())
-                                    .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                                    .path(request.getRequestURI())
-                                    .build())
-            );
-            response.getWriter().flush();
-            response.getWriter().close();
-        };
-    }
 }

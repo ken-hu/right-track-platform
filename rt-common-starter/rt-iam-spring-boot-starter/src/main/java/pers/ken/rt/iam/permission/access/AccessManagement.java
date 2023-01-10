@@ -24,14 +24,7 @@ public @interface AccessManagement {
      *
      * @return the string
      */
-    String action();
-
-    /**
-     * 预留字段，匹配Code
-     *
-     * @return the string
-     */
-    String mappingCode() default "";
+    String actionId();
 
     String resource() default "";
 
