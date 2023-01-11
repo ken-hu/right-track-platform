@@ -31,7 +31,7 @@ public class GatewayApp {
     }
 
     @GetMapping(value = "/users/{id}/test")
-    public Mono<Authentication> test(Authentication authentication, @PathVariable String userId) {
+    public Mono<Authentication> test(@PathVariable String userId) {
         return ReactiveSecurityContextHolder.getContext()
                 .filter(Objects::nonNull)
                 .map(SecurityContext::getAuthentication);

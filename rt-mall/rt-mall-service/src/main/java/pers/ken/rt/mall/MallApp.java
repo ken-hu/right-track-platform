@@ -3,10 +3,6 @@ package pers.ken.rt.mall;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Name: MallApp
@@ -14,16 +10,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Ken
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"pers.ken.rt.common.web", "pers.ken.rt.mall"})
 @EnableDiscoveryClient
-@RestController
 public class MallApp {
     public static void main(String[] args) {
         SpringApplication.run(MallApp.class, args);
     }
 
-    @GetMapping(value = "/test")
-    public String test(HttpServletRequest request) {
-        return request.getHeader("X-User-Info");
-    }
 }

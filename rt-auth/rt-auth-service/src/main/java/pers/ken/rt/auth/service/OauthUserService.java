@@ -17,4 +17,12 @@ public interface OauthUserService {
      * @return the oauth user
      */
     OauthUser getOauthUser(String username);
+
+    /**
+     * Gets oauth user.
+     *
+     * @param id the id
+     * @return the oauth user
+     */
+    OauthUser getOauthUser(Long id);
 }

@@ -2,11 +2,11 @@ package pers.ken.rt.auth.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pers.ken.rt.auth.dto.req.PolicyCreateReq;
 import pers.ken.rt.auth.entity.Policy;
 import pers.ken.rt.auth.repository.PolicyRepository;
 import pers.ken.rt.auth.service.PolicyService;
-
-import java.util.List;
+import pers.ken.rt.common.utils.Jackson;
 
 /**
  * <code> PolicyDocumentServiceImpl </code>
@@ -21,7 +21,8 @@ public class PolicyServiceImpl implements PolicyService {
     private final PolicyRepository policyRepository;
 
     @Override
-    public List<Policy> userPolicies(String userId) {
-        return policyRepository.findAll();
+    public void createPolicy(PolicyCreateReq req) {
+        Policy policy = Jackson.fromJsonString(req.getPolicyDocument(), Policy.class);
+        policyRepository.save(policy);
     }
 }

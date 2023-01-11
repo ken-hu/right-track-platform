@@ -1,8 +1,6 @@
 package pers.ken.rt.auth.service;
 
-import pers.ken.rt.auth.entity.Policy;
-
-import java.util.List;
+import pers.ken.rt.auth.dto.req.PolicyCreateReq;
 
 /**
  * <code> PolicyService </code>
@@ -12,11 +10,11 @@ import java.util.List;
  * @author _Ken.Hu
  */
 public interface PolicyService {
+
     /**
-     * User policies list.
+     * Create policy.
      *
-     * @param userId the user id
-     * @return the list
+     * @param req the req
      */
-    List<Policy> userPolicies(String userId);
+    void createPolicy(PolicyCreateReq req);
 }

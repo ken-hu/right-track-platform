@@ -1,9 +1,14 @@
 package pers.ken.rt.auth.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,6 +32,13 @@ public class OauthUser {
     private String password;
     @Enumerated(EnumType.STRING)
     private OauthUserStatus status;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_policy_rel",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))},
+            inverseJoinColumns = {@JoinColumn(name = "policy_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))}
+    )
+    private List<Policy> policies = new ArrayList<>();
 
     @Getter
     public enum OauthUserStatus {

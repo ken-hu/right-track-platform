@@ -15,6 +15,8 @@ import pers.ken.rt.auth.common.JsonbTypeHandler;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,6 +47,13 @@ public class Policy {
     private LocalDateTime createTime;
     @LastModifiedDate
     private LocalDateTime updateTime;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_policy_rel",
+            joinColumns = {@JoinColumn(name = "policy_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))}
+    )
+    private List<OauthUser> users = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

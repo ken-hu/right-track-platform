@@ -1,5 +1,6 @@
 package pers.ken.rt.gw.oauth.filter;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -24,8 +25,8 @@ import java.util.Objects;
  * @Author Ken
  */
 @Component
+@AllArgsConstructor
 public class AuthenticationInfoFilter implements WebFilter {
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return ReactiveSecurityContextHolder.getContext()

@@ -1,0 +1,37 @@
+### Oauth2.0 client_credentials
+POST http://localhost:38081/oauth2/token?grant_type=client_credentials
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+%}
+
+### Oauth2.0 authorization_code
+POST http://localhost:38081/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:38081/authorized&
+    code=u2D4qoP1F3XIbvM2ziGeAlmqY1XDp4EWrtUufTXXIk0WdII72vVMpeVp3ow7DxXC5yYK5OLGL0qd4a-ATT_lF1vLf4AZjr6HGRZdlMn9FRhj5C98BAUNWdS-HuFKtp3q
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+%}
+
+### Oauth2.0 jwks(获取公钥)
+GET http://localhost:38081/oauth2/jwks
+Content-Type: application/json
+
+### Oauth2.0 authoize
+GET http://127.0.0.1:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&
+    redirect_uri=http://127.0.0.1:38081/authorized
+
+
+### Oauth2.0 SingleResourceTest
+GET http://127.0.0.1:38082/categories/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### Oauth2.0 MultiResourceTest
+GET http://127.0.0.1:38082/element1/400111/element2/123456
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
