@@ -35,6 +35,7 @@ public class Statement {
 
     private String id;
     private Effect effect;
+    @Builder.Default
     private List<String> actions = new ArrayList<>();
     private List<String> resources;
 }

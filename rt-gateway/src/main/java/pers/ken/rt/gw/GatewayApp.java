@@ -23,17 +23,8 @@ import java.util.Objects;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@RestController
-@Slf4j
 public class GatewayApp {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApp.class, args);
-    }
-
-    @GetMapping(value = "/users/{id}/test")
-    public Mono<Authentication> test(@PathVariable String userId) {
-        return ReactiveSecurityContextHolder.getContext()
-                .filter(Objects::nonNull)
-                .map(SecurityContext::getAuthentication);
     }
 }

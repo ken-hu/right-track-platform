@@ -1,9 +1,16 @@
 #########################################
-## Author		:	_Ken.Hu
+## Author		:	Ken
 ## Create Date	:	2018-10-29
 #########################################
 
-### IntelliJ IDEA ###
+# gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml

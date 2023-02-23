@@ -45,23 +45,29 @@ public class Oauth2ResourceServerConfig {
                 .addFilterAfter(authenticationFilter, SecurityWebFiltersOrder.AUTHORIZATION)
                 .csrf().disable()
                 // authorize
-                .authorizeExchange()
-                .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .anyExchange()
-                .access(policyAuthorizationManager)
-                .and()
+                .authorizeExchange(exchange -> {
+                    exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()
+                            .pathMatchers("/mars/v1/sys/auth/user/token/get").permitAll()
+                            .pathMatchers("/*/webjars/**", "/*/v3/api-docs/**",
+                                    "/*/swagger-ui/**", "/*/swagger-resources/**",
+                                    "/*/css/**", "/*/js/**", "/*/images/**", "/favicon.ico").permitAll()
+                            .anyExchange()
+                            .access(policyAuthorizationManager);
+                })
                 // exception handler
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler)
-                .and()
+                .exceptionHandling(handler -> {
+                    handler.authenticationEntryPoint(authenticationEntryPoint)
+                            .accessDeniedHandler(accessDeniedHandler);
+                })
                 // resource server config
-                .oauth2ResourceServer()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler)
+                .oauth2ResourceServer(resourceServer -> {
+                    resourceServer
+                            .jwt()
+                            .and()
+                            .authenticationEntryPoint(authenticationEntryPoint)
+                            .accessDeniedHandler(accessDeniedHandler);
+                });
                 //opaqueToken
-                .opaqueToken()
-                .introspector(userInfoTokenIntrospector());
         return http.build();
     }
 

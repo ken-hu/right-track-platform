@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-import pers.ken.rt.common.cons.SecurityCons;
+import pers.ken.rt.common.cons.SecurityConstant;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
@@ -27,12 +27,12 @@ import java.util.Objects;
 public class TokenHeaderFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        HttpCookie tokenInfo = exchange.getRequest().getCookies().getFirst(SecurityCons.CUSTOM_TOKEN);
+        HttpCookie tokenInfo = exchange.getRequest().getCookies().getFirst(SecurityConstant.CUSTOM_TOKEN);
         String headerBearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         ServerHttpRequest request = exchange.getRequest();
         if (Objects.nonNull(tokenInfo) && Objects.isNull(headerBearerToken)) {
             request = exchange.getRequest().mutate()
-                    .header(HttpHeaders.AUTHORIZATION, SecurityCons.BEARER + tokenInfo.getValue())
+                    .header(HttpHeaders.AUTHORIZATION, SecurityConstant.BEARER + tokenInfo.getValue())
                     .build();
         }
         return chain.filter(exchange.mutate().request(request).build());

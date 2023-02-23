@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlatformError {
+    @Builder.Default
     private boolean succeed = Boolean.FALSE;
     private Integer code;
     private String message;

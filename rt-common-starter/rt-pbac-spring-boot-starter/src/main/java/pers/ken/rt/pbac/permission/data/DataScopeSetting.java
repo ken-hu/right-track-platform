@@ -10,7 +10,6 @@ import lombok.Data;
  * @Author Ken
  */
 @Data
-@Builder
 public class DataScopeSetting {
     private String resource;
     private String table;
