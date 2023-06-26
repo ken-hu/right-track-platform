@@ -9,6 +9,8 @@ springdoc:
     enabled: true
     display-operation-id: true
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   config:
     activate:
       on-profile: dev
@@ -32,17 +34,12 @@ spring:
       idle-timeout: 30000
       connection-timeout: 300000
       connection-test-query: select 1
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-    database: postgresql
-    properties:
-      hibernate:
-        types:
-          print:
-            banner: false
+mybatis-plus:
+  mapper-locations: classpath:mapper/**.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848

@@ -5,13 +5,18 @@
 
 
 dependencies {
-    api("org.springframework.boot:spring-boot-starter-web:2.7.7")
-    api("org.springframework.boot:spring-boot-starter-aop:2.7.7")
-    api("org.projectlombok:lombok:1.18.24")
-    api("com.alibaba:druid:1.2.15")
     api(project(":rt-common"))
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.7")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
+    compileOnly("org.springframework.boot:spring-boot-starter-aop")
+    compileOnly("com.alibaba:druid:1.2.15")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-group = "pers.ken.rt.starter"
+group = "pers.ken.rt"
 description = "rt-pbac-spring-boot-starter"
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}

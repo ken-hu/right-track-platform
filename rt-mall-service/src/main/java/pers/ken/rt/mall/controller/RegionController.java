@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.ken.rt.mall.config.ResourceId;
 import pers.ken.rt.mall.entity.Region;
 import pers.ken.rt.mall.reporsitory.RegionRepository;
-import pers.ken.rt.pbac.permission.access.AccessControl;
-import pers.ken.rt.pbac.permission.access.Resource;
+import pers.ken.rt.starter.pbac.anno.AccessControl;
+import pers.ken.rt.starter.pbac.anno.Resource;
 
 import java.util.List;
 
@@ -25,11 +25,9 @@ public class RegionController {
     private RegionRepository regionRepository;
 
     @GetMapping("/regions")
-    @AccessControl(actionId = "listRegions",
-            resources = {
-                    @Resource(id = ResourceId.REGION)
-            })
-    public List<Region> listRegions() {
+    @AccessControl(actionId = "ListRegions",
+            resources = @Resource(id = ResourceId.REGION, value = "#adcode"))
+    public List<Region> listRegions(Long adcode) {
         return regionRepository.findAll();
     }
 }

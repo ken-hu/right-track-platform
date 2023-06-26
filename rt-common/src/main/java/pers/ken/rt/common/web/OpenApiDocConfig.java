@@ -1,5 +1,6 @@
 package pers.ken.rt.common.web;
 
+import io.swagger.v3.core.jackson.TypeNameResolver;
 import io.swagger.v3.oas.models.media.*;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ public class OpenApiDocConfig {
 
     @Bean
     public OpenApiCustomiser customizer() {
+        TypeNameResolver.std.setUseFqn(true);
         return openApi -> openApi.getPaths()
                 .entrySet()
                 .forEach(entry ->

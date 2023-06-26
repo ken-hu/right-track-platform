@@ -30,7 +30,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework.security" level="TRACE"/>
+    <logger name="org.springframework.security" level="DEBUG"/>
     <root>
         <level value="INFO"/>
         <appender-ref ref="APP-CONSOLE"/>

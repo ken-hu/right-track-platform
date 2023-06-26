@@ -25,7 +25,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
     properties:
       hibernate:
@@ -33,7 +33,7 @@ spring:
           print:
             banner: false
         session_factory:
-          statement_inspector: pers.ken.rt.mall.config.DataAccessInterceptor
+#          statement_inspector: pers.ken.rt.mall.config.DataAccessInterceptor
         format_sql: true
   cloud:
     nacos:
@@ -43,15 +43,22 @@ spring:
         server-addr: 127.0.0.1:8848
       discovery:
         server-addr: 127.0.0.1:8848
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
 logging:
   file:
     path: ./logs
+springdoc:
+  api-docs:
+    groups:
+      enabled: true
 
 access-control:
-  policies-uri: http://localhost:38081/users/policies
+  policies-uri: http://localhost:38080/auth/users/policies
   service-name: rt
   resource-code: mall
   api-auth:
     enabled: true
   data-auth:
     enabled: true
+

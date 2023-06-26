@@ -12,6 +12,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
+#          issuer-uri: http://172.18.17.81:38081
           jwk-set-uri: http://localhost:38081/oauth2/jwks
   cloud:
     nacos:
@@ -29,44 +30,50 @@ spring:
         - id: mall-service
           uri: lb://rt-mall
           predicates:
-            - Path=/mall/**
+            - Path=/mall/api/**
           filters:
-            - RewritePath=/mall/(?<path>.*), /$\{path}
+            - RewritePath=/mall/api/(?<path>.*), /$\{path}
+        - id: auth-service
+          uri: lb://rt-auth
+          predicates:
+            - Path=/auth/api/**
+          filters:
+            - RewritePath=/auth/api/(?<path>.*), /$\{path}
         - id: test-service
           uri: lb://test
           predicates:
-            - Path=/test/**
+            - Path=/test/api/**
           filters:
-            - RewritePath=/test/(?<path>.*), /$\{path}
+            - RewritePath=/test/api/(?<path>.*), /$\{path}
         - id: openapi
           uri: lb://gateway-service
           predicates:
             - Path=/v3/api-docs/**
           filters:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+auth:
+  resource-server:
+    white-list:
+      - /*/webjars/**
+      - /*/v3/api-docs/**
+      - /*/swagger-ui/**
+      - /*/swagger-resources/**
+      - /*/css/**
+      - /*/js/**
+      - /*/images/**
+      - /favicon.ico
+      - /swagger-ui.html
 
 
-oauth:
-  white-list-urls:
-    - /uc/rsa/getPublicKey
-    - /uc/oauth/**
-    - /swagger-ui/**
-    - /swagger-resources/**
-    - /webjars/**
-    - /v3/api-docs/**
-    - /v2/api-docs/**
 logging:
   file:
     path: ./logs
-#oauth2:
-#  client:
-#    client-id: ${spring.application.name}
-#    client-secret: 123456
-#    user-authorization-uri: http://localhost:38081/oauth/authorize
-#    access-token-uri: http://localhost:38081/oauth/token
-#  resource:
-#    id: ${spring.application.name}
-#    user-info-uri: user-info
-#  authorization:
-#    check-token-access: http://localhost:38081/oauth/check_token
 
+springdoc:
+  api-docs:
+    enabled: true
+    groups:
+      enabled: true
+  swagger-ui:
+    enabled: true
+    display-operation-id: true

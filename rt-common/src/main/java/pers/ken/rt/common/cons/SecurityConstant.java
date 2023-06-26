@@ -14,6 +14,7 @@ public class SecurityConstant {
     public static final String CUSTOM_TOKEN = "test_token";
     public static final String BEARER = "Bearer ";
     public static final String USER_INFO = "X-User-Info";
+    public static final String USER_ID = "user_id";
     public static final String USER_NAME = "user_name";
     public static String TOKEN_TYPE = "token_type";
 }

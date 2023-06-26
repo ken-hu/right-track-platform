@@ -15,8 +15,8 @@ import pers.ken.rt.common.cons.HttpHeaderCons;
 import pers.ken.rt.common.exception.ServiceException;
 import pers.ken.rt.common.model.PlatformError;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 

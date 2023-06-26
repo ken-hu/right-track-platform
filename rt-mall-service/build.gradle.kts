@@ -5,14 +5,14 @@
 description = "rt-mall-service"
 
 dependencies {
-    api(project(":rt-common"))
-    api(project(":rt-pbac-spring-boot-starter"))
-    api(libs.postgresql)
-    api(libs.hibernate.types55)
-    api(libs.springboot.data.jpa)
-    api(libs.alibaba.springcloud.nacos.discovery)
-    api(libs.alibaba.springcloud.nacos.config)
-    api(libs.springboot.configuration.processor)
+    implementation(project(":rt-common"))
+    implementation(project(":rt-pbac-spring-boot-starter"))
+    implementation(libs.postgresql)
+    implementation(libs.springboot.data.jpa)
+    implementation(libs.alibaba.springcloud.nacos.discovery)
+    implementation(libs.alibaba.springcloud.nacos.config)
+    implementation(libs.springboot.configuration.processor)
+    implementation(libs.springcloud.bootstrap)
     testImplementation(libs.springboot.test)
 }
 

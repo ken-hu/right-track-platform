@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "2.7.7"
+    id("org.springframework.boot") version "3.0.3"
     id("io.spring.dependency-management") version "1.1.0"
     `version-catalog`
     kotlin("jvm") version ("1.7.10")
@@ -12,13 +12,6 @@ java {
     java.targetCompatibility = JavaVersion.VERSION_17
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
-
-
 
 allprojects {
     group = "pers.ken.rt"
@@ -28,6 +21,16 @@ allprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "java")
     apply(plugin = "org.jetbrains.kotlin.jvm")
+
+    configurations {
+        compileOnly {
+            extendsFrom(configurations.annotationProcessor.get())
+        }
+        testImplementation {
+            extendsFrom(configurations.compileOnly.get())
+        }
+    }
+
 
     repositories {
         mavenLocal()
@@ -50,9 +53,9 @@ allprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
-            mavenBom("org.springframework.boot:spring-boot-dependencies:2.7.7")
-            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2021.1")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.1")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.3")
+            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2022.0.0.0-RC1")
         }
     }
 

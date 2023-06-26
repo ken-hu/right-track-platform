@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SwaggerUiConfigParameters;
 import org.springdoc.core.customizers.OpenApiCustomiser;
@@ -30,18 +31,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  *
  * @author Ken.Hu
  */
+@Slf4j
 @Configuration
 public class OpenApiDocGroupConfig {
 
     @Bean
-    @Lazy(value = false)
+    @Lazy
     public List<GroupedOpenApi> apis(SwaggerUiConfigParameters swaggerUiConfigParameters, RouteDefinitionLocator locator) {
         List<RouteDefinition> definitions = locator.getRouteDefinitions().collectList().block();
         if (CollectionUtils.isEmpty(definitions)) {
             return new ArrayList<>();
         }
         for (RouteDefinition definition : definitions) {
-            System.out.println("Route service id: " + definition.getId() + "  " + definition.getUri().toString());
+            log.info("Route service id: {} | {}", definition.getId(), definition.getUri().toString());
         }
         return definitions.stream()
                 .filter(routeDefinition -> routeDefinition.getId().matches(".*-service"))

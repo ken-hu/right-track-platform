@@ -63,7 +63,7 @@ public class RequestLogFilter implements GlobalFilter, Ordered {
         ServerRequest serverRequest = ServerRequest.create(exchange, messageReaders);
         ServerHttpRequest serverHttpRequest = exchange.getRequest();
         URI requestUri = serverHttpRequest.getURI();
-        String method = serverHttpRequest.getMethodValue().toUpperCase();
+        String method = serverHttpRequest.getMethod().name().toUpperCase();
         MediaType mediaType = serverHttpRequest.getHeaders().getContentType();
         Mono<byte[]> modifyBody = serverRequest.bodyToMono(byte[].class).flatMap(o -> {
             if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {

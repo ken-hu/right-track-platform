@@ -10,7 +10,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *
  * @author Ken
  */
-@SpringBootApplication(scanBasePackages = {"pers.ken.rt.common.web", "pers.ken.rt.mall"})
+@SpringBootApplication(
+        scanBasePackages = {"pers.ken.rt.common.web",
+                "pers.ken.rt.starter.pbac",
+                "pers.ken.rt.mall"})
 @EnableDiscoveryClient
 public class MallApp {
     public static void main(String[] args) {

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=pers.ken.rt.pbac.AccessControlAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=pers.ken.rt.starter.pbac.AccessControlAutoConfiguration

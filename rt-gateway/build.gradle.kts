@@ -5,22 +5,22 @@
 dependencies {
     implementation(project(":rt-common")) {
         exclude("org.springframework.boot", "spring-boot-starter-web")
-        exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
-    }
-    implementation(project(":rt-auth-api")) {
-        exclude("org.springframework.boot", "spring-boot-starter-web")
-        exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
     }
     implementation(libs.springcloud.gateway)
-    implementation(libs.springboot.oauth2.resourceserver)
-    implementation(libs.springboot.oauth2.client)
-    implementation(libs.oauth2.oidc.sdk)
-    implementation(libs.oauth2.jose)
+    implementation(libs.springboot.oauth2.resourceserver) {
+        exclude("org.springframework.boot", "spring-boot-starter-web")
+    }
+//    implementation(libs.springboot.oauth2.client) {
+//        exclude("org.springframework.boot", "spring-boot-starter-web")
+//    }
+//    implementation(libs.oauth2.oidc.sdk)
+//    implementation(libs.oauth2.jose)
+    implementation(libs.springcloud.bootstrap)
     implementation(libs.alibaba.springcloud.sentinel.gateway)
     implementation(libs.alibaba.springcloud.sentinel)
     implementation(libs.alibaba.springcloud.nacos.discovery)
     implementation(libs.alibaba.springcloud.nacos.config)
-    implementation(libs.springboot.configuration.processor)
+    annotationProcessor(libs.springboot.configuration.processor)
     implementation(libs.springcloud.loadbalancer)
     implementation(libs.springdoc.openapi.webflux)
     implementation(libs.springboot.actuator)

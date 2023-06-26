@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+pers.ken.rt.starter.storage.config.OssAutoConfiguration,\
+pers.ken.rt.starter.storage.config.ObsAutoConfiguration

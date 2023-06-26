@@ -5,6 +5,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.util.pattern.PathPatternParser;
+import pers.ken.rt.auth.domain.entity.valueobj.UserStatus;
 
 /**
  * <name> CommonTest </name>
@@ -15,6 +16,12 @@ import org.springframework.web.util.pattern.PathPatternParser;
  */
 class CommonTest {
 
+    @Test
+    void convertTest(){
+        UserStatus status = UserStatus.valueOf("enabled");
+        System.out.println(status);
+
+    }
 
     @Test
     void passwordTest() {

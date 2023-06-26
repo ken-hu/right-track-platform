@@ -1,49 +1,56 @@
 ### Oauth2.0 client_credentials
-POST http://localhost:38081/oauth2/token?grant_type=client_credentials
+POST {{host}}/auth/api/oauth2/token?grant_type=client_credentials
 Content-Type: application/x-www-form-urlencoded
 Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
 
 > {%
     client.global.set("auth_token", response.body.access_token);
 %}
+
+### Oauth2.0 Authoize
+# localhost:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:38081/authorized
+GET {{host}}/auth/api/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&
+    redirect_uri=http://127.0.0.1:38081/authorized
+
 
 ### Oauth2.0 authorization_code
-POST http://localhost:38081/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:38081/authorized&
-    code=u2D4qoP1F3XIbvM2ziGeAlmqY1XDp4EWrtUufTXXIk0WdII72vVMpeVp3ow7DxXC5yYK5OLGL0qd4a-ATT_lF1vLf4AZjr6HGRZdlMn9FRhj5C98BAUNWdS-HuFKtp3q
+POST {{host}}/auth/api/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:38081/authorized&
+    code=zpyFsZa75n_GQJfSwwA_Q7MnYsFwTmU19ns1ztM6Fpx9OSqrRf8LIqB4Of4c7HyJv_DfO5jH_ByHrn8BsjVY8888qoYtleHTC3lRa7YWVL3U7--nePjJVMaI89U-txZF
 Content-Type: application/x-www-form-urlencoded
 Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ=
 
+
 > {%
-    client.global.set("auth_token", response.body.access_token);
+    client.log('access_token:' + response.body.access_token)
+    client.global.set("access_token", response.body.access_token);
 %}
 
+### RefreshToken
+POST {{host}}/auth/api/oauth2/token?grant_type=refresh_token&
+    refresh_token=NCTbCPdzfwqVLTPIojQAZYW1jjfS2cYJKOW3ZxPdPTMCuH4wMOIl0rwEP5uPogQssmnSbLrNMtZBgsAvR1ZkKAZxSNIwxfiI3W2kDdjc9dxG1nM4QmWzRPb4fmjz6dvh
+Content-Type: application/x-www-form-urlencoded
+
+
+
 ### Oauth2.0 jwks(获取公钥)
-GET http://localhost:38081/oauth2/jwks
+GET {{host}}/auth/api/oauth2/jwks
 Content-Type: application/json
-
-### Oauth2.0 authoize
-GET http://127.0.0.1:38081/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:38081/authorized
-
-
-### Oauth2.0 资源服务器测试API
-GET http://localhost:38080/users/1/test
-Content-Type: application/json
-Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03
-
-
-### Oauth2.0 资源服务器测试API2
-GET http://localhost:38080/mall/test
-Content-Type: application/json
-Authorization: Bearer a19278bc-1f87-4a8a-bcc2-7ae52e5bef03
 
 ### Auth 获取用户策略
-GET http://127.0.0.1:38081/users/1/policies
+GET {{host}}/auth/api/users/1/policies
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{access_token}}
 
 ### Auth 获取当前用户策略
-GET http://127.0.0.1:38081/users/policies
+GET {{host}}/auth/api/v1/policies
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{access_token}}
+
+
+### 获取用户策略
+GET {{auth_host}}/v1/policies
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{access_token}}

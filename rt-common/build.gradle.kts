@@ -8,7 +8,6 @@ description = "rt-common"
 dependencies {
     // springboot
     api(libs.springboot.web)
-    api(libs.springboot.data.jpa)
     api(libs.springboot.validation)
     runtimeOnly(libs.springboot.devtools)
 

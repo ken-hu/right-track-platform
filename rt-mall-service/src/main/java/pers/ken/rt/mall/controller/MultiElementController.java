@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.ken.rt.mall.config.ResourceId;
 import pers.ken.rt.mall.entity.Multi;
 import pers.ken.rt.mall.reporsitory.MultiRepository;
-import pers.ken.rt.pbac.permission.access.AccessControl;
-import pers.ken.rt.pbac.permission.access.Resource;
+import pers.ken.rt.starter.pbac.anno.AccessControl;
+import pers.ken.rt.starter.pbac.anno.Resource;
 
 import java.util.List;
 
@@ -27,9 +27,7 @@ public class MultiElementController {
 
     @GetMapping("/element1/{code1}/element2/{code2}")
     @AccessControl(actionId = "getMultiElement",
-            resources = {
-                    @Resource(id = ResourceId.MULTI, value = "#code1+'/'+#code2")
-            })
+            resources = @Resource(id = ResourceId.MULTI, value = "#code1+'/'+#code2"))
     public List<Multi> getMultiElement(@PathVariable Long code1, @PathVariable Long code2) {
         return multiRepository.findByAdcodeAndCategoryCode(code1, code2);
     }
