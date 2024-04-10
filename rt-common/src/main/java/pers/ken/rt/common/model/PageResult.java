@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * <name> PageVO </name>
@@ -15,17 +16,22 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class PageResult<T> {
-    private Integer page;
-    private Integer pageSize;
-    private Long totalCount;
-    private List<T> records;
+    private Pagination pagination;
+    private List<T> data;
 
-    public static <T> PageResult<T> of(Integer page, Integer pageSize, Long totalCount, List<T> records) {
-        return new PageResult<>(page, pageSize, totalCount, records);
+    public static <T> PageResult<T> of(Pagination pagination, List<T> data) {
+        return new PageResult<>(pagination, data);
     }
 
-    public static <T> PageResult<T> of(PageResult<?> pageResult, List<T> records) {
-        return new PageResult<>(pageResult.getPage(), pageResult.getPageSize(), pageResult.getTotalCount(), records);
+
+    public <S> PageResult<S> convert(PageResult<T> origin, List<S> data) {
+        Pagination pagination = origin.getPagination();
+        return new PageResult<S>(pagination, data);
     }
 
+    public <S,A> PageResult<S> convert(PageResult<T> origin, Function<List<T>, List<S>> fun) {
+        Pagination pagination = origin.getPagination();
+        List<S> data = fun.apply(origin.getData());
+        return new PageResult<S>(pagination, data);
+    }
 }
