@@ -3,7 +3,6 @@ package pers.ken.rt.auth;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * <name> UserCenterApp </name>
@@ -13,8 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @author _Ken.Hu
  */
 @SpringBootApplication(scanBasePackages = {"pers.ken.rt.common.web","pers.ken.rt.auth"})
-@EnableDiscoveryClient
-@MapperScan("pers.ken.rt.auth.infrastructure.repository.persistence.mapper")
+@MapperScan("pers.ken.rt.auth.repository.mapper")
 public class AuthApp {
     public static void main(String[] args) {
         SpringApplication.run(AuthApp.class, args);

@@ -9,7 +9,6 @@ package pers.ken.rt.gw.cons;
 public class SecurityConstant {
     private SecurityConstant() {
     }
-    public static final String CUSTOM_TOKEN = "uc_access_token";
     public static final String BEARER = "Bearer ";
     public static final String ACC_INFO = "account_info";
     public static final String USER_NAME = "user_name";

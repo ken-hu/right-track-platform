@@ -19,28 +19,15 @@ public abstract class ServiceException extends RuntimeException {
 
     public ServiceException(ErrorCodeInterface errorCode) {
         super(errorCode.getMessage());
-        this.code = errorCode.getCode();
-        this.detail = errorCode.getMessage();
+        this.errorCode = errorCode;
     }
 
-    public ServiceException(ErrorCodeInterface errorCode, String message) {
-        super(message);
-        this.code = errorCode.getCode();
-        this.detail = message;
+    public ServiceException(ErrorCodeInterface errorCode, String errorDesc) {
+        super(errorDesc);
+        this.errorCode = errorCode;
     }
 
-    public ServiceException(ErrorCodeInterface errorCode, String message, String detail) {
-        super(message);
-        this.code = errorCode.getCode();
-        this.detail = detail;
-    }
 
-    public ServiceException(ErrorCodeInterface errorCode, Throwable cause, String message, String detail) {
-        super(message, cause);
-        this.code = errorCode.getCode();
-        this.detail = detail;
-    }
+    private ErrorCodeInterface errorCode;
 
-    public String detail;
-    public int code;
 }

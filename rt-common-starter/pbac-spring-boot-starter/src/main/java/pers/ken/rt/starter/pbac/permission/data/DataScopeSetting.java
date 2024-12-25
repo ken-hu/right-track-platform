@@ -1,5 +1,6 @@
 package pers.ken.rt.starter.pbac.permission.data;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,25 +10,11 @@ import lombok.Data;
  * @Author Ken
  */
 @Data
+@Builder
 public class DataScopeSetting {
-    private String resource;
     private String table;
     private String field;
-    private DataConditionGenerator generator;
-
-    public DataScopeSetting(String resource, String table, String field) {
-        this.table = table;
-        this.resource = resource;
-        this.field = field;
-        this.generator = new DataConditionGenerator() {
-        };
-    }
-
-    public DataScopeSetting(String resource, String table, String field, DataConditionGenerator generator) {
-        this.table = table;
-        this.resource = resource;
-        this.field = field;
-        this.generator = generator;
-    }
-
+    @Builder.Default
+    private DataConditionGenerator conditionGenerator = new DataConditionGenerator() {
+    };
 }

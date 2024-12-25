@@ -13,7 +13,7 @@ public interface ErrorCodeInterface {
      *
      * @return the code
      */
-    int getCode();
+    String getCode();
 
 
     /**
@@ -22,11 +22,4 @@ public interface ErrorCodeInterface {
      * @return the message
      */
     String getMessage();
-
-    /**
-     * Detail string.
-     *
-     * @return the string
-     */
-    String getDetail();
 }

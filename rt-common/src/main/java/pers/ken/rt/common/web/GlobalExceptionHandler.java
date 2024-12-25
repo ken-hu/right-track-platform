@@ -1,6 +1,8 @@
 package pers.ken.rt.common.web;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,16 +13,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import pers.ken.rt.common.cons.HttpHeaderCons;
 import pers.ken.rt.common.exception.ServiceException;
-import pers.ken.rt.common.model.PlatformError;
+import pers.ken.rt.common.model.ErrorResponse;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static pers.ken.rt.common.exception.ServiceCode.*;
+import static pers.ken.rt.common.exception.ErrorCode.*;
 
 /**
  * <name> GlobalExceptionHandler </name>
@@ -31,96 +30,69 @@ import static pers.ken.rt.common.exception.ServiceCode.*;
  */
 @Slf4j
 @RestControllerAdvice
+@Order(100)
 public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<PlatformError> httpMethodNotSupportException(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> httpMethodNotSupportException(HttpRequestMethodNotSupportedException e) {
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, e.getMessage());
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(INVALID_PARAMETERS.getCode())
-                        .message(INVALID_PARAMETERS.getMessage())
-                        .detail(e.getMessage())
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
+                errorResponse,
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<PlatformError> noHandlerFoundExceptionException(NoHandlerFoundException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> noHandlerFoundExceptionException(NoHandlerFoundException e) {
+        log.error("Cache NoHandlerFoundException.", e);
+        ErrorResponse errorResponse = ErrorResponse.of(RESOURCE_NOT_FOUND, e.getMessage());
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(API_NOT_FOUND.getCode())
-                        .message(API_NOT_FOUND.getMessage())
-                        .detail(e.getMessage())
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
+                errorResponse,
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<PlatformError> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
-        log.warn("Catch HttpMessageNotReadableException,  caused by: ", e);
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.warn("Catch HttpMessageNotReadableException. Caused by: ", e);
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, e.getMessage());
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(INVALID_PARAMETERS.getCode())
-                        .message(INVALID_PARAMETERS.getMessage())
-                        .detail(e.getMessage())
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
-                HttpStatus.OK);
+                errorResponse,
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<PlatformError> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
-        log.warn("Catch ConstraintViolationException, caused by: ", ex);
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.warn("Catch ConstraintViolationException. Caused by: ", ex);
         String detail = ex
                 .getConstraintViolations()
                 .iterator()
                 .next()
                 .getMessage();
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
+
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(INVALID_PARAMETERS.getCode())
-                        .message(INVALID_PARAMETERS.getMessage())
-                        .detail(detail)
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
-                HttpStatus.OK);
+                errorResponse,
+                HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<PlatformError> handleBindException(BindException ex, HttpServletRequest request) {
-        log.warn("Catch BindException, uri:{}, caused by: ", request.getRequestURI(), ex);
+    public ResponseEntity<ErrorResponse> handleBindException(BindException ex) {
+        log.warn("Catch BindException. Caused by: ", ex);
         String detail = validErrorMsgDetail(ex.getBindingResult());
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(INVALID_PARAMETERS.getCode())
-                        .message(INVALID_PARAMETERS.getMessage())
-                        .detail(detail)
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
-                HttpStatus.OK);
+                errorResponse,
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<PlatformError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
-                                                                               HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.warn("Catch MethodArgumentNotValidException, caused by: ", ex);
         String detail = validErrorMsgDetail(ex.getBindingResult());
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
+
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(INVALID_PARAMETERS.getCode())
-                        .message(INVALID_PARAMETERS.getMessage())
-                        .detail(detail)
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
-                HttpStatus.OK);
+                errorResponse,
+                HttpStatus.BAD_REQUEST);
     }
 
     private String validErrorMsgDetail(BindingResult bindingResult) {
@@ -139,38 +111,27 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<PlatformError> serviceException(ServiceException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> serviceException(ServiceException ex) {
         log.error("Catch Service Exception caused by: ", ex);
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        if (AUTHENTICATION_FAILED.getCode() == ex.getCode()) {
+        ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode(), ex.getMessage());
+        String code = ex.getErrorCode().getCode();
+        if (Objects.equals(AUTHENTICATION_FAILED.getCode(), code)) {
             httpStatus = HttpStatus.UNAUTHORIZED;
         }
-        if (PERMISSION_NOT_ENOUGH.getCode() == ex.getCode()) {
+        if (Objects.equals(ACCESS_DENY.getCode(), code)) {
             httpStatus = HttpStatus.FORBIDDEN;
         }
         return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(ex.getCode())
-                        .message(ex.getMessage())
-                        .detail(ex.getDetail())
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
+                errorResponse,
                 httpStatus);
     }
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<PlatformError> unknownException(Exception ex, HttpServletRequest request) {
-        log.error("Catch Unknown Exception, caused by: ", ex);
-        return new ResponseEntity<>(
-                PlatformError.builder()
-                        .code(FAILED.getCode())
-                        .message(FAILED.getMessage())
-                        .detail(ex.getMessage())
-                        .path(request.getRequestURI())
-                        .requestId(request.getHeader(HttpHeaderCons.REQUEST_ID))
-                        .build(),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> unknownException(Exception ex) {
+        log.error("Catch Unknown Exception. Caused by: ", ex);
+        ErrorResponse errorResponse = ErrorResponse.of(FAILED, ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -3,11 +3,8 @@ package pers.ken.rt.starter.pbac.internal.filter;
 import org.springframework.http.server.PathContainer;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
-import pers.ken.rt.starter.pbac.exception.AccessDeniedException;
 import pers.ken.rt.starter.pbac.internal.PolicyContext;
 import pers.ken.rt.starter.pbac.internal.PolicyDocument;
-import pers.ken.rt.starter.pbac.internal.Statement;
-import pers.ken.rt.starter.pbac.internal.Statement.Effect;
 
 import java.util.List;
 
@@ -19,49 +16,29 @@ import java.util.List;
  */
 public class ActionPermitFilter implements PermitFilter {
     @Override
-    public void doCheck(PolicyContext policyContext) {
-        String serviceName = policyContext.getServiceName();
-        String action = policyContext.getAction();
-
-        String target = serviceName + ":" + action;
-        //1 r.userId == p.userId &&
-        //2 r.act == p.act &&
-        //3 keyMatch2(r.obj,p.obj) && resourceMatch(r.res,p.res)
-        for (PolicyDocument policy : policyContext.getPolicies()) {
-            List<Statement> denyStatements = getStatements(policy, Statement.Effect.Deny);
-            List<Statement> allowStatements = getStatements(policy, Statement.Effect.Allow);
-            // 命中deny的直接优先拒绝
-            boolean deny = actionPredicate(denyStatements, action);
-            if (deny) {
-                throw new AccessDeniedException("action denied,policy:%s | statement.effect:%s | action:%s".formatted(policy.getName(), Effect.Deny, target));
-            }
-            boolean allow = actionPredicate(allowStatements, action);
-            if (allow) {
-                return;
-            }
-        }
-        throw new AccessDeniedException("action denied,no policy match action:%s".formatted(target));
+    public boolean matchCheck(PolicyContext context, PolicyDocument.Statement policyStatement) {
+        // 获取当前请求的action
+        String requestAction = context.getRequestAction();
+        List<String> policyActions = policyStatement.getActions();
+        return actionPredicate(requestAction, policyActions);
     }
 
-    private List<Statement> getStatements(PolicyDocument document, Statement.Effect effect) {
-        return document.getStatements().stream().filter(x -> x.getEffect().equals(effect)).toList();
-    }
-
-    private boolean actionPredicate(List<Statement> statements, String target) {
-        for (Statement statement : statements) {
-            List<String> actions = statement.getActions();
-            for (String action : actions) {
-                return actionMatch(action, target);
+    private boolean actionPredicate(String requestAction, List<String> policyActions) {
+        for (String policyAction : policyActions) {
+            boolean match = actionMatch(requestAction, policyAction);
+            // 任意命中一个Action则返回继续执行下一个Filter
+            if (match) {
+                return true;
             }
         }
         return false;
     }
 
-    private static boolean actionMatch(String policyAction, String action) {
-        if (policyAction.equalsIgnoreCase(action)) {
+    private boolean actionMatch(String requestAction, String policyAction) {
+        if (policyAction.equalsIgnoreCase(requestAction)) {
             return true;
         }
         PathPattern parse = PathPatternParser.defaultInstance.parse(policyAction);
-        return parse.matches(PathContainer.parsePath(action));
+        return parse.matches(PathContainer.parsePath(requestAction));
     }
 }

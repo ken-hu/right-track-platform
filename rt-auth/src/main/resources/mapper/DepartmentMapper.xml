@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ken.rt.auth.repository.mapper.DepartmentMapper">
+
+    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.repository.po.Department">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="parentCode" column="parent_code" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,code,parent_code,
+        name,description,created_at,
+        updated_at
+    </sql>
+    <select id="selectRecursionUpDept" resultType="pers.ken.rt.auth.repository.po.Department">
+        WITH RECURSIVE dept_hierarchy AS (
+            -- 基础情况：从指定的部门开始
+            SELECT d.id,
+                   d.name,
+                   d.parent_code,
+                   d.code,
+                   1 as num
+            FROM department d
+            WHERE d.code = #{deptCode}
+
+            UNION ALL
+
+            -- 递归情况：查询上级部门
+            SELECT d.id,
+                   d.name,
+                   d.parent_code,
+                   d.code,
+                   (ph.num + 1) as num
+            FROM department d
+                     INNER JOIN dept_hierarchy ph ON d.code = ph.parent_code)
+        SELECT *
+        FROM dept_hierarchy
+        ORDER BY num desc;
+    </select>
+    <select id="selectUserDeptCodes" resultType="java.lang.String">
+        select unnest(account.dept_codes)
+        from account
+        where id = #{userId}
+    </select>
+
+</mapper>

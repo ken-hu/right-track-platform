@@ -8,14 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
-import pers.ken.rt.common.cons.HttpHeaderCons;
-import pers.ken.rt.common.exception.ServiceCode;
-import pers.ken.rt.common.model.PlatformError;
+import pers.ken.rt.common.exception.ErrorCode;
+import pers.ken.rt.common.model.ErrorResponse;
 import pers.ken.rt.common.utils.Jackson;
 import reactor.core.publisher.Mono;
 
@@ -52,17 +50,12 @@ public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
 
         return response.writeWith(Mono.fromSupplier(() -> {
             DataBufferFactory bufferFactory = response.bufferFactory();
-            ServerHttpRequest request = exchange.getRequest();
             //返回响应结果
             return bufferFactory.wrap(Jackson.toJsonString(
-                            PlatformError.builder()
-                                    .code(ServiceCode.FAILED.getCode())
-                                    .message(ServiceCode.FAILED.getMessage())
-                                    .detail(ex.getMessage())
-                                    .requestId(request.getHeaders().getFirst(HttpHeaderCons.REQUEST_ID))
-                                    .path(request.getURI().toString())
-                                    .build())
+                            ErrorResponse.of(ErrorCode.FAILED, ex.getMessage())
+                    )
                     .getBytes(StandardCharsets.UTF_8));
         }));
+
     }
 }

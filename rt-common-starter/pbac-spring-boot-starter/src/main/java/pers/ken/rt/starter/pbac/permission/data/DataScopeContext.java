@@ -6,11 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import lombok.Getter;
 import pers.ken.rt.starter.pbac.internal.PolicyContext;
-import pers.ken.rt.starter.pbac.internal.PolicyDocument;
-import pers.ken.rt.starter.pbac.internal.Statement;
-import pers.ken.rt.starter.pbac.internal.Statement.Effect;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,28 +18,29 @@ import java.util.Map;
  */
 @Getter
 public class DataScopeContext {
-    private final List<DataScope> dataScopes;
+    private final List<DataPermission> dataPermissions;
 
-    private DataScopeContext(List<DataScope> dataScopes) {
-        this.dataScopes = dataScopes;
+    private DataScopeContext(List<DataPermission> dataPermissions) {
+        this.dataPermissions = dataPermissions;
     }
 
     public static DataScopeContext init(PolicyContext policyContext, Map<String, DataScopeSetting> dataScopeSettingMap) {
-        List<DataScope> scopes = new ArrayList<>();
-        List<PolicyDocument> policies = policyContext.getPolicies();
-        for (PolicyDocument policy : policies) {
-            for (Statement statement : policy.getStatements()) {
-                Effect effect = statement.getEffect();
-                List<String> resources = statement.getResources();
-                resources.forEach(resource -> {
-
-                });
-            }
-        }
-        return new DataScopeContext(scopes);
+//        List<DataScope> scopes = new ArrayList<>();
+//        List<PolicyDocument> policies = policyContext.getPolicies();
+//        for (PolicyDocument policy : policies) {
+//            for (Statement statement : policy.getStatements()) {
+//                Effect effect = statement.getEffect();
+//                List<String> resources = statement.getResources();
+//                resources.forEach(resource -> {
+//
+//                });
+//            }
+//        }
+//        return new DataScopeContext(scopes);
+        return null;
     }
 
-    public String visitorSql(String originalSql, SQLASTVisitor sqlastVisitor) {
+    public String rewiteSQL(String originalSql, SQLASTVisitor sqlastVisitor) {
         List<SQLStatement> statements = SQLUtils.parseStatements(originalSql, DbType.postgresql);
         statements.forEach(statement -> statement.accept(sqlastVisitor));
         return SQLUtils.toSQLString(statements, DbType.postgresql);

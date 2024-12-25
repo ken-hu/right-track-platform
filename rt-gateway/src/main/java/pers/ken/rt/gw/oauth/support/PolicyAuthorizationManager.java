@@ -5,7 +5,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
 
@@ -15,7 +14,7 @@ import java.util.function.Supplier;
  * @createdTime: 2023/3/27 22:38
  * @desc:
  */
-@Component
+//@Component
 @Slf4j
 public class PolicyAuthorizationManager implements AuthorizationManager<MethodInvocation> {
     @Override
@@ -32,7 +31,7 @@ public class PolicyAuthorizationManager implements AuthorizationManager<MethodIn
 //        EvaluationContext ctx = this.registry.getExpressionHandler().createEvaluationContext(authentication, mi);
 //        boolean granted = ExpressionUtils.evaluateAsBoolean(attribute.getExpression(), ctx);
 //        return new ExpressionAuthorizationDecision(granted, attribute.getExpression());
-        log.info("authen:{}", authentication);
+        log.info("authentication:{}", authentication);
         log.info("methodInvocation:{}", object);
         return new AuthorizationDecision(true);
     }

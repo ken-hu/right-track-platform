@@ -2,35 +2,54 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pers.ken.rt.auth.infrastructure.repository.persistence.mapper.PolicyMapper">
+<mapper namespace="pers.ken.rt.auth.repository.mapper.PolicyMapper">
 
-    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.infrastructure.repository.persistence.po.PolicyPO">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="policyDocument" column="policy_document" jdbcType="OTHER"
-                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="versionId" column="version_id" jdbcType="VARCHAR"/>
+    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.repository.po.Policy">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,create_time,name,
-        policy_document,update_time,version_id
+        id,name,version,
+        content,created_at,updated_at
     </sql>
-    <select id="selectAllByUserId"
-            resultType="pers.ken.rt.auth.infrastructure.repository.persistence.po.PolicyPO">
-        select *
-        from policy
-                 left join user_policy_rel
-                           on policy.id = user_policy_rel.policy_id
-        where user_policy_rel.user_id = #{userId}
-    </select>
-    <select id="selectAllByRoleId"
-            resultType="pers.ken.rt.auth.infrastructure.repository.persistence.po.PolicyPO">
-        select *
-        from policy
-                 left join role_policy_rel rpr on policy.id = rpr.policy_id
-        where rpr.role_id = #{roleId}
+    <insert id="insertUserPolicyRel">
+        insert into user_policy_rel (user_id, policy_id)
+        values (#{userId}, #{policyId})
+    </insert>
+    <insert id="insertUserGroupPolicyRel">
+        insert into user_group_policy_rel (user_id, policy_id)
+        values (#{userId}, #{policyId})
+    </insert>
+    <delete id="deleteUserPolicyRelByPolicyIds">
+        delete from user_policy_rel where user_id = #{userId}
+        and policy_id in (<foreach collection="policyIds" item="item" separator=",">#{item}</foreach>)
+    </delete>
+    <select id="selectPoliciesByUser" resultType="pers.ken.rt.auth.repository.po.Policy">
+        WITH user_policies AS (SELECT policy_id
+                               FROM user_policy_rel
+                               WHERE user_id = #{userId}),
+             group_policies AS (SELECT policy_id
+                                FROM user_group_policy_rel
+                                WHERE user_id = #{userId}),
+             roles_policies AS (SELECT role_policy_rel.policy_id
+                                FROM user_role_rel
+                                         join role_policy_rel
+                                              on user_role_rel.role_id = role_policy_rel.role_id
+                                WHERE user_role_rel.user_id = #{userId})
+        SELECT p.*
+        FROM policy p
+        WHERE p.id IN (SELECT policy_id
+                       FROM user_policies
+                       UNION
+                       SELECT policy_id
+                       FROM group_policies
+                       UNION
+                       SELECT policy_id
+                       FROM roles_policies);
     </select>
 </mapper>

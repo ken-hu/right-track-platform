@@ -12,7 +12,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication(
         scanBasePackages = {"pers.ken.rt.common.web",
-                "pers.ken.rt.starter.pbac",
                 "pers.ken.rt.mall"})
 @EnableDiscoveryClient
 public class MallApp {

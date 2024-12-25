@@ -1,6 +1,7 @@
 package pers.ken.rt.starter.pbac.internal.filter;
 
 import pers.ken.rt.starter.pbac.internal.PolicyContext;
+import pers.ken.rt.starter.pbac.internal.PolicyDocument;
 
 /**
  * @ClassName: PermitFilter
@@ -9,5 +10,7 @@ import pers.ken.rt.starter.pbac.internal.PolicyContext;
  * @Author ken
  */
 public interface PermitFilter {
-    void doCheck(PolicyContext policyContext);
+
+    boolean matchCheck(PolicyContext context, PolicyDocument.Statement policyStatement);
+
 }

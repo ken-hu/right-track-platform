@@ -8,27 +8,20 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * <code> DataFilterVisitor </code>
- * <desc> DataFilterVisitor </desc>
+ * <desc> SQL递归AVT树重写 </desc>
  * <b>Creation Time:</b> 11/29/2021 11:52 AM.
  *
  * @author _Ken.Hu
  */
 public class PgDataFilterVisitor extends PGASTVisitorAdapter {
-    private final List<DataScope> dataScopes;
+    private final List<DataPermission> dataPermissions;
 
-    public PgDataFilterVisitor(IDataProvider dataProvider) {
-        Collection<DataScope> dataScopes = dataProvider.fromContext();
-        this.dataScopes = new ArrayList<>(dataScopes);
-    }
-
-    public PgDataFilterVisitor(List<DataScope> dataScopes) {
-        this.dataScopes = dataScopes;
+    public PgDataFilterVisitor(List<DataPermission> dataPermissions) {
+        this.dataPermissions = dataPermissions;
     }
 
 
@@ -40,13 +33,12 @@ public class PgDataFilterVisitor extends PGASTVisitorAdapter {
      */
     @Override
     public boolean visit(SQLExprTableSource sqlExprTableSource) {
-        for (DataScope dataScope : this.dataScopes) {
-            for (DataScope.DataCondition condition : dataScope.getConditions()) {
+        for (DataPermission dataPermission : this.dataPermissions) {
+            for (DataPermission.DataCondition condition : dataPermission.getConditions()) {
                 String tableSourceName = sqlExprTableSource.getName().getSimpleName();
-                String standardizationTableName = tableSourceName
-                        .replace("\"", "")
-                        .replace("'", "")
-                        .replace("`", "");
+                // 兼容性处理
+                String standardizationTableName = compatibilityProcessing(tableSourceName);
+
                 // MATCH TARGET TABLE
                 if (standardizationTableName.equalsIgnoreCase(condition.getTable())) {
                     SQLObject parent = sqlExprTableSource.getParent();
@@ -58,7 +50,7 @@ public class PgDataFilterVisitor extends PGASTVisitorAdapter {
                     /* 插入行控制条件 */
                     if (parent != null) {
                         PGSelectQueryBlock query = ((PGSelectQueryBlock) parent);
-                        query.addCondition(whereCondition(alias, dataScope, condition));
+                        query.addCondition(whereCondition(alias, dataPermission, condition));
                     }
                 }
             }
@@ -66,6 +58,12 @@ public class PgDataFilterVisitor extends PGASTVisitorAdapter {
         return super.visit(sqlExprTableSource);
     }
 
+    private String compatibilityProcessing(String tableSourceName) {
+        return tableSourceName
+                .replace("\"", "")
+                .replace("'", "")
+                .replace("`", "");
+    }
 
     @Override
     public boolean visit(PGSelectQueryBlock x) {
@@ -88,8 +86,8 @@ public class PgDataFilterVisitor extends PGASTVisitorAdapter {
         super.endVisit(x);
     }
 
-    private SQLExpr whereCondition(String tableAlias, DataScope dataScope, DataScope.DataCondition condition) {
-        return condition.getGenerator().generateWhereCondition(tableAlias, condition.getField(), dataScope.getOwnResources());
+    private SQLExpr whereCondition(String tableAlias, DataPermission dataPermission, DataPermission.DataCondition condition) {
+        return condition.getGenerator().generateSqlCondition(tableAlias, condition.getField(), dataPermission.getOwnResources());
     }
 
 }

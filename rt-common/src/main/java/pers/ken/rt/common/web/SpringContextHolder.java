@@ -1,5 +1,6 @@
 package pers.ken.rt.common.web;
 
+import lombok.Getter;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringContextHolder implements ApplicationContextAware {
 
+    @Getter
     private static ApplicationContext applicationContext;
 
     @Override
@@ -25,10 +27,6 @@ public class SpringContextHolder implements ApplicationContextAware {
         if (null == SpringContextHolder.applicationContext) {
             SpringContextHolder.applicationContext = applicationContext;
         }
-    }
-
-    public static ApplicationContext getApplicationContext() {
-        return applicationContext;
     }
 
     public static Object getBean(String name) {

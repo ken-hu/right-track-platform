@@ -2,13 +2,13 @@ package pers.ken.rt.common.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.util.CollectionUtils;
-import pers.ken.rt.common.model.ITreeNode;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <name> TreeUtils </name>
@@ -19,66 +19,77 @@ import java.util.Objects;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TreeUtils {
-    public static <S, T extends ITreeNode<S, T>> List<T> generateTrees(List<T> nodes) {
+    /**
+     * 将平铺的 List 转化为树形结构
+     *
+     * @param list           平铺的列表数据
+     * @param idGetter       获取节点唯一标识的函数
+     * @param parentIdGetter 获取父节点标识的函数
+     * @param childrenGetter 获取子节点列表的函数
+     * @param childrenSetter 设置子节点列表的函数
+     * @param <T>            节点类型
+     * @param <ID>           节点唯一标识类型
+     * @return 树形结构的列表
+     */
+    public static <T, ID> List<T> buildTree(List<T> list,
+                                            Function<T, ID> idGetter,
+                                            Function<T, ID> parentIdGetter,
+                                            Function<T, List<T>> childrenGetter,
+                                            BiConsumer<T, List<T>> childrenSetter,
+                                            Function<T, Boolean> isRootNode) {
+        // 将列表转为 Map，便于通过 ID 查找
+        Map<ID, T> itemById = list.stream().collect(Collectors.toMap(idGetter, Function.identity()));
+
+        // 创建一个结果集存放最终的树形结构
         List<T> roots = new ArrayList<>();
-        for (Iterator<T> ite = nodes.iterator(); ite.hasNext(); ) {
-            T node = ite.next();
-            if (node.root()) {
-                roots.add(node);
-                // 从所有节点列表中删除该节点，以免后续重复遍历该节点
-                ite.remove();
+
+        // 遍历每个节点，构建树形结构
+        for (T item : list) {
+            ID parentId = parentIdGetter.apply(item);
+            if (isRootNode.apply(item)) {
+                // 如果 parentId 是 null，表示是根节点
+                roots.add(item);
+            } else {
+                // 如果是子节点，找到父节点并设置子节点
+                T parent = itemById.get(parentId);
+                if (parent != null) {
+                    // 获取父节点的子节点列表
+                    List<T> children = childrenGetter.apply(parent);
+                    if (children == null) {
+                        // 如果子节点列表为 null，初始化新的列表
+                        children = new ArrayList<>();
+                        childrenSetter.accept(parent, children);
+                    }
+                    // 添加当前节点到父节点的子节点列表
+                    children.add(item);
+                }
             }
         }
-        roots.forEach(r -> setChildren(r, nodes));
+
         return roots;
     }
 
-    public static <S, T extends ITreeNode<S, T>> void setChildren(T parent, List<T> nodes) {
-        List<T> children = new ArrayList<>();
-        Object parentId = parent.id();
-        for (Iterator<T> ite = nodes.iterator(); ite.hasNext(); ) {
-            T node = ite.next();
-            if (Objects.equals(node.parentId(), parentId)) {
-                children.add(node);
-                // 从所有节点列表中删除该节点，以免后续重复遍历该节点
-                ite.remove();
-            }
-        }
-        // 如果孩子为空，则直接返回,否则继续递归设置孩子的孩子
-        if (children.isEmpty()) {
-            return;
-        }
-        parent.setChildrenNodes(children);
-
-        children.forEach(m -> {
-            // 递归设置子节点
-            setChildren(m, nodes);
-        });
-    }
-
-    public static <S, T extends ITreeNode<S, T>> List<T> getLeaves(T parent) {
-        List<T> leaves = new ArrayList<>();
-        fillLeaves(parent, leaves);
-        return leaves;
-    }
 
     /**
-     * 将parent的所有叶子节点填充至leafs列表中
+     * 将平铺的 List 转化为树形结构
      *
-     * @param parent 父节点
-     * @param leaves  叶子节点列表
-     * @param <T>    实际节点类型
+     * @param nodes           平铺的列表数据
+     * @param idGetter       获取节点唯一标识的函数
+     * @param parentIdGetter 获取父节点标识的函数
+     * @param childrenGetter 获取子节点列表的函数
+     * @param childrenSetter 设置子节点列表的函数
+     * @param <T>            节点类型
+     * @param <ID>           节点唯一标识类型
+     * @return 树形结构的列表
      */
-    public static <S, T extends ITreeNode<S, T>> void fillLeaves(T parent, List<T> leaves) {
-        List<T> childrenNodes = (List<T>) parent.getChildrenNodes();
-        // 如果节点没有子节点则说明为叶子节点
-        if (CollectionUtils.isEmpty(childrenNodes)) {
-            leaves.add(parent);
-            return;
-        }
-        // 递归调用子节点，查找叶子节点
-        for (T childrenNode : childrenNodes) {
-            fillLeaves(childrenNode, leaves);
-        }
+    public static <T, S, ID> List<T> buildTree(List<S> nodes,
+                                               Function<S, T> nodeConverter,
+                                               Function<T, ID> idGetter,
+                                               Function<T, ID> parentIdGetter,
+                                               Function<T, List<T>> childrenGetter,
+                                               BiConsumer<T, List<T>> childrenSetter,
+                                               Function<T, Boolean> isRootNode) {
+        List<T> treeNodes = nodes.stream().map(nodeConverter).toList();
+        return buildTree(treeNodes, idGetter, parentIdGetter, childrenGetter, childrenSetter, isRootNode);
     }
 }

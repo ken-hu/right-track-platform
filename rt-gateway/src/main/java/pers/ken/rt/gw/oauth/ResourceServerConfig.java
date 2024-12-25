@@ -3,14 +3,17 @@ package pers.ken.rt.gw.oauth;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
-import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
-import org.springframework.util.CollectionUtils;
-import pers.ken.rt.gw.conf.AuthorityProperties;
+import reactor.core.publisher.Mono;
 
 /**
  * <code> ResourceServerConfig </code>
@@ -23,38 +26,47 @@ import pers.ken.rt.gw.conf.AuthorityProperties;
 @EnableWebFluxSecurity
 @AllArgsConstructor
 public class ResourceServerConfig {
-    private AuthorityProperties authorityProperties;
+
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
-                                                         ServerAuthenticationEntryPoint authenticationEntryPoint,
-                                                         ServerAccessDeniedHandler accessDeniedHandler) {
-        http.csrf().disable()
-                // authorize
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(ServerHttpSecurity.CorsSpec::disable)
+                // 开启全局认证
                 .authorizeExchange(exchange -> {
-                    ServerHttpSecurity.AuthorizeExchangeSpec authorizeExchangeSpec = exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()
-                            .pathMatchers("/auth/api/**").permitAll();
-                    if (!CollectionUtils.isEmpty(authorityProperties.getWhiteList())) {
-                        authorizeExchangeSpec.pathMatchers(authorityProperties.getWhiteList().toArray(new String[0])).permitAll();
-                    }
-                    authorizeExchangeSpec
-                            .anyExchange()
-                            .authenticated()
-                    ;
+                    exchange.anyExchange()
+                            .authenticated();
                 })
-                // exception handler
-                .exceptionHandling(handler -> {
-                    handler.authenticationEntryPoint(authenticationEntryPoint)
-                            .accessDeniedHandler(accessDeniedHandler);
-                })
+                // 开启OAuth2登录
+                .oauth2Login(Customizer.withDefaults())
                 // ResourceServer for jwt
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer
-                            .authenticationEntryPoint(authenticationEntryPoint)
-                            .accessDeniedHandler(accessDeniedHandler)
-                            .jwt();
+//                            .authenticationEntryPoint(authenticationEntryPoint)
+//                            .accessDeniedHandler(accessDeniedHandler)
+                            .jwt(jwt -> jwt
+                                    // 请求中携带token访问时会触发该解析器适配器
+                                    .jwtAuthenticationConverter(grantedAuthoritiesExtractor()));
 
                 });
         return http.build();
     }
+
+    /**
+     * 自定义jwt解析器，设置解析出来的权限信息的前缀与在jwt中的key
+     *
+     * @return jwt解析器适配器 ReactiveJwtAuthenticationConverterAdapter
+     */
+    public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        // 设置解析权限信息的前缀，设置为空是去掉前缀
+        grantedAuthoritiesConverter.setAuthorityPrefix("");
+        // 设置权限信息在jwt claims中的key
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
+    }
+
 }
 

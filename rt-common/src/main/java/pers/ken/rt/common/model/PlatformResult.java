@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pers.ken.rt.common.exception.ErrorCodeInterface;
-import pers.ken.rt.common.exception.ServiceCode;
 
 /**
  * <name> PlatformResult </name>
@@ -18,8 +17,9 @@ import pers.ken.rt.common.exception.ServiceCode;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Deprecated
 public class PlatformResult<T> {
-    private int code;
+    private String code;
     @Builder.Default
     private boolean succeed = Boolean.TRUE;
     private String message;
@@ -36,14 +36,5 @@ public class PlatformResult<T> {
         this.code = serviceCode.getCode();
         this.message = serviceCode.getMessage();
         this.data = data;
-    }
-
-
-    public static <T> PlatformResult<T> ok(T data) {
-        return new PlatformResult<>(ServiceCode.SUCCESS, data);
-    }
-
-    public static <T> PlatformResult<T> ok() {
-        return new PlatformResult<>(ServiceCode.SUCCESS);
     }
 }

@@ -1,3 +1,22 @@
+# curl --location 'http://nls-gateway-cn-shanghai.aliyuncs.com/stream/v1/asr?appkey=0zYo8R3t7qW6qALG&format=pcm&sample_rate=16000&enable_punctuation_prediction=true&enable_inverse_text_normalization=true'
+#--header 'content-type: application/octet-stream'
+#--header 'host: nls-gateway-cn-shanghai.aliyuncs.com'
+#--header 'user-agent: vscode-restclient'
+#--header 'x-nls-token: cdbabc0c13f94e1a8e8edb590eed7071'
+#--header 'Cookie: acw_tc=6b08649b-a243-48c6-9998-0e5e1769e0830d8c6c44b5bcb2fe827a4464a9c6ad00'
+#--data-binary '@/C:/Users/DELL/Desktop/nls-sample-16k.wav'
+POST http://nls-gateway-cn-shanghai.aliyuncs.com/stream/v1/asr?appkey=0zYo8R3t7qW6qALG&format=pcm&sample_rate=16000&
+    enable_punctuation_prediction=true&enable_inverse_text_normalization=true
+host: nls-gateway-cn-shanghai.aliyuncs.com
+user-agent: vscode-restclient
+x-nls-token: cdbabc0c13f94e1a8e8edb590eed7071
+Cookie: acw_tc=6b08649b-a243-48c6-9998-0e5e1769e0830d8c6c44b5bcb2fe827a4464a9c6ad00
+Content-Type: application/octet-stream
+
+< /C:/Users/DELL/Desktop/nls-sample-16k.wav
+
+###
+
 ### Oauth2.0 client_credentials
 POST http://localhost:38081/oauth2/token?grant_type=client_credentials
 Content-Type: application/x-www-form-urlencoded

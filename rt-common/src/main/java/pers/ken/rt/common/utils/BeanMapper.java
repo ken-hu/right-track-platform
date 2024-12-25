@@ -15,6 +15,7 @@ import java.util.function.Supplier;
  *
  * @author _Ken.Hu
  */
+@Deprecated
 public class BeanMapper extends BeanUtils {
 
     public static <T> T copyProperties(Object source, Class<T> clazz) {

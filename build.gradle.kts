@@ -1,7 +1,7 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.0.3"
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.3.5"
+    id("io.spring.dependency-management") version "1.1.6"
     `version-catalog`
     kotlin("jvm") version ("1.7.10")
 }
@@ -53,9 +53,9 @@ allprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.1")
-            mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.3")
-            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2022.0.0.0-RC1")
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.3.5")
+            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2023.0.1.0")
         }
     }
 

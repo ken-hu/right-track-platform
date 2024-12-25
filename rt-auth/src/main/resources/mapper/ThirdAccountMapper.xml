@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.ken.rt.auth.repository.mapper.ThirdAccountMapper">
+
+    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.repository.po.ThirdAccount">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="uniqueId" column="unique_id" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="credentials" column="credentials" jdbcType="VARCHAR"/>
+            <result property="credentialsExpiresAt" column="credentials_expires_at" jdbcType="TIMESTAMP"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="ext" column="ext" jdbcType="OTHER"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="registeredAt" column="registered_at" jdbcType="TIMESTAMP"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,unique_id,username,
+        credentials,credentials_expires_at,type,
+        nickname,ext,status,
+        registered_at,created_at,updated_at
+    </sql>
+</mapper>

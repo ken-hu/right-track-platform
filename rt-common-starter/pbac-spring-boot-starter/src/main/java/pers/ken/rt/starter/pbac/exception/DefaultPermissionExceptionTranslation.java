@@ -1,6 +1,6 @@
 package pers.ken.rt.starter.pbac.exception;
 
-import pers.ken.rt.starter.pbac.internal.PermissionExceptionTranslation;
+import pers.ken.rt.starter.pbac.core.PermissionExceptionTranslation;
 
 /**
  * @ClassName: DefaultPermissionExceptionTranslationImpl

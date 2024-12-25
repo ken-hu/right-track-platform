@@ -19,6 +19,7 @@ dependencies {
     // utils
     api(libs.alibaba.druid)
     api(libs.google.guava)
+    api(libs.jnanoid)
     api(libs.apache.common.lang3)
 }
 

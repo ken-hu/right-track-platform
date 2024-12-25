@@ -2,17 +2,30 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pers.ken.rt.auth.infrastructure.repository.persistence.mapper.UserGroupMapper">
+<mapper namespace="pers.ken.rt.auth.repository.mapper.UserGroupMapper">
 
-    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.infrastructure.repository.persistence.po.UserGroupPO">
-            <id property="id" column="id" jdbcType="BIGINT"/>
+    <resultMap id="BaseResultMap" type="pers.ken.rt.auth.repository.po.UserGroup">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,create_time,
-        update_time
+        id,tenant_id,name,
+        description,created_at,updated_at
     </sql>
+    <insert id="insertUserGroupRel">
+        insert into user_group_rel(user_id, group_id)
+        values (#{userId}, #{groupId})
+    </insert>
+    <select id="selectUserGroups" resultType="pers.ken.rt.auth.repository.po.UserGroup">
+        select ug.*
+        from user_group ug
+                 join user_group_rel rel
+                      on ug.id = rel.group_id
+        where rel.user_id = #{userId}
+    </select>
 </mapper>
