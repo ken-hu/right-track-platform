@@ -13,9 +13,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import pers.ken.rt.common.exception.ServiceException;
+import pers.ken.rt.common.exception.BaseServiceException;
 import pers.ken.rt.common.model.ErrorResponse;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ import static pers.ken.rt.common.exception.ErrorCode.*;
 public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> httpMethodNotSupportException(HttpRequestMethodNotSupportedException e) {
-        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_ARGUMENTS, e.getMessage());
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.BAD_REQUEST);
@@ -42,8 +43,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> noHandlerFoundExceptionException(NoHandlerFoundException e) {
-        log.error("Cache NoHandlerFoundException.", e);
-        ErrorResponse errorResponse = ErrorResponse.of(RESOURCE_NOT_FOUND, e.getMessage());
+        log.error("Cache noHandlerFoundException.", e);
+        ErrorResponse errorResponse = ErrorResponse.of(DATA_NOT_FOUND, e.getMessage());
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.NOT_FOUND);
@@ -51,8 +52,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.warn("Catch HttpMessageNotReadableException. Caused by: ", e);
-        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, e.getMessage());
+        log.warn("Catch httpMessageNotReadableException. Caused by: ", e);
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_ARGUMENTS, e.getMessage());
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.BAD_REQUEST);
@@ -60,13 +61,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
-        log.warn("Catch ConstraintViolationException. Caused by: ", ex);
+        log.warn("Catch constraintViolationException. Caused by: ", ex);
         String detail = ex
                 .getConstraintViolations()
                 .iterator()
                 .next()
                 .getMessage();
-        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_ARGUMENTS, detail);
 
         return new ResponseEntity<>(
                 errorResponse,
@@ -77,8 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> handleBindException(BindException ex) {
         log.warn("Catch BindException. Caused by: ", ex);
-        String detail = validErrorMsgDetail(ex.getBindingResult());
-        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_ARGUMENTS, getValidTarget(ex), toErrorDetails(ex));
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.BAD_REQUEST);
@@ -86,10 +86,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.warn("Catch MethodArgumentNotValidException, caused by: ", ex);
-        String detail = validErrorMsgDetail(ex.getBindingResult());
-        ErrorResponse errorResponse = ErrorResponse.of(INVALID_PARAMETERS, detail);
-
+        log.warn("Catch methodArgumentNotValidException. Caused by: ", ex);
+        ErrorResponse errorResponse = ErrorResponse.of(INVALID_ARGUMENTS, getValidTarget(ex), toErrorDetails(ex));
         return new ResponseEntity<>(
                 errorResponse,
                 HttpStatus.BAD_REQUEST);
@@ -104,15 +102,26 @@ public class GlobalExceptionHandler {
                 .map(error -> {
                     String field = error.getField();
                     String msg = error.getDefaultMessage();
-                    return String.format("[%s:%s]", field, msg);
+                    return String.format("[%s: %s]", field, msg);
                 })
                 .collect(Collectors.joining(";"));
     }
 
+    private String getValidTarget(BindingResult bindingResult) {
+        Object target = bindingResult.getObjectName();
+        return String.valueOf(target);
+    }
 
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ErrorResponse> serviceException(ServiceException ex) {
-        log.error("Catch Service Exception caused by: ", ex);
+    private List<ErrorResponse.ErrorDetails> toErrorDetails(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+            .map(error -> new ErrorResponse.ErrorDetails(error.getCode(), error.getField(), error.getDefaultMessage())).toList();
+    }
+
+
+    @ExceptionHandler(BaseServiceException.class)
+    public ResponseEntity<ErrorResponse> serviceException(BaseServiceException ex) {
+        // todo 多层次抛异常，循环递归读取相关异常信息
+        log.error("Catch serviceException. Caused by: ", ex);
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode(), ex.getMessage());
         String code = ex.getErrorCode().getCode();
@@ -130,7 +139,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unknownException(Exception ex) {
-        log.error("Catch Unknown Exception. Caused by: ", ex);
+        log.error("Catch unknownException. Caused by: ", ex);
         ErrorResponse errorResponse = ErrorResponse.of(FAILED, ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }

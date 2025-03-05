@@ -16,7 +16,10 @@ import pers.ken.rt.common.exception.BusinessVerificationException;
 import pers.ken.rt.common.exception.ErrorCode;
 import pers.ken.rt.common.utils.Jackson;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Ken
@@ -66,9 +69,11 @@ public class AccountContext {
         Integer accountId = Optional.ofNullable(accountIdStr).map(Integer::valueOf).orElse(null);
         String tenantCode = (String) detailsMap.get(SecurityConstant.Additional.TENANT_CODE);
         String tenantIdStr = (String) detailsMap.get(SecurityConstant.Additional.TENANT_ID);
+        String accountNickname = (String) detailsMap.get(SecurityConstant.Additional.NAME);
+        String accountStatus = (String) detailsMap.get(SecurityConstant.Additional.STATUS);
         Integer tenantId = Optional.ofNullable(tenantIdStr).map(Integer::valueOf).orElse(null);
         List<String> roleList = (List<String>) detailsMap.get(SecurityConstant.Additional.ROLES);
-        return new AuthUserDetails(accountId, username, tenantCode, tenantId, roleList);
+        return new AuthUserDetails(accountId, accountNickname, username, accountStatus, tenantCode, tenantId, roleList);
     }
 
     public static Jwt getJwt() {

@@ -19,22 +19,22 @@ import java.util.List;
  */
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department>
-        implements DepartmentService {
+    implements DepartmentService {
 
     @Override
     public List<List<Department>> listDepartmentsByUser() {
         Integer userId = AccountContext.getUserId();
         List<String> deptCodes = baseMapper.selectUserDeptCodes(userId);
-        return deptCodes.stream().map(code -> baseMapper.selectRecursionUpDept(code)).toList();
+        return deptCodes.stream().map(code -> baseMapper.selectRecursionUpDept(AccountContext.getTenantCode(), code)).toList();
     }
 
     @Override
     public List<Department> listDepartments() {
         String tenantCode = AccountContext.getTenantCode();
         if (null == tenantCode) {
-            throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "Account tenantCode not found");
+            throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "Account tenantCode is null");
         }
-        return this.list(Wrappers.lambdaQuery(Department.class).eq(Department::getTenantCode, tenantCode));
+        return baseMapper.selectList(Wrappers.lambdaQuery(Department.class).eq(Department::getTenantCode, tenantCode));
     }
 }
 

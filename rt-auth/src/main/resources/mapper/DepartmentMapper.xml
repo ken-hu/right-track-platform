@@ -29,6 +29,7 @@
                    1 as num
             FROM department d
             WHERE d.code = #{deptCode}
+              and d.tenant_code = #{tenantCode}
 
             UNION ALL
 

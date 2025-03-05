@@ -21,6 +21,8 @@ import java.util.List;
 public class AuthUserDetails implements UserDetails {
     @Getter
     private Integer userId;
+    @Getter
+    private String name;
     private String username;
     private String password;
     @Getter
@@ -33,8 +35,9 @@ public class AuthUserDetails implements UserDetails {
     @Getter
     private List<String> roles;
 
-    public AuthUserDetails(Integer userId, String username, String password, String status, String tenantCode, Integer tenantId, List<String> roles, Collection<? extends GrantedAuthority> authorities) {
+    public AuthUserDetails(Integer userId, String name, String username, String password, String status, String tenantCode, Integer tenantId, List<String> roles, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.status = status;
@@ -44,12 +47,14 @@ public class AuthUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public AuthUserDetails(Integer userId, String username, String tenantCode, Integer tenantId, List<String> roles) {
+    public AuthUserDetails(Integer userId, String name, String username, String status, String tenantCode, Integer tenantId, List<String> roles) {
         this.userId = userId;
+        this.name = name;
         this.username = username;
         this.tenantCode = tenantCode;
         this.tenantId = tenantId;
         this.roles = roles;
+        this.status = status;
     }
 
     @Override
@@ -69,12 +74,12 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.status.equalsIgnoreCase("enabled");
+        return "enabled".equalsIgnoreCase(this.status);
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.status.equalsIgnoreCase("enabled");
+        return "enabled".equalsIgnoreCase(this.status);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.status.equalsIgnoreCase("enabled");
+        return "enabled".equalsIgnoreCase(this.status);
     }
 
 //    @Override

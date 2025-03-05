@@ -1,8 +1,8 @@
 package pers.ken.rt.auth.repository.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import pers.ken.rt.auth.repository.po.UserGroup;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ public interface UserGroupMapper extends BaseMapper<UserGroup> {
     void insertUserGroupRel(@Param("userId") Integer userId, @Param("groupId") Integer groupId);
 
     List<UserGroup> selectUserGroups(@Param("userId") Integer userId);
+
+    void insertUserGroupPolicyRel(@Param("groupId") Integer groupId, @Param("policyId") Integer policyId);
 }
 
 

@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import pers.ken.rt.auth.controller.convert.ApplicationConverter;
-import pers.ken.rt.auth.controller.req.ApplicationCreateReq;
-import pers.ken.rt.auth.controller.req.AssignApplicationReq;
-import pers.ken.rt.auth.controller.resp.ApplicationListResp;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import pers.ken.rt.auth.controller.assemble.ApplicationConverter;
+import pers.ken.rt.auth.dto.req.ApplicationCreateRequest;
+import pers.ken.rt.auth.dto.resp.ApplicationCreateResponse;
+import pers.ken.rt.auth.dto.resp.ApplicationListResponse;
 import pers.ken.rt.auth.repository.po.Application;
 import pers.ken.rt.auth.service.ApplicationService;
 import pers.ken.rt.starter.pbac.annotation.AccessManager;
@@ -29,23 +32,15 @@ public class ApplicationController {
     @AccessManager
     @Operation(summary = "创建应用")
     @PostMapping("/v1/applications")
-    public void create(@RequestBody @Validated ApplicationCreateReq req) {
-        Application application = ApplicationConverter.INSTANCE.convert(req);
-        applicationService.create(application);
+    public ApplicationCreateResponse create(@RequestBody @Validated ApplicationCreateRequest request) {
+        Application application = applicationService.create(request);
+        return ApplicationConverter.INSTANCE.convert(application);
     }
 
     @Operation(summary = "应用列表")
     @GetMapping("/v1/applications")
-    public List<ApplicationListResp> list() {
+    public List<ApplicationListResponse> list() {
         List<Application> applications = applicationService.listByTenant();
         return ApplicationConverter.INSTANCE.toList(applications);
-    }
-
-    @Operation(summary = "分配租户应用")
-    @PostMapping("/v1/tenant/{tenantId}/applications")
-    @AccessManager
-    public void assignUserApplications(@PathVariable Integer tenantId,
-                                       @RequestBody AssignApplicationReq req) {
-        applicationService.assignApplications(tenantId, req.getApplicationIds());
     }
 }

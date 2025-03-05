@@ -10,7 +10,10 @@ import pers.ken.rt.common.exception.ErrorCodeInterface;
  */
 @AllArgsConstructor
 public enum AuthErrorCode implements ErrorCodeInterface {
-    PASSWORD_VERIFICATION_FAILED("PasswordVerificationFailed", "Password verification failed"),
+    /**
+     * auth服务自定义异常code
+     */
+    PASSWORD_REUSE_NOT_ALLOWED("PasswordReuseNotAllowed", "Password verification failed"),
 
     ;
 

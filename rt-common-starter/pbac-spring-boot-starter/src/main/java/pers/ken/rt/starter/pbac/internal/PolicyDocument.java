@@ -24,6 +24,7 @@ public class PolicyDocument {
     private String version;
     private String name;
     private String description;
+    @Builder.Default
     private List<Statement> statements = new ArrayList<>();
 
     @Data

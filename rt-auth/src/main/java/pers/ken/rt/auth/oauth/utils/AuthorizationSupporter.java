@@ -3,12 +3,16 @@ package pers.ken.rt.auth.oauth.utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationException;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import pers.ken.rt.common.exception.ErrorCode;
 import pers.ken.rt.common.model.ErrorResponse;
@@ -49,10 +53,17 @@ public class AuthorizationSupporter {
 
             if (e instanceof AuthenticationException) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                if (e instanceof InvalidBearerTokenException) {
-                    errorResponse = ErrorResponse.of(ErrorCode.TOKEN_INVALID, e.getMessage());
+                if (e instanceof InvalidBearerTokenException exDetail) {
+                    String errorDetailMessage = getErrorDetailMessage(exDetail, exDetail.getError());
+                    errorResponse = ErrorResponse.of(ErrorCode.TOKEN_INVALID, errorDetailMessage);
                 } else if (e instanceof InsufficientAuthenticationException) {
                     errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+                } else if (e instanceof OAuth2AuthorizationCodeRequestAuthenticationException exDetail) {
+                    String errorDetailMessage = getErrorDetailMessage(exDetail, exDetail.getError());
+                    errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED, errorDetailMessage);
+                } else if (e instanceof OAuth2AuthenticationException exDetail) {
+                    String errorDetailMessage = getErrorDetailMessage(exDetail, exDetail.getError());
+                    errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED, errorDetailMessage);
                 } else {
                     errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED, e.getMessage());
                 }
@@ -63,5 +74,31 @@ public class AuthorizationSupporter {
         } catch (IOException ex) {
             log.error("Security Utils write to response failed.", e);
         }
+    }
+
+
+    /**
+     * 获取Oauth2框架返回的一些error_code和明细信息
+     *
+     * @param exception
+     * @param oAuth2Error
+     * @return
+     */
+    private static String getErrorDetailMessage(AuthenticationException exception, OAuth2Error oAuth2Error) {
+        StringBuilder detailMessage = new StringBuilder();
+        if (StringUtils.isNotBlank(exception.getMessage())) {
+            detailMessage.append(exception.getMessage());
+        } else {
+            detailMessage.append("Authentication failed");
+        }
+        if (StringUtils.isNotBlank(oAuth2Error.getErrorCode())) {
+            detailMessage.append(". ")
+                .append(oAuth2Error.getErrorCode());
+        }
+        if (StringUtils.isNotBlank(oAuth2Error.getDescription())) {
+            detailMessage.append(":")
+                .append(oAuth2Error.getDescription());
+        }
+        return detailMessage.toString();
     }
 }

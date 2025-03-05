@@ -17,6 +17,8 @@ public class Policy implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    private String appCode;
+
     private String policyCode;
 
     private String name;

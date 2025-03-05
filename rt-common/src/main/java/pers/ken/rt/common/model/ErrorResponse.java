@@ -1,5 +1,6 @@
 package pers.ken.rt.common.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,17 +18,19 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
     private String code;
     private String error;
     private String target;
-    // todo innerErrors
-    private List<InnerError> innerErrors;
+    private List<ErrorDetails> errorDetails;
 
 
     @Data
-    static class InnerError {
+    @AllArgsConstructor
+    public static class ErrorDetails {
         private String code;
+        private String target;
         private String message;
     }
 
@@ -37,9 +40,15 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(ErrorCodeInterface code, String message) {
-        ErrorResponse errorResponse = new ErrorResponse(String.valueOf(code.getCode()), code.getMessage());
-        errorResponse.setError(message);
-        return errorResponse;
+        return new ErrorResponse(code.getCode(), message);
+    }
+
+    public static ErrorResponse of(ErrorCodeInterface code, String message, String target, List<ErrorDetails> errorDetails) {
+        return new ErrorResponse(code.getCode(), message, target, errorDetails);
+    }
+
+    public static ErrorResponse of(ErrorCodeInterface code, String target, List<ErrorDetails> errorDetails) {
+        return new ErrorResponse(code.getCode(), code.getMessage(), target, errorDetails);
     }
 
 }

@@ -1,6 +1,7 @@
 package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import pers.ken.rt.auth.dto.req.ApplicationCreateRequest;
 import pers.ken.rt.auth.repository.po.Application;
 
 import java.util.List;
@@ -12,11 +13,9 @@ import java.util.List;
  */
 public interface ApplicationService extends IService<Application> {
 
-    void create(Application application);
+    Application create(ApplicationCreateRequest request);
 
     Application getByCode(String code);
-
-    void assignApplications(Integer tenantId, List<Integer> applicationIds);
 
     List<Application> listByTenant();
 }

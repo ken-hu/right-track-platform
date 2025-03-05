@@ -1,0 +1,38 @@
+################################
+### Author: ken
+### CreatedAt: 2025-02-26
+### Version: 1.0
+### Reference: http://editorconfig.org
+################################
+
+# 适用于所有文件的通用配置
+# 根目录下的 .editorconfig 文件将应用于其所在目录及其所有子目录
+root = true
+
+# 应用于所有的文件
+[*]
+charset = utf-8 # 设置文件编码为UTF-8
+end_of_line = lf # 设置换行符为LF（Unix风格）
+insert_final_newline = true # 在文件末尾插入新行
+trim_trailing_whitespace = true # 删除行尾空白字符
+
+# 特定类型的文件配置
+[*.{java,xml,properties,yml}]
+indent_style = space # 使用空格进行缩进
+indent_size = 4 # 缩进大小为4个空格
+
+# Java源文件的特殊配置
+[*.java]
+max_line_length = 120 # 最大行长度建议值，可根据实际情况调整
+
+# XML文件的特殊配置
+[*.xml]
+indent_size = 2 # 对于XML文件，可以设置更小的缩进以适应嵌套标签
+
+# YAML和Properties文件的特殊配置
+[*.{yml,properties}]
+indent_size = 2 # 对于YAML和Properties文件，通常使用2个空格作为缩进
+
+# SQL文件的特殊配置，如果你有单独的SQL文件或MyBatis的XML映射文件
+[*.sql]
+indent_size = 2 # 同样地，对于SQL文件使用2个空格作为缩进

@@ -17,7 +17,6 @@ public class UserGroup implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    private Integer tenantId;
     private String tenantCode;
 
     private String name;

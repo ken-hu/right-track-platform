@@ -1,8 +1,8 @@
 package pers.ken.rt.auth.repository.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import pers.ken.rt.auth.repository.po.Role;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -15,6 +15,9 @@ import java.util.List;
 public interface RoleMapper extends BaseMapper<Role> {
 
     List<Role> selectByUser(@Param("userId") Integer userId);
+
+    void insertRolePolicyRel(@Param("roleId") Integer roleId, @Param("policyId") Integer policyId);
+
 }
 
 

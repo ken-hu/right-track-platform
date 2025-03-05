@@ -4,15 +4,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pers.ken.rt.auth.controller.convert.TenantConverter;
-import pers.ken.rt.auth.controller.req.TenantCreateReq;
-import pers.ken.rt.auth.controller.req.TenantListReq;
-import pers.ken.rt.auth.controller.resp.TenantDetailResp;
-import pers.ken.rt.auth.controller.resp.TenantListResp;
+import org.springframework.web.bind.annotation.*;
+import pers.ken.rt.auth.controller.assemble.TenantConverter;
+import pers.ken.rt.auth.dto.req.AssignApplicationRequest;
+import pers.ken.rt.auth.dto.req.BindTenantPolicyRequest;
+import pers.ken.rt.auth.dto.req.TenantCreateRequest;
+import pers.ken.rt.auth.dto.req.TenantListRequest;
+import pers.ken.rt.auth.dto.resp.TenantDetailGetResponse;
+import pers.ken.rt.auth.dto.resp.TenantListResponse;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.oauth.utils.Pages;
 import pers.ken.rt.auth.repository.po.Tenant;
@@ -27,39 +26,54 @@ import pers.ken.rt.starter.pbac.annotation.AccessManager;
  * @desc:
  */
 @RestController
-@Tag(name = "tenant")
+@Tag(name = "tenant", description = "租户")
 @RequiredArgsConstructor
 public class TenantController {
     private final TenantService tenantService;
 
-    @Operation(summary = "我的租户")
+    @Operation(summary = "我的租户信息")
     @GetMapping("/v1/user/tenants")
-    public TenantDetailResp myTenant() {
-        Tenant tenant = tenantService.getByCode(AccountContext.getTenantCode());
+    public TenantDetailGetResponse myTenant() {
+        Tenant tenant = tenantService.getById(AccountContext.getTenantId());
         return TenantConverter.INSTANCE.convert(tenant);
+    }
+
+    @Operation(summary = "租户绑定可用策略")
+    @PostMapping("/v1/tenants/{id}/policies")
+    public void bindTenantPolicies(@PathVariable Integer id, @RequestBody BindTenantPolicyRequest request) {
+        tenantService.bindTenantPolicies(id, request);
     }
 
     @AccessManager
     @Operation(summary = "租户信息")
-    @GetMapping("/v1/tenants/{tenantId}")
-    public TenantDetailResp detail(@PathVariable Integer tenantId) {
-        Tenant tenant = tenantService.getById(tenantId);
+    @GetMapping("/v1/tenants/{id}")
+    public TenantDetailGetResponse detail(@PathVariable Integer id) {
+        Tenant tenant = tenantService.getById(id);
         return TenantConverter.INSTANCE.convert(tenant);
     }
 
     @AccessManager
     @Operation(summary = "租户列表")
     @GetMapping("/v1/tenants")
-    public PageResponse<TenantListResp> create(TenantListReq req) {
-        Page<Tenant> result = tenantService.pageQuery(req);
-        return Pages.convert(result, TenantConverter.INSTANCE::toList);
+    public PageResponse<TenantListResponse> tenantList(TenantListRequest request) {
+        Page<Tenant> result = tenantService.tenantList(request);
+        return Pages.convert(result, TenantConverter.INSTANCE::toListResponse);
     }
 
     @AccessManager
     @Operation(summary = "创建租户")
     @PostMapping("/v1/tenants")
-    public TenantDetailResp create(TenantCreateReq req) {
-        Tenant tenant = tenantService.createTenant(req);
+    public TenantDetailGetResponse tenantCreate(@RequestBody TenantCreateRequest request) {
+        Tenant tenant = tenantService.tenantCreate(request);
         return TenantConverter.INSTANCE.convert(tenant);
+    }
+
+
+    @AccessManager
+    @Operation(summary = "租户分配可使用的应用")
+    @PostMapping("/v1/tenants/{tenantId}/applications")
+    public void assignUserApplications(@PathVariable Integer tenantId,
+                                       @RequestBody AssignApplicationRequest request) {
+        tenantService.bindApplications(tenantId, request);
     }
 }

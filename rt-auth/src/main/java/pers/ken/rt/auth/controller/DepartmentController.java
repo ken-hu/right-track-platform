@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pers.ken.rt.auth.controller.convert.DepartmentConverter;
-import pers.ken.rt.auth.controller.resp.DepartmentsListResp;
-import pers.ken.rt.auth.controller.resp.UserDepartmentListResp;
+import pers.ken.rt.auth.controller.assemble.DepartmentConverter;
+import pers.ken.rt.auth.dto.resp.DepartmentListResponse;
+import pers.ken.rt.auth.dto.resp.UserDepartmentListResponse;
 import pers.ken.rt.auth.repository.po.Department;
 import pers.ken.rt.auth.service.DepartmentService;
 import pers.ken.rt.common.model.TreeResponse;
@@ -27,14 +27,14 @@ public class DepartmentController {
 
     @Operation(summary = "我的部门信息")
     @GetMapping("/v1/user/departments")
-    public List<UserDepartmentListResp> userDepartments() {
+    public List<UserDepartmentListResponse> userDepartments() {
         List<List<Department>> multiDepartments = departmentService.listDepartmentsByUser();
         return DepartmentConverter.INSTANCE.convert(multiDepartments);
     }
 
     @Operation(summary = "部门列表/树")
     @GetMapping("/v1/departments")
-    public TreeResponse<DepartmentsListResp> departments() {
+    public TreeResponse<DepartmentListResponse> departments() {
         List<Department> departments = departmentService.listDepartments();
         return TreeResponse.of(DepartmentConverter.INSTANCE.toTreeNodes(departments));
     }

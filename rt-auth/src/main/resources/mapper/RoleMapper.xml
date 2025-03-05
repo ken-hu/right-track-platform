@@ -16,6 +16,10 @@
         id,name,description,
         created_at,updated_at
     </sql>
+    <insert id="insertRolePolicyRel">
+        insert into role_policy_rel (role_id, policy_id)
+        values (#{roleId}, #{policyId})
+    </insert>
     <select id="selectByUser" resultType="pers.ken.rt.auth.repository.po.Role">
         select role.*
         from user_role_rel rel

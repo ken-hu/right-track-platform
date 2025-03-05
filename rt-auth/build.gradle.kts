@@ -21,6 +21,8 @@ dependencies {
     // 引入client是因为集成第三方平台做联合登录，认证服务就变成了Client端了
     implementation(libs.springboot.oauth2.client)
     implementation(libs.springboot.configuration.processor)
+    // spring document
+    implementation(libs.springdoc.openapi)
     // utils
     implementation(libs.mapstruct)
     annotationProcessor(libs.mapstruct.processor)

@@ -15,7 +15,7 @@ import pers.ken.rt.auth.repository.mapper.TenantMapper;
 import pers.ken.rt.auth.repository.po.Account;
 import pers.ken.rt.auth.repository.po.Role;
 import pers.ken.rt.auth.repository.po.Tenant;
-import pers.ken.rt.auth.service.*;
+import pers.ken.rt.auth.service.AccountService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +41,14 @@ public class AuthUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("Account not found");
         }
         Tenant tenant = tenantMapper.selectOne(
-                Wrappers.lambdaQuery(Tenant.class)
-                        .eq(Tenant::getTenantCode, account.getTenantCode())
+            Wrappers.lambdaQuery(Tenant.class)
+                .eq(Tenant::getTenantCode, account.getTenantCode())
         );
         List<Role> roles = roleMapper.selectByUser(account.getId());
-        List<String> roleNames = roles.stream().map(Role::getName).toList();
+        List<String> roleNames = roles.stream().map(Role::getName).collect(Collectors.toList());
         // todo authoritiesStr ??
         ArrayList<String> authoritiesStr = Lists.newArrayList("user", "admin", "app", "web");
         List<SimpleGrantedAuthority> authorities = authoritiesStr.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        return new AuthUserDetails(account.getId(), account.getUsername(), account.getPassword(), account.getStatus(), account.getTenantCode(), tenant.getId(), roleNames, authorities);
+        return new AuthUserDetails(account.getId(), account.getNickname(), account.getUsername(), account.getPassword(), account.getStatus(), account.getTenantCode(), tenant.getId(), roleNames, authorities);
     }
 }

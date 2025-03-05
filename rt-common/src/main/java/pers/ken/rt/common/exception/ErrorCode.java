@@ -16,35 +16,35 @@ public enum ErrorCode implements ErrorCodeInterface {
     /**
      * Define for base service code
      */
-    FAILED("ServerError", "System error"),
+    FAILED("ServerError", "System error."),
 
 
     /**
      * Authorization & permission
      */
-    AUTHENTICATION_FAILED("AuthenticationFailed", "Unauthorized identity access"),
-    ACCESS_DENY("AccessDeny", "Access denied"),
-    TOKEN_INVALID("TokenInvalid", "Token is invalid"),
+    AUTHENTICATION_FAILED("AuthenticationFailed", "Unauthorized identity access."),
+    ACCESS_DENY("AccessDeny", "Access denied."),
+    TOKEN_INVALID("TokenInvalid", "Token is invalid."),
 
 
     /**
      * Parameters check
      */
-    INVALID_PARAMETERS("InvalidParameters", "Please check request parameters"),
-    MISSING_PARAMETERS("MissingParameters", "Please check request parameters"),
-    RESOURCE_NOT_FOUND("ResourcesNotFound", "The resource could not be found"),
+    INVALID_ARGUMENTS("InvalidArguments", "Invalid request content."),
+    MISSING_ARGUMENTS("MissingArguments", "Invalid request content."),
+    DATA_NOT_FOUND("DataNotFound", "Data could not be found."),
 
 
     /**
      * Business
      */
-    BUSINESS_ERROR("BusinessError", "Business verification exception"),
+    BUSINESS_ERROR("BusinessError", "Business verification exception."),
 
     /**
      * Rest api error
      */
-    INTERNAL_ERROR("InternalServiceError", "Internal call exception"),
-    EXTERNAL_ERROR("ExternalServiceError", "External call exception"),
+    INTERNAL_ERROR("InternalServiceError", "Internal call exception."),
+    EXTERNAL_ERROR("ExternalServiceError", "External call exception."),
 
     ;
 

@@ -1,8 +1,8 @@
 package pers.ken.rt.auth.repository.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import pers.ken.rt.auth.repository.po.Policy;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -14,13 +14,10 @@ import java.util.List;
  */
 public interface PolicyMapper extends BaseMapper<Policy> {
 
-    void insertUserPolicyRel(@Param("userId") Integer userId, @Param("policyId") Integer policyId);
-
     void deleteUserPolicyRelByPolicyIds(@Param("userId") Integer userId, @Param("policyIds") List<Integer> policyIds);
 
-    void insertUserGroupPolicyRel(@Param("groupId") Integer groupId, @Param("policyId") Integer policyId);
-
     List<Policy> selectPoliciesByUser(@Param("userId") Integer userId);
+
 }
 
 

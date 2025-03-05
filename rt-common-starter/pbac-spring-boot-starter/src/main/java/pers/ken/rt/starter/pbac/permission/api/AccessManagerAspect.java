@@ -67,10 +67,12 @@ public class AccessManagerAspect {
                 return joinPoint.proceed();
             }
             // Init context
+            // 我拥有的策略
             List<PolicyDocument> policies = loadPolicies();
 
             String service = getPbacServiceName(joinPoint);
 
+            // 当前的请求需要的action+resources
             String action = getRequestAction(service, method);
 
             List<String> resources = getRequestResources(joinPoint.getArgs(), service, annotation, method);

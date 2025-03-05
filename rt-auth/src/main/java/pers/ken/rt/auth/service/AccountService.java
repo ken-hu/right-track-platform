@@ -1,9 +1,10 @@
 package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import pers.ken.rt.auth.controller.req.PasswordRestReq;
-import pers.ken.rt.auth.controller.req.UserListReq;
-import pers.ken.rt.auth.controller.req.UserUpdateProfileReq;
+import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
+import pers.ken.rt.auth.dto.req.PasswordRestRequest;
+import pers.ken.rt.auth.dto.req.UserListRequest;
+import pers.ken.rt.auth.dto.req.UserUpdateProfileRequest;
 import pers.ken.rt.auth.repository.po.Account;
 import pers.ken.rt.auth.repository.po.ThirdAccount;
 
@@ -19,11 +20,15 @@ public interface AccountService extends IService<Account> {
 
     Integer saveByThirdAccount(ThirdAccount thirdAccount);
 
-    Account updateProfile(Integer id, UserUpdateProfileReq req);
+    Account updateProfile(Integer id, UserUpdateProfileRequest request);
 
-    void disabledUser(Integer userId);
+    void userDisabled(Integer userId);
 
-    List<Account> listByQuery(UserListReq req);
+    List<Account> listByQuery(UserListRequest request);
 
-    void resetPassword(PasswordRestReq req);
+    void resetPassword(PasswordRestRequest request);
+
+    List<Account> listByUserGroup(Integer userGroupId);
+
+    void bindUserPolicy(Integer userId, AssignPoliciesRequest request);
 }

@@ -7,7 +7,7 @@ package pers.ken.rt.common.exception;
  *
  * @author _Ken.Hu
  */
-public class MicroServiceException extends ServiceException {
+public class MicroServiceException extends BaseServiceException {
     public MicroServiceException(ErrorCodeInterface errorCode) {
         super(errorCode);
     }

@@ -19,9 +19,17 @@ public class Tenant implements Serializable {
 
     private String tenantCode;
 
-    private String name;
+    private String tenantName;
 
     private String status;
+
+    private Integer ownerUserId;
+
+    private String contactEmail;
+
+    private String contactPhone;
+
+    private String ext;
 
     private LocalDateTime createdAt;
 

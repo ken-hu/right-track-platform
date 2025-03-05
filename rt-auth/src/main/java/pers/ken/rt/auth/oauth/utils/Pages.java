@@ -51,6 +51,10 @@ public class Pages {
         return new Pagination((int) page.getCurrent(), (int) page.getSize(), total);
     }
 
+    public static <T> Page<T> toPage(Pagination pagination) {
+        return new Page<>(pagination.getPage(), pagination.getPerPage());
+    }
+
     public static <T, R> List<R> assemble(Page<T> page, Function<T, R> fun) {
         return page.getRecords().stream()
                 .map(fun)

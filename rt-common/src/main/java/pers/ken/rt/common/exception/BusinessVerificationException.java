@@ -5,7 +5,7 @@ package pers.ken.rt.common.exception;
  * @Created: 2024/12/23 10:51
  * @Author ken
  */
-public class BusinessVerificationException extends ServiceException {
+public class BusinessVerificationException extends BaseServiceException {
     public BusinessVerificationException(ErrorCodeInterface errorCode) {
         super(errorCode);
     }

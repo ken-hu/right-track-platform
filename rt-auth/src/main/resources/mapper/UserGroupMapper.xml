@@ -21,6 +21,10 @@
         insert into user_group_rel(user_id, group_id)
         values (#{userId}, #{groupId})
     </insert>
+    <insert id="insertUserGroupPolicyRel">
+        insert into user_group_policy_rel (user_id, policy_id)
+        values (#{userId}, #{policyId})
+    </insert>
     <select id="selectUserGroups" resultType="pers.ken.rt.auth.repository.po.UserGroup">
         select ug.*
         from user_group ug

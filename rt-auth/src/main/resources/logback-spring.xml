@@ -9,7 +9,7 @@
 
     <appender name="APP-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%X{x-request-id} | ${CONSOLE_LOG_PATTERN}</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -26,7 +26,7 @@
         </rollingPolicy>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%X{x-request-id} | ${FILE_LOG_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 

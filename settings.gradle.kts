@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             version("springboot", "3.3.5")
             version("springcloud", "2022.0.1")
             version("alibaba-springcloud", "2022.0.0.0-RC1")
-            version("springdoc", "1.6.14")
+            version("springdoc", "2.6.0")
             version("guava", "31.1-jre")
             version("common-lang3", "3.12.0")
             version("mapstruct", "1.5.3.Final")
@@ -185,8 +185,9 @@ dependencyResolutionManagement {
             library(
                 "springdoc-openapi",
                 "org.springdoc",
-                "springdoc-openapi-ui"
+                "springdoc-openapi-starter-webmvc-ui"
             ).versionRef("springdoc")
+
             library(
                 "springdoc-openapi-webflux",
                 "org.springdoc",

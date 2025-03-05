@@ -17,6 +17,8 @@ public class Role implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    private String tenantCode;
+
     private String name;
 
     private String description;

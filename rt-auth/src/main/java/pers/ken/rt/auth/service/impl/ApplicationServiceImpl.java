@@ -4,14 +4,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import pers.ken.rt.auth.dto.req.ApplicationCreateRequest;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
+import pers.ken.rt.auth.repository.mapper.ApplicationMapper;
 import pers.ken.rt.auth.repository.po.Application;
 import pers.ken.rt.auth.repository.po.TenantApplicationAuthorization;
 import pers.ken.rt.auth.service.ApplicationService;
-import pers.ken.rt.auth.repository.mapper.ApplicationMapper;
-import org.springframework.stereotype.Service;
 import pers.ken.rt.auth.service.TenantApplicationAuthorizationService;
 import pers.ken.rt.common.exception.BusinessVerificationException;
 import pers.ken.rt.common.exception.ErrorCode;
@@ -28,49 +29,37 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Application>
-        implements ApplicationService {
+    implements ApplicationService {
 
     private final TenantApplicationAuthorizationService tenantApplicationAuthorizationService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(Application application) {
-        String applicationCode = application.getAppCode();
-        if (StringUtils.isNotBlank(applicationCode)) {
-            checkDuplicateApplicationCode(applicationCode);
-        } else {
+    public Application create(ApplicationCreateRequest request) {
+        Application application = getByCode(request.getAppCode());
+        if (null != application) {
+            throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "ApplicationCode: '%s' repeat.".formatted(application.getAppCode()));
+        }
+
+        String applicationCode = request.getAppCode();
+        if (StringUtils.isBlank(applicationCode)) {
             applicationCode = NanoIdGenerator.generate();
         }
-        checkDuplicateApplicationCode(application.getAppCode());
-        application.setAppCode(applicationCode);
-        this.save(application);
-    }
+        Application newApplication = new Application();
+        newApplication.setName(request.getName());
+        newApplication.setAppCode(applicationCode);
+        newApplication.setDescription(request.getDescription());
+        newApplication.setIndexUrl(request.getIndexUrl());
 
-    private void checkDuplicateApplicationCode(String code) {
-        Application application = getByCode(code);
-        if (null != application) {
-            throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "Application code duplication");
-        }
+        this.save(newApplication);
+        return newApplication;
     }
 
     @Override
     public Application getByCode(String code) {
-        return this.getOne(
-                Wrappers.lambdaQuery(Application.class)
-                        .eq(Application::getAppCode, code), false
-        );
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void assignApplications(Integer tenantId, List<Integer> applicationIds) {
-        applicationIds.forEach(appId -> {
-                    TenantApplicationAuthorization authorization = new TenantApplicationAuthorization();
-                    authorization.setAppId(appId);
-                    authorization.setTenantId(tenantId);
-                    authorization.setCreatedBy(AccountContext.getUsername());
-                    tenantApplicationAuthorizationService.save(authorization);
-                }
+        return baseMapper.selectOne(
+            Wrappers.lambdaQuery(Application.class)
+                .eq(Application::getAppCode, code), false
         );
     }
 
@@ -81,18 +70,18 @@ public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Appli
         }
 
         List<TenantApplicationAuthorization> authorizations = tenantApplicationAuthorizationService.list(
-                Wrappers.lambdaQuery(TenantApplicationAuthorization.class)
-                        .eq(TenantApplicationAuthorization::getTenantId, AccountContext.getTenantId()));
+            Wrappers.lambdaQuery(TenantApplicationAuthorization.class)
+                .eq(TenantApplicationAuthorization::getTenantId, AccountContext.getTenantId()));
 
         if (CollectionUtils.isEmpty(authorizations)) {
             return new ArrayList<>();
         }
         List<Integer> applicationIds = authorizations
-                .stream()
-                .map(TenantApplicationAuthorization::getAppId)
-                .toList();
-        return list(Wrappers.lambdaQuery(Application.class)
-                .in(Application::getId, applicationIds));
+            .stream()
+            .map(TenantApplicationAuthorization::getAppId)
+            .toList();
+        return baseMapper.selectList(Wrappers.lambdaQuery(Application.class)
+            .in(Application::getId, applicationIds));
     }
 }
 
