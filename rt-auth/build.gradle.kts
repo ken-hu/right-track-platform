@@ -13,14 +13,14 @@ description = "rt-auth"
 dependencies {
     // project
     implementation(project(":rt-common"))
-    implementation(project(":pbac-spring-boot-starter"))
+    implementation(libs.pbac.spring.boot.starter)
     // spring family
     implementation(libs.spring.session.redis)
     implementation(libs.springboot.aop)
     implementation(libs.spring.security.authorizationserver)
     // 引入client是因为集成第三方平台做联合登录，认证服务就变成了Client端了
     implementation(libs.springboot.oauth2.client)
-    implementation(libs.springboot.configuration.processor)
+    annotationProcessor(libs.springboot.configuration.processor)
     // spring document
     implementation(libs.springdoc.openapi)
     // utils
@@ -29,6 +29,7 @@ dependencies {
     // database
     implementation(libs.postgresql)
     implementation(libs.mybatis.starter)
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
 
 
     // test

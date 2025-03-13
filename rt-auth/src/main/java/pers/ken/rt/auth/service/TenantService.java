@@ -23,7 +23,7 @@ public interface TenantService extends IService<Tenant> {
      * @param request the request
      * @return the page
      */
-    Page<Tenant> tenantList(TenantListRequest request);
+    Page<Tenant> listTenant(TenantListRequest request);
 
     /**
      * Tenant create tenant.
@@ -31,7 +31,7 @@ public interface TenantService extends IService<Tenant> {
      * @param request the request
      * @return the tenant
      */
-    Tenant tenantCreate(TenantCreateRequest request);
+    Tenant createTenant(TenantCreateRequest request);
 
     /**
      * Gets by code.

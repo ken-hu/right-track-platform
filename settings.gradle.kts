@@ -38,7 +38,15 @@ dependencyResolutionManagement {
             version("p6spy", "3.9.1")
             version("mybatis-starter", "3.5.7")
             version("jnanoid", "2.0.0")
+            version("pbac-spring-boot-starter", "1.0.0-SNAPSHOT")
 
+
+            // Project custom
+            library(
+                "pbac-spring-boot-starter",
+                "pers.ken.rt",
+                "pbac-spring-boot-starter"
+            ).versionRef("pbac-spring-boot-starter")
 
             // SpringBoot
             library(
@@ -191,7 +199,7 @@ dependencyResolutionManagement {
             library(
                 "springdoc-openapi-webflux",
                 "org.springdoc",
-                "springdoc-openapi-webflux-ui"
+                "springdoc-openapi-starter-webflux-ui"
             ).versionRef("springdoc")
 
             //Common Utils

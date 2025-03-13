@@ -8,7 +8,7 @@ import lombok.Data;
  * @Author ken
  */
 @Data
-public class UserGroupCreateRequest {
+public class CreateUserGroupRequest {
     private String name;
     private String description;
 }

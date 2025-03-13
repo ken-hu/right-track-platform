@@ -22,8 +22,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     implements DepartmentService {
 
     @Override
-    public List<List<Department>> listDepartmentsByUser() {
-        Integer userId = AccountContext.getUserId();
+    public List<List<Department>> listDepartmentsByUser(Integer userId) {
         List<String> deptCodes = baseMapper.selectUserDeptCodes(userId);
         return deptCodes.stream().map(code -> baseMapper.selectRecursionUpDept(AccountContext.getTenantCode(), code)).toList();
     }

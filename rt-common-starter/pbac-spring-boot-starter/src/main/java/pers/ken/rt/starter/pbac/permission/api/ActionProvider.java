@@ -3,8 +3,6 @@ package pers.ken.rt.starter.pbac.permission.api;
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import pers.ken.rt.common.model.PageResponse;
-import pers.ken.rt.common.model.TreeResponse;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -126,7 +124,7 @@ public class ActionProvider {
         }
         if (HttpMethodName.GET.equalsIgnoreCase(method)) {
             //todo PageResult 不通用.. 最好是用户自定义
-            if (Collection.class.isAssignableFrom(respType) || PageResponse.class.isAssignableFrom(respType) || TreeResponse.class.isAssignableFrom(respType)) {
+            if (Collection.class.isAssignableFrom(respType)) {
                 actionName = OperationName.LIST + actionName;
             } else {
                 actionName = OperationName.GET + actionName;

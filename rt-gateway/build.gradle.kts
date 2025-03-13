@@ -12,8 +12,6 @@ dependencies {
     implementation(libs.springboot.oauth2.resourceserver)
     implementation(libs.springboot.oauth2.client)
     implementation(libs.springboot.webflux)
-//    implementation(libs.oauth2.oidc.sdk)
-//    implementation(libs.oauth2.jose)
     implementation(libs.springcloud.bootstrap)
     implementation(libs.alibaba.springcloud.sentinel.gateway)
     implementation(libs.alibaba.springcloud.sentinel)

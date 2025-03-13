@@ -1,6 +1,5 @@
 package pers.ken.rt.auth.dto.req;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import pers.ken.rt.common.model.Pagination;
@@ -12,7 +11,12 @@ import pers.ken.rt.common.model.Pagination;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PolicyListRequest extends Pagination {
-    @NotBlank
-    private String applicationCode;
+public class ListPolicyRequest extends Pagination {
+    private Integer applicationId;
+
+    private Integer roleId;
+
+    private Integer userGroupId;
+
+    private Integer userId;
 }

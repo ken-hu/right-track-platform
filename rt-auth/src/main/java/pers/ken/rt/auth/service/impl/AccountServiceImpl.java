@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
 import pers.ken.rt.auth.dto.req.PasswordRestRequest;
 import pers.ken.rt.auth.dto.req.UserListRequest;
 import pers.ken.rt.auth.dto.req.UserUpdateProfileRequest;
@@ -65,8 +64,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void userDisabled(Integer userId) {
-        Account account = getById(userId);
+    public void userDisable(Integer userId) {
+        Account account = baseMapper.selectById(userId);
         if (Objects.isNull(account)) {
             throw new BusinessVerificationException(ErrorCode.DATA_NOT_FOUND, "Account not exists");
         }
@@ -103,13 +102,6 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
     @Override
     public List<Account> listByUserGroup(Integer userGroupId) {
         return baseMapper.selectByUserGroup(userGroupId);
-    }
-
-    @Override
-    public void bindUserPolicy(Integer userId, AssignPoliciesRequest request) {
-        request.getPolicyIds().forEach(policy -> {
-            baseMapper.insertUserPolicyRel(userId, policy);
-        });
     }
 
 }

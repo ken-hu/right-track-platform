@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface ApplicationService extends IService<Application> {
 
-    Application create(ApplicationCreateRequest request);
+    Application createApplication(ApplicationCreateRequest request);
 
     Application getByCode(String code);
 
-    List<Application> listByTenant();
+    List<Application> listApplications();
+
 }

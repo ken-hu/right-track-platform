@@ -45,7 +45,7 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant>
 
 
     @Override
-    public Page<Tenant> tenantList(TenantListRequest request) {
+    public Page<Tenant> listTenant(TenantListRequest request) {
         return baseMapper.selectPage(
             Pages.toPage(request),
             Wrappers.emptyWrapper());
@@ -54,7 +54,7 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Tenant tenantCreate(TenantCreateRequest request) {
+    public Tenant createTenant(TenantCreateRequest request) {
         Tenant tenant = baseMapper.selectById(AccountContext.getTenantId());
         if (null != tenant) {
             throw new BusinessVerificationException(ErrorCode.INVALID_ARGUMENTS, String.format("TenantCode '%s' repeat.", request.getTenantCode()));
@@ -104,17 +104,18 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant>
 
     @Override
     public void bindTenantPolicies(Integer id, BindTenantPolicyRequest request) {
-        // todo 找到租户对应的管理人
+        // 找到租户对应的管理员角色
+        // 授权给管理员角色
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void bindApplications(Integer tenantId, AssignApplicationRequest request) {
         List<TenantApplicationAuthorization> tenantApplicationAuthorizations = request.getApplicationIds()
             .stream().map(appId -> {
                     TenantApplicationAuthorization authorization = new TenantApplicationAuthorization();
                     authorization.setAppId(appId);
                     authorization.setTenantId(tenantId);
-                    authorization.setCreatedBy(AccountContext.getUsername());
                     return authorization;
                 }
             ).toList();

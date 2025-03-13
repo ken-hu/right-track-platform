@@ -1,5 +1,7 @@
 package pers.ken.rt.auth.repository.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -18,8 +20,10 @@ public class TenantApplicationAuthorization implements Serializable {
 
     private Integer appId;
 
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private String createdBy;
 
+    @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
     private static final long serialVersionUID = 1L;

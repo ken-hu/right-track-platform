@@ -1,8 +1,8 @@
 package pers.ken.rt.starter.pbac.core;
 
-import com.google.common.collect.Lists;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,10 @@ public class InMemoryDynamicExpressionProvider implements DynamicExpressionsProv
             put("authority_city", "440100");
         }};
 
-        return Lists.newArrayList(context, context2);
+        ArrayList<Map<String, String>> result = new ArrayList<>();
+        result.add(context);
+        result.add(context2);
+        return result;
     }
 
 }

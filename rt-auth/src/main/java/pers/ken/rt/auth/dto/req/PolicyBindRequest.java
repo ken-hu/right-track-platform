@@ -11,7 +11,7 @@ import java.util.List;
  * @Author ken
  */
 @Data
-public class AssignPoliciesRequest {
+public class PolicyBindRequest {
     @NotEmpty
     private List<Integer> policyIds;
 }

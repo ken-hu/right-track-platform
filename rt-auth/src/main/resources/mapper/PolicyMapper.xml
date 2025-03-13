@@ -17,6 +17,10 @@
         id,name,version,
         content,created_at,updated_at
     </sql>
+  <insert id="insertUserPolicyRel">
+    insert into user_policy_rel (user_id, policy_id)
+    values (#{userId}, #{policyId})
+  </insert>
 
     <delete id="deleteUserPolicyRelByPolicyIds">
         delete from user_policy_rel where user_id = #{userId}

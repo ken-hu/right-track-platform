@@ -1,7 +1,6 @@
 package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
 import pers.ken.rt.auth.dto.req.PasswordRestRequest;
 import pers.ken.rt.auth.dto.req.UserListRequest;
 import pers.ken.rt.auth.dto.req.UserUpdateProfileRequest;
@@ -22,7 +21,7 @@ public interface AccountService extends IService<Account> {
 
     Account updateProfile(Integer id, UserUpdateProfileRequest request);
 
-    void userDisabled(Integer userId);
+    void userDisable(Integer userId);
 
     List<Account> listByQuery(UserListRequest request);
 
@@ -30,5 +29,4 @@ public interface AccountService extends IService<Account> {
 
     List<Account> listByUserGroup(Integer userGroupId);
 
-    void bindUserPolicy(Integer userId, AssignPoliciesRequest request);
 }

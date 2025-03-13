@@ -10,13 +10,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Ken.Hu
  */
-@ConfigurationProperties(prefix = PbacProperties.ACCESS_CONTROL_PREFIX)
 @Data
+@ConfigurationProperties(prefix = PbacProperties.ACCESS_CONTROL_PREFIX)
 public class PbacProperties {
 
+    public static final String ACCESS_CONTROL_PREFIX = "rt-pbac";
     public static final String ACCESS_CONTROL_API_ENABLE = "rt-pbac.api-auth.enabled";
     public static final String ACCESS_CONTROL_API_CHECK_ENABLE = "rt-pbac.api-auth.check.enabled";
-    public static final String ACCESS_CONTROL_PREFIX = "rt-pbac";
     public static final String ACCESS_CONTROL_DATA_ENABLE = "rt-pbac.data-auth.enabled";
 
     private String platform = "rt";

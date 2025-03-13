@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import pers.ken.rt.starter.pbac.annotation.PbacAccessControlEnable;
 import pers.ken.rt.starter.pbac.core.DynamicExpressionsProvider;
 
 /**
@@ -14,7 +13,7 @@ import pers.ken.rt.starter.pbac.core.DynamicExpressionsProvider;
  */
 @Configuration
 @Slf4j
-@PbacAccessControlEnable
+//@PbacAccessControlEnable
 public class PbacConfiguration {
     @Bean
     @Primary

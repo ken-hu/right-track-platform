@@ -16,7 +16,6 @@ public interface AccountMapper extends BaseMapper<Account> {
 
     List<Account> selectByUserGroup(@Param("userGroupId") Integer userGroupId);
 
-    void insertUserPolicyRel(@Param("userId") Integer userId, @Param("policyId") Integer policyId);
 }
 
 

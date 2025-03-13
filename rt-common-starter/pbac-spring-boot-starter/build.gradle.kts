@@ -3,22 +3,37 @@
  */
 group = "pers.ken.rt"
 description = "pbac-spring-boot-starter"
+version = "1.0.0-SNAPSHOT"
 
+plugins {
+    java
+    `maven-publish`
+}
 
 dependencies {
-    api(project(":rt-common"))
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("com.alibaba:druid:1.2.15")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("com.google.guava:guava:31.1-jre")
     compileOnly("org.springframework.boot:spring-boot-starter-web")
     compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
     compileOnly("org.springframework.boot:spring-boot-starter-aop")
-    compileOnly("com.alibaba:druid:1.2.15")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
-
-
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
 }

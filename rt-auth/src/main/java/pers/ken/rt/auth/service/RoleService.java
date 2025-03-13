@@ -2,7 +2,7 @@ package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
+import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.dto.req.RoleCreateRequest;
 import pers.ken.rt.auth.dto.req.RoleListRequest;
 import pers.ken.rt.auth.repository.po.Role;
@@ -24,5 +24,7 @@ public interface RoleService extends IService<Role> {
 
     void bindUserRole(Integer userId, Integer roleId);
 
-    void bindRolePolicy(Integer roleId, AssignPoliciesRequest request);
+    void bindRolePolicy(Integer roleId, PolicyBindRequest request);
+
+    void removeRolePolicy(Integer roleId, PolicyBindRequest request);
 }

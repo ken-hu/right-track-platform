@@ -13,5 +13,4 @@ import pers.ken.rt.common.model.Pagination;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserListRequest extends Pagination {
-
 }

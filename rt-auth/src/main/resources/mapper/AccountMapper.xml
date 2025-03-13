@@ -24,10 +24,6 @@
         avatar,status,registered_at,
         created_at,updated_at
     </sql>
-    <insert id="insertUserPolicyRel">
-        insert into user_policy_rel (user_id, policy_id)
-        values (#{userId}, #{policyId})
-    </insert>
     <select id="selectByUserGroup" resultType="pers.ken.rt.auth.repository.po.Account">
       select account.*
       from account

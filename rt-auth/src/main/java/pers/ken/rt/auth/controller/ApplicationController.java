@@ -32,15 +32,15 @@ public class ApplicationController {
     @AccessManager
     @Operation(summary = "创建应用")
     @PostMapping("/v1/applications")
-    public ApplicationCreateResponse create(@RequestBody @Validated ApplicationCreateRequest request) {
-        Application application = applicationService.create(request);
+    public ApplicationCreateResponse applicationCreate(@RequestBody @Validated ApplicationCreateRequest request) {
+        Application application = applicationService.createApplication(request);
         return ApplicationConverter.INSTANCE.convert(application);
     }
 
     @Operation(summary = "应用列表")
     @GetMapping("/v1/applications")
-    public List<ApplicationListResponse> list() {
-        List<Application> applications = applicationService.listByTenant();
+    public List<ApplicationListResponse> listApplications() {
+        List<Application> applications = applicationService.listApplications();
         return ApplicationConverter.INSTANCE.toList(applications);
     }
 }

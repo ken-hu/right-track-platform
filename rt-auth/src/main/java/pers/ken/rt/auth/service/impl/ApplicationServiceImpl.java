@@ -35,7 +35,7 @@ public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Appli
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Application create(ApplicationCreateRequest request) {
+    public Application createApplication(ApplicationCreateRequest request) {
         Application application = getByCode(request.getAppCode());
         if (null != application) {
             throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "ApplicationCode: '%s' repeat.".formatted(application.getAppCode()));
@@ -64,7 +64,7 @@ public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Appli
     }
 
     @Override
-    public List<Application> listByTenant() {
+    public List<Application> listApplications() {
         if (AccountContext.isAdmin()) {
             return list(Wrappers.emptyWrapper());
         }

@@ -7,19 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pers.ken.rt.auth.controller.assemble.RoleConverter;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
+import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.dto.req.RoleCreateRequest;
 import pers.ken.rt.auth.dto.req.RoleListRequest;
 import pers.ken.rt.auth.dto.resp.RoleGetResponse;
 import pers.ken.rt.auth.dto.resp.RoleListResponse;
-import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.oauth.utils.Pages;
 import pers.ken.rt.auth.repository.po.Role;
 import pers.ken.rt.auth.service.RoleService;
 import pers.ken.rt.common.model.PageResponse;
 import pers.ken.rt.starter.pbac.annotation.AccessManager;
-
-import java.util.List;
 
 /**
  * @ClassName: RoleController
@@ -31,14 +28,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;
-
-    @Operation(summary = "我的角色")
-    @GetMapping("/v1/user/roles")
-    public List<RoleListResponse> myRoles() {
-        List<Role> roles = roleService.listRolesByUser(AccountContext.getUserId());
-        return RoleConverter.INSTANCE.convert(roles);
-    }
-
     @AccessManager
     @Operation(summary = "角色列表")
     @GetMapping("/v1/roles")
@@ -56,9 +45,18 @@ public class RoleController {
     }
 
     @AccessManager
+    @Operation(summary = "移除角色策略")
+    @DeleteMapping("/v1/roles/{roleId}/policies")
+    public void removeRolePolicy(@PathVariable Integer roleId,
+                                 @RequestBody @Validated PolicyBindRequest request) {
+        roleService.removeRolePolicy(roleId, request);
+    }
+
+    @AccessManager
     @Operation(summary = "给角色分配策略")
     @PostMapping("/v1/roles/{roleId}/policies")
-    public void bindRolePolicy(@PathVariable Integer roleId, @Validated AssignPoliciesRequest request) {
+    public void bindRolePolicy(@PathVariable Integer roleId, @Validated PolicyBindRequest request) {
         roleService.bindRolePolicy(roleId, request);
     }
+
 }

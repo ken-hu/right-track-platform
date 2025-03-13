@@ -22,7 +22,7 @@ public interface UserGroupService extends IService<UserGroup> {
      * @param request the request
      * @return the page
      */
-    Page<UserGroup> listByTenant(UserGroupListRequest request);
+    Page<UserGroup> listUserGroups(ListUserGroupRequest request);
 
     /**
      * Add users to group.
@@ -46,7 +46,7 @@ public interface UserGroupService extends IService<UserGroup> {
      * @param request the request
      * @return the user group
      */
-    UserGroup createUserGroup(UserGroupCreateRequest request);
+    UserGroup createUserGroup(CreateUserGroupRequest request);
 
     /**
      * Update user group user group.
@@ -57,5 +57,6 @@ public interface UserGroupService extends IService<UserGroup> {
      */
     UserGroup updateUserGroup(Integer userGroupId, UserGroupUpdateRequest request);
 
-    void bindUserGroupPolicy(Integer groupId, AssignPoliciesRequest request);
+    void bindUserGroupPolicy(Integer groupId, PolicyBindRequest request);
+
 }

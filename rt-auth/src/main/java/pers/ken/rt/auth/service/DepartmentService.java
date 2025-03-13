@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface DepartmentService extends IService<Department> {
 
-    List<List<Department>> listDepartmentsByUser();
+    List<List<Department>> listDepartmentsByUser(Integer userId);
 
     List<Department> listDepartments();
 }

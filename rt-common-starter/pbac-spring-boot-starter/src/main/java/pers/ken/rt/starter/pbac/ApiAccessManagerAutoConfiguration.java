@@ -27,19 +27,6 @@ import pers.ken.rt.starter.pbac.permission.api.AccessManagerAspect;
 public class ApiAccessManagerAutoConfiguration {
 
     /**
-     * Default policy provider policy provider.
-     *
-     * @return the policy provider
-     */
-//    @Bean
-//    @Lazy
-//    @ConditionalOnMissingBean
-//    public PolicyProvider defaultPolicyProvider() {
-//        log.info("PbacAutoConfiguration defaultPolicyProvider init succeed");
-//        return new InMemoryPolicyProvider();
-//    }
-
-    /**
      * Default dynamic expressions provider dynamic expressions provider.
      *
      * @return the dynamic expressions provider
@@ -47,7 +34,7 @@ public class ApiAccessManagerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DynamicExpressionsProvider defaultDynamicExpressionsProvider() {
-        log.info("PbacAutoConfiguration defaultDynamicExpressionsProvider init succeed");
+        log.info("PbacAutoConfiguration defaultDynamicExpressionsProvider init succeed...");
         return new InMemoryDynamicExpressionProvider();
     }
 
@@ -59,7 +46,7 @@ public class ApiAccessManagerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public PermissionExceptionTranslation permissionExceptionTranslation() {
-        log.info("PbacAutoConfiguration defaultPermissionExceptionTranslation init succeed");
+        log.info("PbacAutoConfiguration defaultPermissionExceptionTranslation init succeed...");
         return new DefaultPermissionExceptionTranslation();
     }
 
@@ -78,7 +65,7 @@ public class ApiAccessManagerAutoConfiguration {
                                                       PolicyProvider provider,
                                                       DynamicExpressionsProvider dynamicExpressionsProvider,
                                                       PermissionExceptionTranslation permissionExceptionTranslation) {
-        log.info("PbacAutoConfiguration accessManagementAspect init succeed");
+        log.info("PbacAutoConfiguration accessManagementAspect init succeed...");
         return new AccessManagerAspect(pbacProperties, provider, permissionExceptionTranslation, dynamicExpressionsProvider);
     }
 }

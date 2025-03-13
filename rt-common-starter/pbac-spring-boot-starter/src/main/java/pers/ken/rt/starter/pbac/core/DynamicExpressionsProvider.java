@@ -1,6 +1,5 @@
 package pers.ken.rt.starter.pbac.core;
 
-import com.google.common.collect.Lists;
 import org.springframework.util.CollectionUtils;
 import pers.ken.rt.starter.pbac.internal.PolicyDocument;
 
@@ -57,7 +56,7 @@ public interface DynamicExpressionsProvider {
             return Collections.singletonList(expression);
         }
         List<Map<String, String>> contexts = getValuesByVariableName(variableNames);
-        ArrayList<String> expressions = Lists.newArrayList();
+        ArrayList<String> expressions = new ArrayList<>();
         for (Map<String, String> context : contexts) {
             String parsedExpression = applyContextsToExpression(expression, context, variableNames);
             expressions.add(parsedExpression);

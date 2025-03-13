@@ -11,5 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DataScope {
-    String[] tables();
+    String table();
+
+    DataCondition[] conditions();
 }

@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import pers.ken.rt.auth.service.PolicyService;
 import pers.ken.rt.auth.service.support.AuthPolicyProvider;
-import pers.ken.rt.starter.pbac.annotation.PbacAccessControlEnable;
 import pers.ken.rt.starter.pbac.core.DynamicExpressionsProvider;
 import pers.ken.rt.starter.pbac.core.PolicyProvider;
+import pers.ken.rt.starter.pbac.permission.data.DataPermissionProvider;
+import pers.ken.rt.starter.pbac.permission.data.InMemoryDataPermissionProvider;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +23,20 @@ import java.util.Map;
  */
 @Configuration
 @Slf4j
-@PbacAccessControlEnable
+//@PbacAccessControlEnable
+//@DataScopeManagerEnable
 public class PbacConfiguration {
 
     @Bean
     public PolicyProvider policyProvider(PolicyService policyService) {
         return new AuthPolicyProvider(policyService);
+    }
+
+    @Bean
+    public DataPermissionProvider dataPermissionProvider() {
+        InMemoryDataPermissionProvider inMemoryDataPermissionProvider = new InMemoryDataPermissionProvider();
+        inMemoryDataPermissionProvider.save("account", "id", List.of("440100", "234"));
+        return inMemoryDataPermissionProvider;
     }
 
 

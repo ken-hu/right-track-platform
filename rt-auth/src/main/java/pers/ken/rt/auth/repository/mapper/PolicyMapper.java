@@ -18,6 +18,7 @@ public interface PolicyMapper extends BaseMapper<Policy> {
 
     List<Policy> selectPoliciesByUser(@Param("userId") Integer userId);
 
+    void insertUserPolicyRel(Integer userId, Integer policy);
 }
 
 

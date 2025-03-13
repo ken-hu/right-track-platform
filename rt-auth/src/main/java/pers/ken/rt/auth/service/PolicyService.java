@@ -2,8 +2,8 @@ package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
-import pers.ken.rt.auth.dto.req.PolicyListRequest;
+import pers.ken.rt.auth.dto.req.ListPolicyRequest;
+import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.repository.po.Policy;
 
 import java.util.List;
@@ -15,11 +15,18 @@ import java.util.List;
  */
 public interface PolicyService extends IService<Policy> {
 
-    void removeUserPolicy(Integer userId, AssignPoliciesRequest request);
 
-    List<Policy> listMyPolicies();
+    List<Policy> listPolicyByUser(Integer userId);
 
-    Page<Policy> listPolicies(PolicyListRequest query);
+    Page<Policy> listPolicy(ListPolicyRequest query);
 
-    void removeUserGroupPolicy(Integer userGroupId, AssignPoliciesRequest request);
+    void removeUserPolicy(Integer userId, PolicyBindRequest request);
+
+    void removeUserGroupPolicy(Integer userGroupId, PolicyBindRequest request);
+
+    void bindUserPolicy(Integer userId, PolicyBindRequest request);
+
+    void bindUserGroupPolicy(Integer groupId, PolicyBindRequest request);
+
+    void bindRolePolicy(Integer roleId, PolicyBindRequest request);
 }

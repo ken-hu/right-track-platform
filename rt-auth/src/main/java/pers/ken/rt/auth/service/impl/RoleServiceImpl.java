@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.ken.rt.auth.controller.assemble.RoleConverter;
-import pers.ken.rt.auth.dto.req.AssignPoliciesRequest;
+import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.dto.req.RoleCreateRequest;
 import pers.ken.rt.auth.dto.req.RoleListRequest;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
@@ -51,11 +51,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     }
 
     @Override
-    public void bindRolePolicy(Integer roleId, AssignPoliciesRequest request) {
+    public void bindRolePolicy(Integer roleId, PolicyBindRequest request) {
         //TODO 租户的限制校验分配的策略里面是否有超出范围的Policies
         request.getPolicyIds().forEach(policyId -> {
             baseMapper.insertRolePolicyRel(roleId, policyId);
         });
+    }
+
+    @Override
+    public void removeRolePolicy(Integer roleId, PolicyBindRequest request) {
+
     }
 }
 

@@ -1,6 +1,7 @@
 package pers.ken.rt.auth.service.support;
 
 import lombok.RequiredArgsConstructor;
+import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.repository.po.Policy;
 import pers.ken.rt.auth.service.PolicyService;
 import pers.ken.rt.common.utils.Jackson;
@@ -20,7 +21,7 @@ public class AuthPolicyProvider implements PolicyProvider {
 
     @Override
     public List<PolicyDocument> loadMyPolicies() {
-        List<Policy> policies = policyService.listMyPolicies();
+        List<Policy> policies = policyService.listPolicyByUser(AccountContext.getUserId());
         return policies.stream().map(policy -> Jackson.fromJsonString(policy.getContent(), PolicyDocument.class)).toList();
     }
 }

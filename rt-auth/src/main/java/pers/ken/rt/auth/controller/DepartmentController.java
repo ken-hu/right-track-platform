@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.ken.rt.auth.controller.assemble.DepartmentConverter;
 import pers.ken.rt.auth.dto.resp.DepartmentListResponse;
 import pers.ken.rt.auth.dto.resp.UserDepartmentListResponse;
+import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.repository.po.Department;
 import pers.ken.rt.auth.service.DepartmentService;
 import pers.ken.rt.common.model.TreeResponse;
@@ -26,15 +27,15 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @Operation(summary = "我的部门信息")
-    @GetMapping("/v1/user/departments")
-    public List<UserDepartmentListResponse> userDepartments() {
-        List<List<Department>> multiDepartments = departmentService.listDepartmentsByUser();
+    @GetMapping("/v1/departments/me")
+    public List<UserDepartmentListResponse> listDepartmentsByUser() {
+        List<List<Department>> multiDepartments = departmentService.listDepartmentsByUser(AccountContext.getUserId());
         return DepartmentConverter.INSTANCE.convert(multiDepartments);
     }
 
     @Operation(summary = "部门列表/树")
     @GetMapping("/v1/departments")
-    public TreeResponse<DepartmentListResponse> departments() {
+    public TreeResponse<DepartmentListResponse> listDepartments() {
         List<Department> departments = departmentService.listDepartments();
         return TreeResponse.of(DepartmentConverter.INSTANCE.toTreeNodes(departments));
     }

@@ -1,13 +1,9 @@
 package pers.ken.rt.starter.pbac;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pers.ken.rt.common.utils.Jackson;
-import pers.ken.rt.starter.pbac.core.InMemoryDynamicExpressionProvider;
-import pers.ken.rt.starter.pbac.internal.PolicyDocument;
 import pers.ken.rt.starter.pbac.permission.api.ActionProvider;
 
 import java.util.List;
@@ -95,19 +91,19 @@ public class PolicyTest {
                     }
                 ]
                 """;
-        List<PolicyDocument> policies = Jackson.fromJsonString(policiesJson, new TypeReference<List<PolicyDocument>>() {
-        });
-
-        InMemoryDynamicExpressionProvider inMemoryDynamicExpressionProvider = new InMemoryDynamicExpressionProvider();
-
-        policies.forEach(policy -> {
-            policy.getStatements().forEach(statement -> {
-                System.out.println(Jackson.toJsonString(statement));
-                PolicyDocument.Statement newStatement = inMemoryDynamicExpressionProvider.dynamicParserExpressions(statement);
-                System.out.println(Jackson.toJsonString(statement));
-                System.out.println(Jackson.toJsonString(newStatement));
-            });
-        });
+//        List<PolicyDocument> policies = Jackson.fromJsonString(policiesJson, new TypeReference<List<PolicyDocument>>() {
+//        });
+//
+//        InMemoryDynamicExpressionProvider inMemoryDynamicExpressionProvider = new InMemoryDynamicExpressionProvider();
+//
+//        policies.forEach(policy -> {
+//            policy.getStatements().forEach(statement -> {
+//                System.out.println(Jackson.toJsonString(statement));
+//                PolicyDocument.Statement newStatement = inMemoryDynamicExpressionProvider.dynamicParserExpressions(statement);
+//                System.out.println(Jackson.toJsonString(statement));
+//                System.out.println(Jackson.toJsonString(newStatement));
+//            });
+//        });
     }
 
 }

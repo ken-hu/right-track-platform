@@ -12,7 +12,6 @@ import pers.ken.rt.auth.dto.req.TenantCreateRequest;
 import pers.ken.rt.auth.dto.req.TenantListRequest;
 import pers.ken.rt.auth.dto.resp.TenantDetailGetResponse;
 import pers.ken.rt.auth.dto.resp.TenantListResponse;
-import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.oauth.utils.Pages;
 import pers.ken.rt.auth.repository.po.Tenant;
 import pers.ken.rt.auth.service.TenantService;
@@ -31,21 +30,8 @@ import pers.ken.rt.starter.pbac.annotation.AccessManager;
 public class TenantController {
     private final TenantService tenantService;
 
-    @Operation(summary = "我的租户信息")
-    @GetMapping("/v1/user/tenants")
-    public TenantDetailGetResponse myTenant() {
-        Tenant tenant = tenantService.getById(AccountContext.getTenantId());
-        return TenantConverter.INSTANCE.convert(tenant);
-    }
-
-    @Operation(summary = "租户绑定可用策略")
-    @PostMapping("/v1/tenants/{id}/policies")
-    public void bindTenantPolicies(@PathVariable Integer id, @RequestBody BindTenantPolicyRequest request) {
-        tenantService.bindTenantPolicies(id, request);
-    }
-
     @AccessManager
-    @Operation(summary = "租户信息")
+    @Operation(summary = "租户详细信息")
     @GetMapping("/v1/tenants/{id}")
     public TenantDetailGetResponse detail(@PathVariable Integer id) {
         Tenant tenant = tenantService.getById(id);
@@ -56,7 +42,7 @@ public class TenantController {
     @Operation(summary = "租户列表")
     @GetMapping("/v1/tenants")
     public PageResponse<TenantListResponse> tenantList(TenantListRequest request) {
-        Page<Tenant> result = tenantService.tenantList(request);
+        Page<Tenant> result = tenantService.listTenant(request);
         return Pages.convert(result, TenantConverter.INSTANCE::toListResponse);
     }
 
@@ -64,16 +50,21 @@ public class TenantController {
     @Operation(summary = "创建租户")
     @PostMapping("/v1/tenants")
     public TenantDetailGetResponse tenantCreate(@RequestBody TenantCreateRequest request) {
-        Tenant tenant = tenantService.tenantCreate(request);
+        Tenant tenant = tenantService.createTenant(request);
         return TenantConverter.INSTANCE.convert(tenant);
     }
 
-
     @AccessManager
-    @Operation(summary = "租户分配可使用的应用")
+    @Operation(summary = "给租户授权应用")
     @PostMapping("/v1/tenants/{tenantId}/applications")
-    public void assignUserApplications(@PathVariable Integer tenantId,
-                                       @RequestBody AssignApplicationRequest request) {
+    public void bindApplications(@PathVariable Integer tenantId,
+                                 @RequestBody AssignApplicationRequest request) {
         tenantService.bindApplications(tenantId, request);
+    }
+
+    @Operation(summary = "租户绑定授权策略")
+    @PostMapping("/v1/tenants/{id}/policies")
+    public void bindTenantPolicies(@PathVariable Integer id, @RequestBody BindTenantPolicyRequest request) {
+        tenantService.bindTenantPolicies(id, request);
     }
 }

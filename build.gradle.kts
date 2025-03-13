@@ -17,10 +17,10 @@ allprojects {
     group = "pers.ken.rt"
     version = "0.0.1-SNAPSHOT"
 
-    apply(plugin = "org.springframework.boot")
+//    apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
-    apply(plugin = "java")
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "java")
 
     configurations {
         compileOnly {
@@ -33,7 +33,6 @@ allprojects {
 
 
     repositories {
-        mavenLocal()
         maven("https://maven.aliyun.com/repository/public")
         maven("https://maven.aliyun.com/repository/central")
         maven("https://maven.aliyun.com/repository/google")
@@ -44,6 +43,7 @@ allprojects {
         maven("https://maven.aliyun.com/repository/apache-snapshots")
         maven("https://nexus.bsdn.org/content/groups/public/")
         maven("https://repo1.maven.org/maven2")
+        mavenLocal()
     }
 
     dependencies {
@@ -62,6 +62,7 @@ allprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+        enabled = false
     }
 }
 

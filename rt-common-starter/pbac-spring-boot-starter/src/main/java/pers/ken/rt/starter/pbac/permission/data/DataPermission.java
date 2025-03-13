@@ -4,46 +4,33 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 /**
- * The type Data scope.
- *
- * @ClassName: InMemoryDataProvider
- * @CreatedTime: 2023 /1/11 14:53
- * @Desc: Just like :
- * resource city and bind table dim_city and map_data Then {"resource":"city","dataConditions":[{"table":"dim_city","field":"adcode","sqlCondition":"where city_code in ('400100')"},{"table":"map_data","field":"city_code","sqlCondition":"where adcode in ('400100')"}]}
- * @Author Ken
+ * @ClassName: DataFilterCondition
+ * @Created: 2025/3/12 11:06
+ * @Author ken
  */
 @Data
 @Builder
 public class DataPermission {
+    private String table;
+    private List<DataFilterCondition> dataFilterConditions;
 
-    /**
-     * 绑定的资源
-     */
-    private String resourceId;
-    private Set<String> ownResources;
-    private List<DataCondition> conditions;
-
-    /**
-     * 数据条件
-     */
     @Data
     @Builder
-    public static class DataCondition {
-        /**
-         * 绑定的Table
-         */
-        private String table;
-        /**
-         * 绑定的字段
-         */
+    public static class DataFilterCondition {
         private String field;
-        /**
-         * 行权限的SQL条件生成器
-         */
-        private DataConditionGenerator generator;
-
+        private List<String> values;
+        @Builder.Default
+        private DataConditionGenerator conditionGenerator = new DataConditionGenerator() {
+        };
     }
+
+    public static DataPermission of(String table, String field, List<String> values, DataConditionGenerator conditionGenerator) {
+        return DataPermission.builder()
+            .table(table)
+            .dataFilterConditions(List.of(new DataFilterCondition(field, values, conditionGenerator)))
+            .build();
+    }
+
 }

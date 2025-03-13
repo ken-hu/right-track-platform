@@ -24,7 +24,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
     implements UserGroupService {
 
     @Override
-    public Page<UserGroup> listByTenant(UserGroupListRequest request) {
+    public Page<UserGroup> listUserGroups(ListUserGroupRequest request) {
         return baseMapper.selectPage(
             Pages.toPage(request),
             Wrappers.lambdaQuery(UserGroup.class)
@@ -50,7 +50,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public UserGroup createUserGroup(UserGroupCreateRequest request) {
+    public UserGroup createUserGroup(CreateUserGroupRequest request) {
         UserGroup userGroup = new UserGroup();
         userGroup.setName(request.getName());
         userGroup.setTenantCode(AccountContext.getTenantCode());
@@ -70,7 +70,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
     }
 
     @Override
-    public void bindUserGroupPolicy(Integer groupId, AssignPoliciesRequest request) {
+    public void bindUserGroupPolicy(Integer groupId, PolicyBindRequest request) {
         request.getPolicyIds().forEach(policyId -> {
             baseMapper.insertUserGroupPolicyRel(groupId, policyId);
         });
