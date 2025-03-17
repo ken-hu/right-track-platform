@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
@@ -24,7 +25,6 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
@@ -42,6 +42,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import pers.ken.rt.auth.oauth.model.AuthUserDetails;
 import pers.ken.rt.auth.oauth.model.SecurityConstant;
 import pers.ken.rt.auth.oauth.support.LoginTargetAuthenticationEntryPoint;
+import pers.ken.rt.auth.oauth.support.RedisOAuth2AuthorizationService;
 import pers.ken.rt.auth.oauth.support.password.PasswordAuthenticationConverter;
 import pers.ken.rt.auth.oauth.support.password.PasswordAuthenticationProvider;
 import pers.ken.rt.auth.oauth.support.password.PasswordAuthenticationToken;
@@ -87,7 +88,6 @@ public class AuthorizationServerConfig {
                     .accessTokenRequestConverter(new PasswordAuthenticationConverter())
                     .authenticationProvider(new PasswordAuthenticationProvider(authorizationService, tokenGenerator, passwordEncoder, registeredClientRepository, userDetailsService))
                     .errorResponseHandler(AuthorizationSupporter::exceptionHandler)
-
             )
         ;
 
@@ -98,14 +98,14 @@ public class AuthorizationServerConfig {
                         new LoginTargetAuthenticationEntryPoint(LOGIN_URL),
                         new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                     )
-                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
-                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
+//                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+//                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
             )
             .oauth2ResourceServer(
                 server -> {
-                    server.jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
-                        .accessDeniedHandler(AuthorizationSupporter::exceptionHandler);
+                    server.jwt(Customizer.withDefaults());
+//                        .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+//                        .accessDeniedHandler(AuthorizationSupporter::exceptionHandler);
                 }
             )
         ;
@@ -206,16 +206,26 @@ public class AuthorizationServerConfig {
 
 
     /**
+     * 配置基于redis的oauth2的授权管理服务
+     *
+     * @return
+     */
+    @Bean
+    public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate) {
+        return new RedisOAuth2AuthorizationService(redisTemplate);
+    }
+
+    /**
      * 配置基于db的oauth2的授权管理服务
      *
      * @param jdbcTemplate
      * @param registeredClientRepository
      * @return
      */
-    @Bean
-    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-    }
+//    @Bean
+//    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+//        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
+//    }
 
     /**
      * 配置基于db的授权确认管理服务

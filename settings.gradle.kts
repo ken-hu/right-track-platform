@@ -54,6 +54,13 @@ dependencyResolutionManagement {
                 "org.springframework.boot",
                 "spring-boot-starter-web"
             ).withoutVersion()
+
+            library(
+                "springboot-autoconfigure",
+                "org.springframework.boot",
+                "spring-boot-autoconfigure"
+            ).withoutVersion()
+
             library(
                 "springboot-aop",
                 "org.springframework.boot",
@@ -126,17 +133,6 @@ dependencyResolutionManagement {
                 "org.springframework.boot",
                 "spring-boot-starter-test"
             ).withoutVersion()
-            library(
-                "oauth2-oidc-sdk",
-                "com.nimbusds",
-                "oauth2-oidc-sdk"
-            ).versionRef("nimbusds")
-            library(
-                "oauth2-jose",
-                "org.springframework.security",
-                "spring-security-oauth2-jose"
-            ).versionRef("oauth2-jose")
-
             //SpringCloud
             library(
                 "springcloud-dependencies",

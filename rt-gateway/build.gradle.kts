@@ -9,7 +9,9 @@ dependencies {
     }
 
     implementation(libs.springcloud.gateway)
+    implementation(libs.springboot.security)
     implementation(libs.springboot.oauth2.resourceserver)
+    // 理论上不应该引入
     implementation(libs.springboot.oauth2.client)
     implementation(libs.springboot.webflux)
     implementation(libs.springcloud.bootstrap)

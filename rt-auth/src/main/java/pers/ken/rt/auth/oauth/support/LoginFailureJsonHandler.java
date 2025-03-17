@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Author ken
  */
 @Slf4j
-public class LoginFailureHandler implements AuthenticationFailureHandler {
+public class LoginFailureJsonHandler implements AuthenticationFailureHandler {
     private static final Map<String, AtomicInteger> LOGIN_FAILED_COUNT_MAP = new ConcurrentHashMap<>();
 
     @Override
@@ -40,18 +41,21 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             response.getWriter().flush();
             return;
         }
-        log.warn("LoginFailure:{}", exception.getMessage());
+        log.warn("LoginFailure", exception);
         // 登录失败，写回401与具体的异常
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(Jackson.toJsonString(new LoginFailureResponse(exception.getMessage())));
         response.getWriter().flush();
-
     }
 
 
     private int recordLoginCount(String username) {
+        if (StringUtils.isBlank(username)) {
+            log.warn("RecordLoginCount failed,Username is null");
+            return 0;
+        }
         AtomicInteger atomicInteger = LOGIN_FAILED_COUNT_MAP.get(username);
         if (null != atomicInteger) {
             int count = atomicInteger.incrementAndGet();

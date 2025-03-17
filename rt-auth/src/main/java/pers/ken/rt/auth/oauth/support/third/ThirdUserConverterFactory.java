@@ -32,7 +32,7 @@ public class ThirdUserConverterFactory {
         if (StringUtils.isBlank(loginType)) {
             throw new UnsupportedOperationException("登录方式不能为空.");
         }
-        Oauth2UserConverterStrategy userConverterStrategy = oauth2UserConverterMap.get(loginType + "UserConverter");
+        Oauth2UserConverterStrategy userConverterStrategy = oauth2UserConverterMap.get(loginType + "UserConverterStrategy");
         if (userConverterStrategy == null) {
             throw new UnsupportedOperationException("不支持[" + loginType + "]登录方式获取用户信息转换器");
         }

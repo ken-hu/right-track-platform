@@ -1,11 +1,11 @@
 package pers.ken.rt.gw.oauth;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -13,6 +13,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import pers.ken.rt.gw.oauth.support.AuthorizationSupporter;
 import reactor.core.publisher.Mono;
 
 /**
@@ -25,30 +29,52 @@ import reactor.core.publisher.Mono;
 @Configuration
 @EnableWebFluxSecurity
 @AllArgsConstructor
-public class ResourceServerConfig {
+public class WebSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(ServerHttpSecurity.CorsSpec::disable)
-                // 开启全局认证
-                .authorizeExchange(exchange -> {
-                    exchange.anyExchange()
-                            .authenticated();
-                })
-                // 开启OAuth2登录
-                .oauth2Login(Customizer.withDefaults())
-                // ResourceServer for jwt
-                .oauth2ResourceServer(resourceServer -> {
-                    resourceServer
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // 服务安全认证
+            .authorizeExchange(exchange -> {
+                exchange.pathMatchers("/business-redirect").permitAll()
+                    .anyExchange()
+                    .authenticated()
+                ;
+            })
+            // 开启OAuth2登录
+//            .oauth2Login(Customizer.withDefaults())
+            // 资源服务相关拦截
+            .oauth2ResourceServer(resourceServer -> {
+                resourceServer
 //                            .authenticationEntryPoint(authenticationEntryPoint)
 //                            .accessDeniedHandler(accessDeniedHandler)
-                            .jwt(jwt -> jwt
-                                    // 请求中携带token访问时会触发该解析器适配器
-                                    .jwtAuthenticationConverter(grantedAuthoritiesExtractor()));
+                    .jwt(jwt -> jwt
+                        // 请求中携带token访问时会触发该解析器适配器
+                        .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
+                    )
+                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler);
 
-                });
+            });
         return http.build();
+    }
+
+    /**
+     * CORS 配置源
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);  // 允许发送 Cookie [[1]]
+        config.setAllowedOriginPatterns(Lists.newArrayList("*.ken.com"));  // 允许的前端域名
+        config.addAllowedHeader("*");  // 允许所有头部
+        config.addAllowedMethod("*");  // 允许所有方法（GET/POST/OPTIONS）
+        config.setMaxAge(3600L);  // 预检请求缓存时间
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);  // 应用到所有路径
+        return source;
     }
 
     /**

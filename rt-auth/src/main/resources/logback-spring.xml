@@ -39,6 +39,7 @@
   </springProfile>
 
   <logger name="org.springframework.security" level="DEBUG"/>
+  <logger name="org.springframework.security.oauth2" level="DEBUG"/>
   <logger name="pers.ken.rt.starter" level="DEBUG"/>
   <root>
     <level value="INFO"/>
