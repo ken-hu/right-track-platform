@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import pers.ken.rt.gw.oauth.support.AuthorizationSupporter;
@@ -33,7 +32,8 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+        http
+            // .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             // 服务安全认证
             .authorizeExchange(exchange -> {
@@ -60,22 +60,24 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    /**
-     * CORS 配置源
-     */
-    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);  // 允许发送 Cookie [[1]]
-        config.setAllowedOriginPatterns(Lists.newArrayList("*.ken.com"));  // 允许的前端域名
-        config.addAllowedHeader("*");  // 允许所有头部
-        config.addAllowedMethod("*");  // 允许所有方法（GET/POST/OPTIONS）
-        config.setMaxAge(3600L);  // 预检请求缓存时间
-
+        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
+        // 允许发送 Cookie [[1]]
+        config.setAllowCredentials(true);
+        // 允许的前端域名
+        config.setAllowedOriginPatterns(Lists.newArrayList("http://uc.ken.com", "http://app.ken.com"));
+        // 允许所有头部
+        config.addAllowedHeader("*");
+        // 允许所有方法（GET/POST/OPTIONS）
+        config.addAllowedMethod("*");
+        // 预检请求缓存时间
+        config.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);  // 应用到所有路径
+        // 应用到所有路径
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
     /**
      * 自定义jwt解析器，设置解析出来的权限信息的前缀与在jwt中的key

@@ -77,3 +77,4 @@ springdoc:
   swagger-ui:
     enabled: true
     display-operation-id: true
+

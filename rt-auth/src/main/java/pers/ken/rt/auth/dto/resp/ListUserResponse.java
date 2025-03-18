@@ -8,7 +8,7 @@ import lombok.Data;
  * @Author ken
  */
 @Data
-public class UserListResponse {
+public class ListUserResponse {
     private Integer id;
     private String username;
     private String nickname;

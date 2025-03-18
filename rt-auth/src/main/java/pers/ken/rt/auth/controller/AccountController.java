@@ -10,8 +10,8 @@ import pers.ken.rt.auth.controller.assemble.PolicyConverter;
 import pers.ken.rt.auth.dto.req.PasswordRestRequest;
 import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.dto.req.UserListRequest;
+import pers.ken.rt.auth.dto.resp.ListUserResponse;
 import pers.ken.rt.auth.dto.resp.PolicyDetailResponse;
-import pers.ken.rt.auth.dto.resp.UserListResponse;
 import pers.ken.rt.auth.oauth.model.AuthUserDetails;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.repository.po.Policy;
@@ -65,7 +65,7 @@ public class AccountController {
     @AccessManager
     @Operation(summary = "用户列表")
     @GetMapping("/v1/users")
-    public List<UserListResponse> userListAll(UserListRequest request) {
+    public List<ListUserResponse> userListAll(UserListRequest request) {
         return AccountConverter.INSTANCE.convert(
             accountService.listByQuery(request)
         );

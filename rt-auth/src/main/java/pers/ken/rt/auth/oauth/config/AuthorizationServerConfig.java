@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -76,7 +75,6 @@ public class AuthorizationServerConfig {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http
             .cors(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
             .getConfigurer(OAuth2AuthorizationServerConfigurer.class)
             // Enable OpenID Connect 1.0
             .oidc(Customizer.withDefaults())
@@ -90,7 +88,6 @@ public class AuthorizationServerConfig {
                     .errorResponseHandler(AuthorizationSupporter::exceptionHandler)
             )
         ;
-
         http.exceptionHandling(exceptions ->
                 exceptions
                     // 前后端分离 不需要重定向了
@@ -98,20 +95,12 @@ public class AuthorizationServerConfig {
                         new LoginTargetAuthenticationEntryPoint(LOGIN_URL),
                         new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                     )
-//                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
-//                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
-            )
-            .oauth2ResourceServer(
-                server -> {
-                    server.jwt(Customizer.withDefaults());
-//                        .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
-//                        .accessDeniedHandler(AuthorizationSupporter::exceptionHandler);
-                }
+                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
             )
         ;
         return http.build();
     }
-
 
     /**
      * 配置客户端Repository
@@ -214,18 +203,6 @@ public class AuthorizationServerConfig {
     public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisOAuth2AuthorizationService(redisTemplate);
     }
-
-    /**
-     * 配置基于db的oauth2的授权管理服务
-     *
-     * @param jdbcTemplate
-     * @param registeredClientRepository
-     * @return
-     */
-//    @Bean
-//    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-//        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-//    }
 
     /**
      * 配置基于db的授权确认管理服务

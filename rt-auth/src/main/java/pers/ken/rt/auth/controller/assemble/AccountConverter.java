@@ -3,7 +3,7 @@ package pers.ken.rt.auth.controller.assemble;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import pers.ken.rt.auth.dto.resp.UserListResponse;
+import pers.ken.rt.auth.dto.resp.ListUserResponse;
 import pers.ken.rt.auth.repository.po.Account;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 public interface AccountConverter {
     AccountConverter INSTANCE = Mappers.getMapper(AccountConverter.class);
 
-    UserListResponse convert(Account account);
+    ListUserResponse convert(Account account);
 
-    List<UserListResponse> convert(List<Account> accounts);
+    List<ListUserResponse> convert(List<Account> accounts);
 }

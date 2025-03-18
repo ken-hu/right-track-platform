@@ -2,6 +2,7 @@ package pers.ken.rt.auth.dto.resp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassName: LoginSuccessResp
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LoginSuccessResponse {
-    private String message;
+    private String message = "Login success";
 }
