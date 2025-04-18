@@ -2,16 +2,19 @@ package pers.ken.rt.gw.oauth;
 
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
+import org.springframework.security.web.server.DefaultServerRedirectStrategy;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -25,30 +28,25 @@ import reactor.core.publisher.Mono;
  *
  * @author Ken.Hu
  */
+@Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @AllArgsConstructor
-public class WebSecurityConfig {
+public class Oauth2Configuration {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
-            // .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             // 服务安全认证
             .authorizeExchange(exchange -> {
-                exchange.pathMatchers("/business-redirect").permitAll()
-                    .anyExchange()
-                    .authenticated()
+                exchange.anyExchange().authenticated()
                 ;
             })
-            // 开启OAuth2登录
-//            .oauth2Login(Customizer.withDefaults())
             // 资源服务相关拦截
             .oauth2ResourceServer(resourceServer -> {
                 resourceServer
-//                            .authenticationEntryPoint(authenticationEntryPoint)
-//                            .accessDeniedHandler(accessDeniedHandler)
                     .jwt(jwt -> jwt
                         // 请求中携带token访问时会触发该解析器适配器
                         .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
@@ -56,7 +54,19 @@ public class WebSecurityConfig {
                     .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
                     .accessDeniedHandler(AuthorizationSupporter::exceptionHandler);
 
-            });
+            })
+            // 开启OAuth2Client
+            .oauth2Client(Customizer.withDefaults())
+            .oauth2Login(login -> {
+                login.authorizationRedirectStrategy(new DefaultServerRedirectStrategy());
+            })
+            .sessionManagement(Customizer.withDefaults())
+            .exceptionHandling(exceptions ->
+                exceptions
+                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
+
+            );
         return http.build();
     }
 
@@ -65,7 +75,7 @@ public class WebSecurityConfig {
         // 允许发送 Cookie [[1]]
         config.setAllowCredentials(true);
         // 允许的前端域名
-        config.setAllowedOriginPatterns(Lists.newArrayList("http://uc.ken.com", "http://app.ken.com"));
+        config.setAllowedOriginPatterns(Lists.newArrayList("http://*.ken.com"));
         // 允许所有头部
         config.addAllowedHeader("*");
         // 允许所有方法（GET/POST/OPTIONS）

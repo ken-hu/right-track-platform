@@ -108,7 +108,7 @@ values (-1, 1),
 
 -- 初始化应用
 INSERT INTO public.application (id, app_code, name, description, index_url, created_at, updated_at)
-VALUES (1, 'channel', '数说睿见', '测试', null, '2024-12-11 13:18:52.455140', '2024-12-11 13:18:52.455140');
+VALUES (1, 'channel', '测试', '测试', null, '2024-12-11 13:18:52.455140', '2024-12-11 13:18:52.455140');
 INSERT INTO public.application (id, app_code, name, description, index_url, created_at, updated_at)
-VALUES (2, 'channel-admin', '数说睿见管理后台', null, null, '2024-12-11 13:19:11.883068', '2024-12-11 13:19:11.883068');
+VALUES (2, 'channel-admin', '测试管理后台', null, null, '2024-12-11 13:19:11.883068', '2024-12-11 13:19:11.883068');
 

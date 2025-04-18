@@ -17,7 +17,7 @@ CREATE TABLE oauth2_authorization
 (
   id                            varchar(100) NOT NULL,
   registered_client_id          varchar(100) NOT NULL,
-  principal_name                varchar(200) NOT NULL,
+  principal_name text NOT NULL,
   authorization_grant_type      varchar(100) NOT NULL,
   authorized_scopes             varchar(1000) DEFAULT NULL,
   attributes                    text          DEFAULT NULL,
@@ -91,7 +91,7 @@ create table public.third_account
   unique_id              varchar(64),
   username               varchar(64),
   registration_id        varchar(50),
-  credentials            varchar(200),
+  credentials text,
   credentials_expires_at timestamp(6),
   type                   varchar(50),
   nickname               varchar(200),

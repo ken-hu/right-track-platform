@@ -2,6 +2,8 @@ package pers.ken.rt.auth.repository.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import org.apache.ibatis.type.ArrayTypeHandler;
+import org.apache.ibatis.type.JdbcType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 /**
  * @TableName account
  */
-@TableName(value = "account")
+@TableName(value = "account", autoResultMap = true)
 @Data
 public class Account implements Serializable {
     @TableId(type = IdType.AUTO)
@@ -31,6 +33,9 @@ public class Account implements Serializable {
 
     private String registeredFrom;
     private String tenantCode;
+
+    @TableField(value = "dept_codes", typeHandler = ArrayTypeHandler.class, jdbcType = JdbcType.ARRAY)
+    private String[] deptCodes;
 
     private LocalDateTime registeredAt;
 

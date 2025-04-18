@@ -8,13 +8,13 @@ import pers.ken.rt.auth.repository.po.ThirdAccount;
 import java.util.Map;
 
 /**
- * @ClassName: GiteeUserConverter
- * @Created: 2024/12/4 13:44
+ * @ClassName: DefaultUserConverterStrategy
+ * @Created: 2025/3/19 15:19
  * @Author ken
  */
-@Component("datastoryUserConverter")
+@Component("defaultUserConverterStrategy")
 @Slf4j
-public class DatastoryUserConverterStrategy implements Oauth2UserConverterStrategy {
+public class DefaultUserConverterStrategy implements Oauth2UserConverterStrategy {
     @Override
     public ThirdAccount convert(OAuth2User oAuth2User) {
         // 获取三方用户信息
@@ -22,12 +22,11 @@ public class DatastoryUserConverterStrategy implements Oauth2UserConverterStrate
         log.info("Datastory account attribute:{}", oAuth2User.getAttributes());
         // 转换至Oauth2ThirdAccount
         ThirdAccount thirdAccount = new ThirdAccount();
-        thirdAccount.setType("datastory");
-        thirdAccount.setUniqueId(oAuth2User.getName());
-        thirdAccount.setUsername(String.valueOf(attributes.get("email")));
+        thirdAccount.setType("miniso");
+        thirdAccount.setUniqueId(String.valueOf(attributes.get("userName")));
+        thirdAccount.setUsername(String.valueOf(attributes.get("userName")));
         // 设置基础用户信息
-        thirdAccount.setNickname(String.valueOf(attributes.get("name")));
-        thirdAccount.setAvatarUrl(String.valueOf(attributes.get("avatar_url")));
+        thirdAccount.setNickname(String.valueOf(attributes.get("nickName")));
         return thirdAccount;
     }
 }

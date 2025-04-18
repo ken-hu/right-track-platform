@@ -12,7 +12,7 @@ import java.util.Map;
  * @Created: 2024/12/4 13:44
  * @Author ken
  */
-@Component("giteeUserConverter")
+@Component("giteeUserConverterStrategy")
 @Slf4j
 public class GiteeUserConverterStrategy implements Oauth2UserConverterStrategy {
     @Override

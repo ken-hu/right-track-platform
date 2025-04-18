@@ -1,19 +1,45 @@
 server:
   port: 38080
+  servlet:
+    session:
+      cookie:
+        # 需要更换存放sessionId的cookie名字，否则认证服务和客户端的sessionId会相互覆盖
+        name: JSESSIONID-2
 spring:
-  mvc:
-    throw-exception-if-no-handler-found: true
   config:
     activate:
       on-profile: dev
   application:
-    name: rt-gateway
+    name: gateway
   security:
     oauth2:
+      client:
+        provider:
+          channel:
+            #            issuer-uri: 'http://api-uc.ken.com'
+            # 发起授权申请的地址
+            authorization-uri: http://uc.ken.com/api/oauth2/authorize
+            # 获取token的地址
+            token-uri: http://uc.ken.com/api/oauth2/token
+            # 获取用户信息的地址
+            user-info-uri: http://uc.ken.com/api/v1/users/me
+            jwk-set-uri: http://uc.ken.com/api/oauth2/jwks
+            user-name-attribute: "account_id"
+        registration:
+          channel:
+            provider: channel
+            client-name: 'channel'
+            client-id: 'channel'
+            client-secret: 'GzVBhcAx2tYvQxmcjWhV'
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: 'http://app.ken.com/api/login/oauth2/code/channel'
+            scope:
+              - read
       resourceserver:
         jwt:
-#          issuer-uri: http://172.18.17.81:38081
-          jwk-set-uri: http://localhost:38081/oauth2/jwks
+          issuer-uri: 'http://uc.ken.com'
+          jwk-set-uri: 'http://uc.ken.com/api/oauth2/jwks'
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
@@ -28,43 +54,17 @@ spring:
           enabled: true
       routes:
         - id: mall-service
-          uri: lb://rt-mall
+          uri: lb://mall
           predicates:
             - Path=/mall/api/**
           filters:
             - RewritePath=/mall/api/(?<path>.*), /$\{path}
-        - id: auth-service
-          uri: lb://rt-auth
+        - id: map-service
+          uri: lb://map
           predicates:
-            - Path=/auth/api/**
+            - Path=/map/api/**
           filters:
-            - RewritePath=/auth/api/(?<path>.*), /$\{path}
-        - id: test-service
-          uri: lb://test
-          predicates:
-            - Path=/test/api/**
-          filters:
-            - RewritePath=/test/api/(?<path>.*), /$\{path}
-        - id: openapi
-          uri: lb://gateway-service
-          predicates:
-            - Path=/v3/api-docs/**
-          filters:
-            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
-auth:
-  resource-server:
-    white-list:
-      - /*/webjars/**
-      - /*/v3/api-docs/**
-      - /*/swagger-ui/**
-      - /*/swagger-resources/**
-      - /*/css/**
-      - /*/js/**
-      - /*/images/**
-      - /favicon.ico
-      - /swagger-ui.html
-
-
+            - RewritePath=/map/api/(?<path>.*), /$\{path}
 logging:
   file:
     path: ./logs

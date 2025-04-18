@@ -1,6 +1,7 @@
 package pers.ken.rt.auth.oauth.support.third;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ThirdUserConverterFactory {
     /**
      * spring 自动注入到该map
@@ -34,7 +36,8 @@ public class ThirdUserConverterFactory {
         }
         Oauth2UserConverterStrategy userConverterStrategy = oauth2UserConverterMap.get(loginType + "UserConverterStrategy");
         if (userConverterStrategy == null) {
-            throw new UnsupportedOperationException("不支持[" + loginType + "]登录方式获取用户信息转换器");
+            log.warn("未实现[{}]登录方式获取用户信息转换器,默认使用defaultUserConverterStrategy解析", loginType);
+            return oauth2UserConverterMap.get("defaultUserConverterStrategy");
         }
         return userConverterStrategy;
     }

@@ -13,6 +13,8 @@
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
+      <result property="deptCodes" column="dept_codes" jdbcType="VARCHAR"
+              typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
             <result property="registeredAt" column="registered_at" jdbcType="TIMESTAMP"/>
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
             <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>

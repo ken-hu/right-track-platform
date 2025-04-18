@@ -12,7 +12,7 @@ import java.util.Map;
  * @Created: 2024/12/5 20:14
  * @Author ken
  */
-@Component("githubUserConverter")
+@Component("githubUserConverterStrategy")
 @Slf4j
 public class GithubUserConverterStrategy implements Oauth2UserConverterStrategy {
     @Override

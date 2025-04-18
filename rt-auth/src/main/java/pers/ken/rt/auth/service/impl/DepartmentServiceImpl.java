@@ -2,7 +2,9 @@ package pers.ken.rt.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import pers.ken.rt.auth.dto.req.ListDepartmentsRequest;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
 import pers.ken.rt.auth.repository.mapper.DepartmentMapper;
 import pers.ken.rt.auth.repository.po.Department;
@@ -28,10 +30,13 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
-    public List<Department> listDepartments() {
+    public List<Department> listDepartments(ListDepartmentsRequest request) {
         String tenantCode = AccountContext.getTenantCode();
         if (null == tenantCode) {
             throw new BusinessVerificationException(ErrorCode.BUSINESS_ERROR, "Account tenantCode is null");
+        }
+        if (StringUtils.isNotBlank(request.getParentCode())) {
+            return baseMapper.selectRecursionUpDept(AccountContext.getTenantCode(), request.getParentCode());
         }
         return baseMapper.selectList(Wrappers.lambdaQuery(Department.class).eq(Department::getTenantCode, tenantCode));
     }

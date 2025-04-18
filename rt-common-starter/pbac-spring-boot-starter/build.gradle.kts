@@ -11,19 +11,14 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.apache.common.lang3)
-    implementation(libs.google.guava)
-    implementation(libs.alibaba.druid)
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-autoconfigure")
-    compileOnly("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
-    compileOnly("org.springframework.boot:spring-boot-starter-aop")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    api(libs.apache.common.lang3)
+    api(libs.google.guava)
+    api(libs.alibaba.druid)
+    implementation(libs.springboot.autoconfigure)
+    annotationProcessor(libs.springboot.configuration.processor)
+    compileOnly(libs.springboot.web)
+    compileOnly(libs.springboot.data.redis)
+    compileOnly(libs.springboot.aop)
 }
 
 tasks.getByName<Test>("test") {

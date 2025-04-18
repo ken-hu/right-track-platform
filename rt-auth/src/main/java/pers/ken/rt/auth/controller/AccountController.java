@@ -10,10 +10,11 @@ import pers.ken.rt.auth.controller.assemble.PolicyConverter;
 import pers.ken.rt.auth.dto.req.PasswordRestRequest;
 import pers.ken.rt.auth.dto.req.PolicyBindRequest;
 import pers.ken.rt.auth.dto.req.UserListRequest;
+import pers.ken.rt.auth.dto.resp.GetUserDetailResponse;
 import pers.ken.rt.auth.dto.resp.ListUserResponse;
 import pers.ken.rt.auth.dto.resp.PolicyDetailResponse;
-import pers.ken.rt.auth.oauth.model.AuthUserDetails;
 import pers.ken.rt.auth.oauth.utils.AccountContext;
+import pers.ken.rt.auth.repository.po.Account;
 import pers.ken.rt.auth.repository.po.Policy;
 import pers.ken.rt.auth.service.AccountService;
 import pers.ken.rt.auth.service.UserPolicyService;
@@ -39,8 +40,9 @@ public class AccountController {
 
     @Operation(summary = "我的信息")
     @GetMapping("/v1/users/me")
-    public AuthUserDetails me() {
-        return AccountContext.getUserDetails();
+    public GetUserDetailResponse me() {
+        Account account = accountService.getById(AccountContext.getUserId());
+        return AccountConverter.INSTANCE.toDetail(account);
     }
 
     @Operation(summary = "我的信息")

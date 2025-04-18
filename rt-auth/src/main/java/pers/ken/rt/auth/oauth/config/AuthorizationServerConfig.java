@@ -33,6 +33,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -48,6 +49,8 @@ import pers.ken.rt.auth.oauth.support.password.PasswordAuthenticationToken;
 import pers.ken.rt.auth.oauth.utils.AuthorizationSupporter;
 import pers.ken.rt.auth.oauth.utils.Jwks;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,15 +92,15 @@ public class AuthorizationServerConfig {
             )
         ;
         http.exceptionHandling(exceptions ->
-                exceptions
-                    // 前后端分离 不需要重定向了
-                    .defaultAuthenticationEntryPointFor(
-                        new LoginTargetAuthenticationEntryPoint(LOGIN_URL),
-                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                    )
-                    .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
-                    .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
-            )
+            exceptions
+                // 前后端分离 不需要重定向了
+                .defaultAuthenticationEntryPointFor(
+                    new LoginTargetAuthenticationEntryPoint(LOGIN_URL),
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                )
+                .authenticationEntryPoint(AuthorizationSupporter::exceptionHandler)
+                .accessDeniedHandler(AuthorizationSupporter::exceptionHandler)
+        )
         ;
         return http.build();
     }
@@ -111,8 +114,8 @@ public class AuthorizationServerConfig {
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("channel")
-            .clientSecret(passwordEncoder.encode("GzVBhcAx2tYvQxmcjWhV"))
+            .clientId("rt-ken")
+            .clientSecret(passwordEncoder.encode("rt-ken"))
             // 客户端认证方式，基于请求头的认证
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             // 配置资源服务器使用该客户端获取授权时支持的方式
@@ -120,37 +123,19 @@ public class AuthorizationServerConfig {
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
             .authorizationGrantType(AuthorizationGrantType.PASSWORD)
-            .redirectUri("http://127.0.0.1:38081/login/oauth2/code/channel")
-            .redirectUri("https://www.baidu.com")
-            .redirectUri("http://127.0.0.1:5173/OAuth2Redirect")
             // 该客户端的授权范围，OPENID与PROFILE是IdToken的scope，获取授权时请求OPENID的scope时认证服务会返回IdToken
             .scope(OidcScopes.OPENID)
             .scope(OidcScopes.PROFILE)
             // 自定义scope
             .scope("read")
             .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
+            .tokenSettings(TokenSettings.builder().refreshTokenTimeToLive(Duration.of(7, ChronoUnit.DAYS)).build())
             .build();
         JdbcRegisteredClientRepository jdbcRegisteredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-        // 做了个初始化
+        // Init default Registered client
         RegisteredClient messagingClient = jdbcRegisteredClientRepository.findByClientId(registeredClient.getClientId());
         if (Objects.isNull(messagingClient)) {
             jdbcRegisteredClientRepository.save(registeredClient);
-        }
-        // TODO 设备码授权客户端 Just a Test
-        RegisteredClient deviceClient = RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("device-message-client")
-            // 公共客户端
-            .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-            // 设备码授权
-            .authorizationGrantType(AuthorizationGrantType.DEVICE_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            // 自定scope
-            .scope("message.read")
-            .scope("message.write")
-            .build();
-        RegisteredClient byClientId = jdbcRegisteredClientRepository.findByClientId(deviceClient.getClientId());
-        if (byClientId == null) {
-            jdbcRegisteredClientRepository.save(deviceClient);
         }
         return jdbcRegisteredClientRepository;
     }
@@ -249,7 +234,6 @@ public class AuthorizationServerConfig {
                     .map(GrantedAuthority::getAuthority)
                     // 去重
                     .collect(Collectors.toSet());
-
                 // 合并scope与用户信息
                 authoritySet.addAll(scopes);
 

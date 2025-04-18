@@ -1,6 +1,7 @@
 package pers.ken.rt.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import pers.ken.rt.auth.dto.req.ListDepartmentsRequest;
 import pers.ken.rt.auth.repository.po.Department;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface DepartmentService extends IService<Department> {
 
     List<List<Department>> listDepartmentsByUser(Integer userId);
 
-    List<Department> listDepartments();
+    List<Department> listDepartments(ListDepartmentsRequest request);
 }

@@ -2,6 +2,7 @@ package pers.ken.rt.gw.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
+    @NotNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, @NonNull Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();

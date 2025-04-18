@@ -4,25 +4,28 @@
 description = "rt-gateway"
 dependencies {
     // project
-    implementation(project(":rt-common")) {
-        exclude("org.springframework.boot", "spring-boot-starter-web")
-    }
+    implementation(project(":rt-common"))
 
+    // springboot
     implementation(libs.springcloud.gateway)
     implementation(libs.springboot.security)
     implementation(libs.springboot.oauth2.resourceserver)
-    // 理论上不应该引入
     implementation(libs.springboot.oauth2.client)
     implementation(libs.springboot.webflux)
-    implementation(libs.springcloud.bootstrap)
-    implementation(libs.alibaba.springcloud.sentinel.gateway)
-    implementation(libs.alibaba.springcloud.sentinel)
-    implementation(libs.alibaba.springcloud.nacos.discovery)
-    implementation(libs.alibaba.springcloud.nacos.config)
-    annotationProcessor(libs.springboot.configuration.processor)
-    implementation(libs.springcloud.loadbalancer)
-    implementation(libs.springdoc.openapi.webflux)
     implementation(libs.springboot.actuator)
+    annotationProcessor(libs.springboot.configuration.processor)
+
+    // springcloud
+    implementation(libs.springcloud.bootstrap)
+    implementation(libs.springcloud.alibaba.sentinel.gateway)
+    implementation(libs.springcloud.alibaba.sentinel)
+    implementation(libs.springcloud.alibaba.nacos.discovery)
+    implementation(libs.springcloud.alibaba.nacos.config)
+    implementation(libs.springcloud.loadbalancer)
+
+    // springDoc
+    implementation(libs.springdoc.openapi.webflux)
+
 }
 
 
